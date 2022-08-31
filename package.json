@@ -25,9 +25,12 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^1.4.4",
+    "@hookform/devtools": "^4.2.2",
     "@prisma/client": "4.3.0",
     "prisma": "^4.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.34.2"
   }
 }
