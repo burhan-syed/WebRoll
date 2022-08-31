@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+enum SiteStatus {
+  REVIEW
+  APPROVED
+  QUARANTINE
+  BANNED
+}
+
+model Site {
+  id          Int        @id @unique @map("id")
+  name        String     @db.VarChar(24)
+  url         String
+  sourceLink  String?    @map("source_link")
+  views       Int        @default(0)
+  dislikes    Int        @default(0)
+  reports     Int        @default(0)
+  description String?
+  adult       Boolean    @default(false)
+  status      SiteStatus @default(REVIEW)
+  submitterIP String     @map("submitter_ip") @db.VarChar(45)
+  submittedAt DateTime   @default(now()) @map("submitted_at")
+
+  tags       Tags[]
+  categories Categories[]
+  likes      Likes[]
+  Reports    Reports[]
+}
+
+model Likes {
+  id        Int      @id @unique
+  siteId    Int      @map("site_id")
+  ip        String   @db.VarChar(45)
+  date      DateTime @default(now())
+  direction Boolean  @default(true)
+
+  site Site @relation(fields: [siteId], references: [id])
+
+  @@unique([siteId, ip])
+}
+
+model Reports {
+  id     Int      @id @unique
+  siteId Int      @map("site_id")
+  ip     String   @db.VarChar(45)
+  date   DateTime @default(now())
+
+  site Site @relation(fields: [siteId], references: [id])
+  @@unique([siteId, ip])
+}
+
+model Tags {
+  id  Int    @id @unique @map("id")
+  tag String @db.VarChar(24)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  sites Site[]
+}
+
+model Categories {
+  id        Int      @id @unique @map("id")
+  category  String   @db.VarChar(24)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  description String?
+  sites       Site[]
+}
