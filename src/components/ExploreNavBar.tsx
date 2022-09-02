@@ -4,7 +4,7 @@ interface NavBarProps {
   site: string;
 }
 
-const NavBar = ({ site }: NavBarProps) => {
+const ExploreNavBar = ({ site }: NavBarProps) => {
   return (
     <div className="min-w-full border-2 border-red-600 h-20">
       <div className="flex flex-col">
@@ -22,4 +22,4 @@ const NavBar = ({ site }: NavBarProps) => {
   );
 };
 
-export default NavBar;
+export default ExploreNavBar;

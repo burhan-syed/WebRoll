@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./NavBar";
+import ExploreNavBar from "./ExploreNavBar";
 
 const site = "https://www.troddit.com"
 
@@ -7,7 +7,7 @@ const ExplorePage = () => {
   return (
     <>
       <div className="z-10 order-2 md:order-1">
-        <NavBar site={site} />
+        <ExploreNavBar site={site} />
       </div>
       <div className="relative flex flex-1  overflow-y-auto order-1 md:order-2">
         <div className="relative flex flex-1 items-center flex-col">
