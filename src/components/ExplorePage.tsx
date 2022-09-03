@@ -3,7 +3,7 @@ import ExploreNavBar from "./ExploreNavBar";
 
 const site = "https://www.troddit.com"
 
-const ExplorePage = () => {
+export default function ExplorePage(){
   return (
     <>
       <div className="z-10 order-2 md:order-1">
@@ -22,4 +22,3 @@ const ExplorePage = () => {
   );
 };
 
-export default ExplorePage;

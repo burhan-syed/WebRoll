@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { HelpCircle } from "react-feather";
 import { DevTool } from "@hookform/devtools";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 interface SiteFormData {
   url: string;
@@ -9,74 +11,81 @@ interface SiteFormData {
   category: string;
   tags: { name: string }[];
   privacy: boolean;
+  captchaToken: string;
 }
 const urlPattern =
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
 const categories = [
   {
-    category: "Arts, Design",
+    category: "Arts & Design",
     description: "Painting, Illustration, Fashion, Photography, Sculpting",
   },
   {
-    category: "Business, Economics",
-    description: "Entrepreneurship, Jobs, Money, Stocks",
+    category: "Autos & Vehicles",
+    description: "Cars, Motorcycles, Boats, Bikes, Aircraft",
   },
   {
-    category: "Culture, Society",
-    description: "Law, Sociology, Traveling, Politics",
+    category: "Beauty & Fashion",
+    description: "Cosmetics, Hygiene, Makeup, Fashion",
   },
   {
-    category: "Education, Learning",
-    description: "Teaching, Knowledge Sharing, Schools",
+    category: "Books & Literature",
+    description: "Poetry, E-Books, Writer Resources, Publishing",
   },
   {
-    category: "Food, Cooking",
-    description: "Food, Cooking, Baking, Nutrition",
+    category: "Business & Economics",
+    description: "Entrepreneurship, Money, Stocks, Finance, Investing",
   },
   {
-    category: "Fun Stuff",
-    description: "Anything really weird, funny, or satiric",
+    category: "Food & Cooking",
+    description: "Food, Cooking, Baking, Nutrition, World Cuisines",
   },
   {
-    category: "Gaming",
+    category: "Games",
     description: "Video Games, Consoles, Toys, Board Games",
   },
   {
-    category: "Health",
+    category: "Health & Fitness",
     description: "Fitness, Mental health, Psychology, Medicine",
   },
-  { category: "History", description: "Anything relating to the past" },
   {
-    category: "Home, Garden",
+    category: "Hobbies & Leisure",
+    description: "Ceramics, Knitting, Outdoors, Hiking, Travel",
+  },
+  {
+    category: "Home & Garden",
     description: "Interior, Gardening, Construction, personal Farming",
   },
   {
-    category: "Literature, Writing",
-    description: "Books, Magazines, Writing, Publishing",
+    category: "Jobs & Education",
+    description:
+      "Online Courses and Certifications, Internships, Jobs, Career Resources",
   },
-  { category: "Music, Audio", description: "Bands, Music Theory, Sounds" },
   {
-    category: "Nature, Animals",
-    description: "Earth, Ecology, Farming, Animals (wild & domesticated)",
+    category: "People & Society",
+    description: "Anthropology, Social networks, News, History",
+  },
+  {
+    category: "Nature & Animals",
+    description: "Earth, Ecology, Farming, Pets, and wild Animals",
   },
   {
     category: "Other",
     description: "Anything else",
   },
   {
-    category: "Philosophy, Life",
+    category: "Philosophy & Life",
     description: "Philosophy, Beliefs, Religion, Self-Improvement",
   },
   {
-    category: "Science, Math",
+    category: "Science & Math",
     description: "Research, Biology, Chemistry, Physics, Astronomy",
   },
-  { category: "Social", description: "Social networks" },
   {
     category: "Sports",
     description:
-      "Soccer, Baseball, Curling, Darts, Crossfit, and any other Sport",
+      "Soccer, Baseball, Curling, Darts, Tennis, and any other Sport",
   },
   {
     category: "Technology",
@@ -89,7 +98,7 @@ const categories = [
   },
 ];
 
-const SiteSubmit = () => {
+export default function SiteSubmi() {
   const {
     register,
     control,
@@ -99,16 +108,28 @@ const SiteSubmit = () => {
     setError,
     reset,
     watch,
+    setValue,
   } = useForm<SiteFormData>({ defaultValues: { tags: [{ name: "" }] } });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tags",
   });
-  const onFormSubmit = (data: SiteFormData) => {
-    console.log("f?", data);
-  };
 
   const cTags = watch("tags");
+  const isPrivate = watch("privacy");
+  const captchaValue = watch("captchaToken");
+  const captchaRef = useRef<HCaptcha>(null);
+
+  const onFormSubmit = (data: SiteFormData) => {
+    console.log("f?", data);
+
+    if (captchaValue) {
+      console.log("captcha:", captchaValue)
+    } else {
+      captchaRef.current?.execute();
+    }
+
+  };
 
   const checkNewTag = () => {
     //console.log(cTags);
@@ -142,18 +163,19 @@ const SiteSubmit = () => {
     return dups.length > 0;
   };
 
+  const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
+
   return (
     <>
-      <h1>submit a site</h1>
       <form
         action=""
         onSubmit={handleSubmit(onFormSubmit)}
-        className=" flex flex-col gap-4 border min-w-full flex-1"
+        className=" flex flex-col gap-4 border min-w-full flex-1 bg-base-100 px-4"
       >
         <div>
-          <h2 className="mb-0 pb-0">URL</h2>
-          <label className="label text-xs text-error">
-            <span className="label-text-al"></span>
+          <h2 className="mb-0 pb-0">Site URL</h2>
+          <label className="label text-xs ">
+            <span className="label-text"></span>
             {errors.url?.type === "required" && (
               <span className="label-text-alt text-error">url required</span>
             )}
@@ -172,8 +194,8 @@ const SiteSubmit = () => {
           </label>
           <input
             className={
-              "input w-full " +
-              (errors.url?.type ? "input-error" : "input-accent")
+              "input bg-base-200 w-full " +
+              (errors.url?.type ? " input-error " : " input-primary ")
             }
             type="text"
             placeholder="url"
@@ -182,7 +204,7 @@ const SiteSubmit = () => {
         </div>
 
         <h2 className="mb-0 pb-4 w-full flex justify-between items-baseline">
-          Category
+          Site Category
           {errors.category?.type === "required" && (
             <span className="label-text-alt text-error font-normal ml-auto">
               category required
@@ -197,15 +219,19 @@ const SiteSubmit = () => {
               className="flex items-start gap-2 px-4 cursor-pointer select-none "
             >
               <input
-                className="radio radio-xs checked:bg-accent"
+                className="radio radio-xs checked:bg-primary mt-1.5"
                 type={"radio"}
                 id={category.category}
                 value={category.category}
                 {...register("category", { required: true })}
               />
-              <div className="flex flex-col -mt-0.5 ">
-                <span className="font-semibold">{category.category}</span>
-                <span className="text-xs pt-1">{category.description}</span>
+              <div className="flex flex-col items-start  ">
+                <span className="text-base-content text-lg font-light ">
+                  {category.category}
+                </span>
+                <span className="text-xs pt-1 font-extralight">
+                  {category.description}
+                </span>
               </div>
             </label>
           ))}
@@ -213,65 +239,63 @@ const SiteSubmit = () => {
 
         <>
           <div className="">
-            <h2 className="mb-0 pb-0">Tags</h2>
+            <h2 className="mb-0 pb-0">Site Tags</h2>
             {fields.map((field, index) => (
-              <>
+              <div key={field.name}>
                 {index === fields.length - 1 && (
-                  <div key={field.name}>
-                    <>
-                      <label className="label">
-                        <span className="label-text-alt"></span>
-                        {errors.tags?.type === "pattern" ? (
+                  <>
+                    <label className="label">
+                      <span className="label-text-alt"></span>
+                      {errors.tags?.type === "pattern" ? (
+                        <span className="label-text-alt text-error">
+                          letters only
+                        </span>
+                      ) : errors.tags?.type === "minLength" ? (
+                        <span className="label-text-alt text-error">
+                          3 characters minimum
+                        </span>
+                      ) : errors.tags?.type === "duplicate" ? (
+                        <span className="label-text-alt text-error">
+                          duplicate
+                        </span>
+                      ) : (
+                        cTags.length < 4 && (
                           <span className="label-text-alt text-error">
-                            letters only
+                            enter at least 3 tags
                           </span>
-                        ) : errors.tags?.type === "minLength" ? (
-                          <span className="label-text-alt text-error">
-                            3 characters minimum
-                          </span>
-                        ) : errors.tags?.type === "duplicate" ? (
-                          <span className="label-text-alt text-error">
-                            duplicate
-                          </span>
-                        ) : (
-                          cTags.length < 4 && (
-                            <span className="label-text-alt text-error">
-                              enter at least 3 tags
-                            </span>
-                          )
-                        )}
-                      </label>
-                      <input
-                        className={
-                          "input w-full " +
-                          (errors.tags?.type || cTags.length < 4
-                            ? "input-error"
-                            : "input-accent")
-                        }
-                        onKeyDown={(e) => {
-                          //console.log("F?", cTags);
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (!checkNewTag()) {
-                              append({
-                                name: "",
-                              });
-                            }
+                        )
+                      )}
+                    </label>
+                    <input
+                      className={
+                        "input w-full " +
+                        (errors.tags?.type || cTags.length < 4
+                          ? "input-error bg-base-200 "
+                          : "input-primary ")
+                      }
+                      onKeyDown={(e) => {
+                        //console.log("F?", cTags);
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (!checkNewTag()) {
+                            append({
+                              name: "",
+                            });
                           }
-                        }}
-                        placeholder={"tags"}
-                        key={field.id} // important to include key with field's id
-                        {...register(`tags.${index}.name` as const, {
-                          //required: true,
-                          pattern: /[A-Za-z]/,
-                          minLength: 3,
-                        })}
-                      />
-                    </>
-                  </div>
+                        }
+                      }}
+                      placeholder={"tags"}
+                      key={field.id} // important to include key with field's id
+                      {...register(`tags.${index}.name` as const, {
+                        //required: true,
+                        //pattern: /[A-Za-z]/,
+                        //minLength: 3,
+                      })}
+                    />
+                  </>
                 )}
-              </>
+              </div>
             ))}
 
             <div className="flex gap-1 flex-wrap select-none py-4">
@@ -281,7 +305,7 @@ const SiteSubmit = () => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="btn btn-xs text-xs flex items-center px-2 rounded-full bg-accent-focus "
+                      className="btn btn-xs text-xs text-base-100 flex items-center px-2 rounded-full bg-primary-focus "
                     >
                       <span className="mr-0.5">{field.name}</span>
 
@@ -308,22 +332,108 @@ const SiteSubmit = () => {
         </>
 
         <div>
+          <h2>Extra</h2>
+
           <label className="flex justify-between items-center cursor-pointer select-none">
-            <span className="label-text">Privacy Respecting</span>
+            <span className="label-text flex items-center gap-1">
+              Privacy Respecting
+              <button
+                className="border"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowPrivacyHelp((s) => !s);
+                }}
+              >
+                <HelpCircle size={20} />
+              </button>
+            </span>
+
             <input
               type="checkbox"
-              className="toggle toggle-accent"
+              className="toggle toggle-primary"
               {...register("privacy")}
             />
           </label>
+          <div
+            className={
+              "collapse " +
+              (showPrivacyHelp ? "collapse-open" : "collapse-close")
+            }
+          >
+            {" "}
+            <div className="collapse-content">
+              <p className={"bg-warning text-sm  rounded-md p-4 "}>
+                {`A site can be considered "Privacy Respecting" if it meets all of the following criteria:`}
+                <ul>
+                  <li>The site does not collect and sell user data</li>
+                  <li>
+                    The site does not use intrusive analytics tools such as
+                    Google Analytics
+                  </li>
+                  <li>The site source code is publicly available</li>
+                </ul>
+                {`Most sites will not meet these criteria. Sites submitted with this toggled will be scrutinized.`}
+              </p>
+            </div>
+          </div>
         </div>
-        <button className="btn btn-primary my-10" type="submit">
+        <div>
+          <label className="label" htmlFor="sourceLink w-full">
+            <span className="label-text">source link</span>
+            {errors.sourceLink?.type && (
+              <span className="label-text-alt text-error">
+                {errors.sourceLink.type === "required"
+                  ? "source required for privacy respecting sites"
+                  : errors.sourceLink.type === "pattern"
+                  ? "invalid url"
+                  : ""}
+              </span>
+            )}
+          </label>
+          <input
+            className={
+              "input bg-base-200 w-full " +
+              (errors.sourceLink?.type ? "input-error" : " ")
+            }
+            type={"url"}
+            placeholder={"url"}
+            {...register("sourceLink", {
+              required: isPrivate,
+              pattern: urlPattern,
+            })}
+          />
+        </div>
+        <div className="">
+          <HCaptcha
+            size="invisible"
+            sitekey={
+              import.meta.env.MODE === "production"
+                ? "39185a62-e29f-441d-8be0-b2989f326879"
+                : "10000000-ffff-ffff-ffff-000000000001"
+            }
+            ref={captchaRef}
+            onVerify={(t) => setValue("captchaToken", t)}
+            onExpire={() => setValue("captchaToken", "")}
+          />
+        </div>
+        <button
+          // onClick={(e) => {
+          //   if (!captchaValue) {
+          //     e.preventDefault();
+          //     e.stopPropagation();
+          //     captchaRef.current?.execute();
+          //     console.log("CAPTHA!");
+          //   }
+          // }}
+          className="btn btn-primary my-10 text-base-100 "
+          type={"submit"}
+        >
           submit
         </button>
       </form>
       <DevTool control={control} />
     </>
   );
-};
-
-export default SiteSubmit;
+}

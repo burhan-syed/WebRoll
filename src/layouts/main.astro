@@ -1,15 +1,19 @@
 ---
 //const { content } = Astro.props;
+import NavBar from "../components/NavBar.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{"webroll"}</title>
-	</head>
-	<body class="prose">
-		<slot />
-	</body>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{"webroll"}</title>
+  </head>
+  <body class="prose prose-headings:font-extralight">
+    <nav>
+      <NavBar />
+    </nav>
+    <slot />
+  </body>
 </html>
