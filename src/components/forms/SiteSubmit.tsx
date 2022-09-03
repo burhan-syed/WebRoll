@@ -115,31 +115,39 @@ export default function SiteSubmi() {
     name: "tags",
   });
 
+  const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
+  const [showSourceHelp, setShowSourceHelp] = useState(false);
+  const [formSubmitLoading, setFormSubmitLoading] = useState(false);
+
   const cTags = watch("tags");
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
   const captchaRef = useRef<HCaptcha>(null);
 
-  const onFormSubmit = (data: SiteFormData) => {
+  const onFormSubmit = async (data: SiteFormData) => {
     console.log("f?", data);
-
+    setFormSubmitLoading(true);
     if (captchaValue) {
-      console.log("captcha:", captchaValue)
+      clearErrors("captchaToken");
+      console.log("captcha:", captchaValue);
+      const formData = data as unknown as FormData;
+      const res = await fetch('/api/submit', {body: formData, method: "post"})
+      setFormSubmitLoading(false);
     } else {
+      setError("captchaToken", { type: "required" });
       captchaRef.current?.execute();
     }
-
   };
 
   const checkNewTag = () => {
     //console.log(cTags);
     const last = cTags[cTags.length - 1];
-    console.log(last.name.match(/[A-Za-z]+/), last.name);
+    console.log(last.name.match(/[A-Za-z0-9]+/), last.name);
     if (last.name === "") {
       clearErrors("tags");
       return 1;
     }
-    if (last.name.match(/[A-Za-z]+/)?.[0]?.length !== last.name.length) {
+    if (last.name.match(/[A-Za-z0-9]+/)?.[0]?.length !== last.name.length) {
       setError("tags", { type: "pattern" });
       return 1;
     }
@@ -163,14 +171,12 @@ export default function SiteSubmi() {
     return dups.length > 0;
   };
 
-  const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
-
   return (
     <>
       <form
         action=""
         onSubmit={handleSubmit(onFormSubmit)}
-        className=" flex flex-col gap-4 border min-w-full flex-1 bg-base-100 px-4"
+        className=" flex flex-col gap-4 min-w-full flex-1 bg-base-100 px-4 rounded-lg"
       >
         <div>
           <h2 className="mb-0 pb-0">Site URL</h2>
@@ -248,7 +254,7 @@ export default function SiteSubmi() {
                       <span className="label-text-alt"></span>
                       {errors.tags?.type === "pattern" ? (
                         <span className="label-text-alt text-error">
-                          letters only
+                          invalid characters
                         </span>
                       ) : errors.tags?.type === "minLength" ? (
                         <span className="label-text-alt text-error">
@@ -334,11 +340,11 @@ export default function SiteSubmi() {
         <div>
           <h2>Extra</h2>
 
-          <label className="flex justify-between items-center cursor-pointer select-none">
-            <span className="label-text flex items-center gap-1">
+          <label className="flex justify-between items-center cursor-pointer select-none px-1 py-2">
+            <span className="label-text flex items-center gap-2">
               Privacy Respecting
               <button
-                className="border"
+                className="outline-none"
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
@@ -364,7 +370,11 @@ export default function SiteSubmi() {
           >
             {" "}
             <div className="collapse-content">
-              <p className={"bg-warning text-sm  rounded-md p-4 "}>
+              <p
+                className={
+                  "border border-base-content text-sm shadow-xl rounded-md p-4 "
+                }
+              >
                 {`A site can be considered "Privacy Respecting" if it meets all of the following criteria:`}
                 <ul>
                   <li>The site does not collect and sell user data</li>
@@ -381,7 +391,20 @@ export default function SiteSubmi() {
         </div>
         <div>
           <label className="label" htmlFor="sourceLink w-full">
-            <span className="label-text">source link</span>
+            <span className="label-text flex items-center gap-2">
+              source link{" "}
+              <button
+                className="outline-none"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowSourceHelp((s) => !s);
+                }}
+              >
+                <HelpCircle size={20} />
+              </button>
+            </span>
             {errors.sourceLink?.type && (
               <span className="label-text-alt text-error">
                 {errors.sourceLink.type === "required"
@@ -404,6 +427,22 @@ export default function SiteSubmi() {
               pattern: urlPattern,
             })}
           />
+          <div
+            className={
+              "collapse " +
+              (showSourceHelp ? "collapse-open" : "collapse-close")
+            }
+          >
+            <div className="collapse-content">
+              <p
+                className={
+                  "border border-base-content shadow-xl text-sm  rounded-md p-4 "
+                }
+              >
+                {`A link to the source code for the site. For example, from GitHub or sourcehut.`}
+              </p>
+            </div>
+          </div>
         </div>
         <div className="">
           <HCaptcha
@@ -414,10 +453,18 @@ export default function SiteSubmi() {
                 : "10000000-ffff-ffff-ffff-000000000001"
             }
             ref={captchaRef}
-            onVerify={(t) => setValue("captchaToken", t)}
+            onVerify={(t) => {
+              setValue("captchaToken", t);
+              setFormSubmitLoading(false);
+            }}
             onExpire={() => setValue("captchaToken", "")}
           />
         </div>
+        {errors.captchaToken?.type === "required" && (
+          <span className="label label-text-alt text-error text-xs text-right flex items-center justify-center">
+            captcha required
+          </span>
+        )}
         <button
           // onClick={(e) => {
           //   if (!captchaValue) {
@@ -427,7 +474,11 @@ export default function SiteSubmi() {
           //     console.log("CAPTHA!");
           //   }
           // }}
-          className="btn btn-primary my-10 text-base-100 "
+          className={
+            "btn btn-primary text-base-100 shadow-xl mb-12 " +
+            (errors.captchaToken?.type === "required" ? "" : " mt-10 ") +
+            (formSubmitLoading ? " loading " : "")
+          }
           type={"submit"}
         >
           submit
