@@ -1,6 +1,6 @@
 ---
 // Component Imports
-import Main from "../layouts/Main.astro";
+//import Main from "../layouts/Main.astro";
 import Counter from '../components/counter/Counter';
 const someProps = {
 	count: 0,
@@ -18,11 +18,11 @@ const someProps = {
 		<title>Astro + TailwindCSS</title>
 	</head>
 
-	<Main>
+	<body>
 		<main>
 			<Counter {...someProps} client:visible>
 				<h1>Hello, React!</h1>
 			</Counter>
 		</main>
-	</Main>
+	</body>
 </html>

@@ -1,6 +1,6 @@
 ---
 // Component Imports
-import Main from "../layouts/Main.astro";
+//import Main from "../layouts/Main.astro";
 import SiteSubmit from "../components/forms/SiteSubmit";
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
@@ -15,12 +15,12 @@ import SiteSubmit from "../components/forms/SiteSubmit";
     <title>Astro + TailwindCSS</title>
   </head>
 
-  <Main>
+  <body>
     <main class="w-screen">
       <div class="mx-auto max-w-4xl shadow-2xl">
         <SiteSubmit client:load />
 
       </div>
     </main>
-  </Main>
+  </body>
 </html>
