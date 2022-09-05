@@ -2,6 +2,8 @@
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
 import SiteSubmit from "../components/forms/SiteSubmit";
+
+const userIp = Astro.clientAddress; 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -30,7 +32,7 @@ import SiteSubmit from "../components/forms/SiteSubmit";
         </div>
         <div class="p-2"></div>
         <div class="rounded-lg border border-base-300 shadow-lg">
-          <SiteSubmit client:load />
+          <SiteSubmit userIP={userIp} client:load />
         </div>
       </div>
     </main>

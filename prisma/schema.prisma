@@ -22,13 +22,13 @@ enum SiteStatus {
 model Site {
   id          Int        @id @unique @map("id") @default(autoincrement())
   name        String     @db.VarChar(24)
-  url         String
+  url         String     @unique
   sourceLink  String?    @map("source_link")
   views       Int        @default(0)
   dislikes    Int        @default(0)
   reports     Int        @default(0)
   description String?
-  privacy     Boolean   @default(false)
+  privacy     Boolean    @default(false)
   adult       Boolean    @default(false)
   status      SiteStatus @default(REVIEW)
   submitterIP String     @map("submitter_ip") @db.VarChar(45)
@@ -64,7 +64,7 @@ model Reports {
 
 model Tags {
   id  Int    @id @unique @map("id") @default(autoincrement())
-  tag String @db.VarChar(24)
+  tag String @db.VarChar(24) @unique
 
   createdAt DateTime @default(now()) @map("created_at")
 

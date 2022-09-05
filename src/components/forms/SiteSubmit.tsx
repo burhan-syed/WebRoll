@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { HelpCircle } from "react-feather";
+import { HelpCircle, CornerDownLeft } from "react-feather";
 import { DevTool } from "@hookform/devtools";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
@@ -98,7 +98,8 @@ const categories = [
   },
 ];
 
-export default function SiteSubmi() {
+
+export default function SiteSubmit({userIP}:{userIP: string}) {
   const {
     register,
     control,
@@ -109,7 +110,9 @@ export default function SiteSubmi() {
     reset,
     watch,
     setValue,
-  } = useForm<SiteFormData>({ defaultValues: { tags: [{ name: "" }] } });
+  } = useForm<SiteFormData>({
+    defaultValues: { tags: [{ name: "" }], captchaToken: "captcha" },
+  });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tags",
@@ -127,11 +130,13 @@ export default function SiteSubmi() {
   const onFormSubmit = async (data: SiteFormData) => {
     console.log("f?", data);
     setFormSubmitLoading(true);
-    if (captchaValue) {
+    if (captchaValue || import.meta.env.MODE !== "production") {
       clearErrors("captchaToken");
       console.log("captcha:", captchaValue);
-      const formData = data as unknown as FormData;
-      const res = await fetch('/api/submit', {body: formData, method: "post"})
+      const res = await fetch("/api/submit", {
+        body: JSON.stringify({...data, userIP: userIP}),
+        method: "post",
+      });
       setFormSubmitLoading(false);
     } else {
       setError("captchaToken", { type: "required" });
@@ -198,15 +203,18 @@ export default function SiteSubmi() {
             )} */}
             {/* <span className="label-text-alt text-error">err</span>{" "} */}
           </label>
-          <input
-            className={
-              "input bg-base-200 w-full " +
-              (errors.url?.type ? " input-error " : " input-primary ")
-            }
-            type="text"
-            placeholder="url"
-            {...register("url", { required: true, pattern: urlPattern })}
-          />
+          <label className="input-group">
+            <span>{`https://`}</span>
+            <input
+              className={
+                "input bg-base-200 w-full " +
+                (errors.url?.type ? " input-error " : " input-primary ")
+              }
+              type="text"
+              placeholder="url"
+              {...register("url", { required: true, pattern: urlPattern })}
+            />
+          </label>
         </div>
 
         <h2 className="mb-0 pb-4 w-full flex justify-between items-baseline">
@@ -272,33 +280,52 @@ export default function SiteSubmi() {
                         )
                       )}
                     </label>
-                    <input
-                      className={
-                        "input w-full " +
-                        (errors.tags?.type || cTags.length < 4
-                          ? "input-error bg-base-200 "
-                          : "input-primary ")
-                      }
-                      onKeyDown={(e) => {
-                        //console.log("F?", cTags);
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          if (!checkNewTag()) {
-                            append({
-                              name: "",
-                            });
-                          }
+                    <label className="input-group">
+                      <input
+                        className={
+                          "input w-full " +
+                          (errors.tags?.type || cTags.length < 4
+                            ? "input-error bg-base-200 "
+                            : "input-primary ")
                         }
-                      }}
-                      placeholder={"tags"}
-                      key={field.id} // important to include key with field's id
-                      {...register(`tags.${index}.name` as const, {
-                        //required: true,
-                        //pattern: /[A-Za-z]/,
-                        //minLength: 3,
-                      })}
-                    />
+                        onKeyDown={(e) => {
+                          //console.log("F?", cTags);
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (!checkNewTag()) {
+                              append({
+                                name: "",
+                              });
+                            }
+                          }
+                        }}
+                        placeholder={"tags"}
+                        key={field.id} // important to include key with field's id
+                        {...register(`tags.${index}.name` as const, {
+                          //required: true,
+                          //pattern: /[A-Za-z]/,
+                          //minLength: 3,
+                        })}
+                      />
+                      <span className="px-0">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (!checkNewTag()) {
+                              append({
+                                name: "",
+                              });
+                            }
+                          }}
+                          className="w-full h-full pl-3 pr-4"
+                        >
+                          <CornerDownLeft />
+                        </button>
+                      </span>
+                    </label>
                   </>
                 )}
               </div>
