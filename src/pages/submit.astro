@@ -1,9 +1,9 @@
 ---
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
-import SiteSubmit from "../components/forms/SiteSubmit";
+import SubmissionPage from "../components/SubmissionPage"
+const userIp = Astro.clientAddress;
 
-const userIp = Astro.clientAddress; 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -19,21 +19,21 @@ const userIp = Astro.clientAddress;
 
   <MainLayout>
     <main class="w-screen">
-      <div class="mx-auto  max-w-4xl  p-4">
-        <div class="bg-base-100 border border-base-300  rounded-lg w-full p-4 shadow-lg">
+      <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
+        <div
+          class="bg-base-100 border border-base-300 rounded-lg w-full p-4 shadow-lg  "
+        >
           <h1 class="text-3xl">Site Submission</h1>
           <p>
-            Sites will be reviewed after submission. In general, we
-            only accept high quality websites that are distinctly beautiful,
-            useful, or interesting. We do not allow sites containing or
-            promoting illegal activity, hatespeech,
-            pornography, graphic content, or highly controversial content.
+            Sites will be reviewed after submission. In general, we only accept
+            high quality websites that are distinctly beautiful, useful, or
+            interesting. We do not allow sites containing or promoting illegal
+            activity, hatespeech, pornography, graphic content, or highly
+            controversial content.
           </p>
         </div>
-        <div class="p-2"></div>
-        <div class="rounded-lg border border-base-300 shadow-lg">
-          <SiteSubmit userIP={userIp} client:load />
-        </div>
+        <SubmissionPage client:load userIp={userIp} />        
+        
       </div>
     </main>
   </MainLayout>

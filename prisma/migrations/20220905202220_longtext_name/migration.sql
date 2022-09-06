@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Site` MODIFY `name` VARCHAR(191) NOT NULL;

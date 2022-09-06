@@ -3,6 +3,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { HelpCircle, CornerDownLeft } from "react-feather";
 import { DevTool } from "@hookform/devtools";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import type { SiteResData } from "../../types";
 
 interface SiteFormData {
   url: string;
@@ -13,6 +14,7 @@ interface SiteFormData {
   privacy: boolean;
   captchaToken: string;
 }
+
 const urlPattern =
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
@@ -98,8 +100,13 @@ const categories = [
   },
 ];
 
-
-export default function SiteSubmit({userIP}:{userIP: string}) {
+export default function SiteSubmit({
+  userIP,
+  returnSubmissions = (a: SiteResData) => {},
+}: {
+  userIP: string;
+  returnSubmissions: Function;
+}) {
   const {
     register,
     control,
@@ -126,17 +133,34 @@ export default function SiteSubmit({userIP}:{userIP: string}) {
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
   const captchaRef = useRef<HCaptcha>(null);
-
+  const [submissions, setSubmissions] = useState<SiteResData[]>();
+  const [formError, setFormError] = useState("");
   const onFormSubmit = async (data: SiteFormData) => {
     console.log("f?", data);
     setFormSubmitLoading(true);
     if (captchaValue || import.meta.env.MODE !== "production") {
       clearErrors("captchaToken");
       console.log("captcha:", captchaValue);
-      const res = await fetch("/api/submit", {
-        body: JSON.stringify({...data, userIP: userIP}),
-        method: "post",
-      });
+      try {
+        const res = await fetch("/api/submit", {
+          body: JSON.stringify({ ...data, userIP: userIP }),
+          method: "post",
+        });
+        const resData = await res.json();
+        console.log("return?", resData);
+        if (resData?.data?.["url"]) {
+          returnSubmissions(resData.data);
+          setSubmissions((s) =>
+            s && s?.length > 0 ? [resData.data, ...s] : [resData.data]
+          );
+        } else if (resData?.["ERROR"]) {
+          setFormError(resData["ERROR"]);
+        }
+      } catch (err) {
+        console.log("form error?", err);
+        setFormError("Something went wrong");
+      }
+
       setFormSubmitLoading(false);
     } else {
       setError("captchaToken", { type: "required" });
@@ -502,7 +526,8 @@ export default function SiteSubmit({userIP}:{userIP: string}) {
           //   }
           // }}
           className={
-            "btn btn-primary text-base-100 shadow-xl mb-12 " +
+            "btn btn-primary text-base-100 shadow-xl " +
+            (formError ? "" : " mb-12 ") +
             (errors.captchaToken?.type === "required" ? "" : " mt-10 ") +
             (formSubmitLoading ? " loading " : "")
           }
@@ -510,6 +535,7 @@ export default function SiteSubmit({userIP}:{userIP: string}) {
         >
           submit
         </button>
+        <span className="text-error">{formError}</span>
       </form>
       <DevTool control={control} />
     </>

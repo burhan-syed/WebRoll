@@ -21,7 +21,7 @@ enum SiteStatus {
 
 model Site {
   id          Int        @id @unique @map("id") @default(autoincrement())
-  name        String     @db.VarChar(24)
+  name        String     
   url         String     @unique
   sourceLink  String?    @map("source_link")
   views       Int        @default(0)
