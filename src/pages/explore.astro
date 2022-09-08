@@ -1,7 +1,26 @@
 ---
 // Component Imports
 import ExplorePage from "../components/ExplorePage";
-
+import prisma from "../server/utils/prisma";
+const ip = Astro.clientAddress;
+await prisma.sessions.deleteMany({where: {ip: ip}})
+const session = await prisma.sessions.create({ data: { ip: ip } });
+const allSitesCount = await prisma.site.count({
+  where: { status: "APPROVED" },
+});
+const sites = await prisma.site.findMany({
+  where: { status: "APPROVED" },
+  take: 3,
+  skip: Math.floor(Math.random() * allSitesCount),
+  select: {
+    url: true,
+    name: true,
+    description: true,
+    categories: { select: { category: true, description: true } },
+    tags: { select: { tag: true } },
+  },
+});
+console.log("random site:", sites);
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -15,9 +34,29 @@ import ExplorePage from "../components/ExplorePage";
     <title>Astro + TailwindCSS</title>
   </head>
 
-  <body>
-    <main class="flex w-screen h-screen flex-col">
-      <ExplorePage />
-    </main>
-  </body>
+  <div class="drawer drawer-end">
+    <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content">
+      <!-- Page content here -->
+      <body>
+        <main class="flex w-screen h-screen flex-col">
+          <ExplorePage
+            initialSites={sites}
+            ip={ip}
+            session={session.id}
+            client:only="react"
+          />
+        </main>
+      </body>
+    </div> 
+    <div class="drawer-side">
+      <label for="my-drawer-4" class="drawer-overlay"></label>
+      <ul class="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+        <!-- Sidebar content here -->
+        <li><a href="/submit">Submit a Site</a></li>
+        <li><a>About</a></li>
+      </ul>
+    </div>
+  </div>
+
 </html>

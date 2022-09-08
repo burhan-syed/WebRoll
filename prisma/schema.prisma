@@ -79,3 +79,10 @@ model Categories {
   description String?
   sites       Site[]
 }
+
+model Sessions {
+  id String @id @unique @default(uuid())
+  createdAt DateTime @default(now())  @map("created_at")
+  expiresAt DateTime @default(now())  @map("expires_at")
+  ip String   @db.VarChar(45)
+}

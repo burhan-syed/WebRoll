@@ -3,17 +3,43 @@
 import NavBar from "../components/NavBar.astro";
 ---
 
-<html lang="en" >
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{"webroll"}</title>
   </head>
-  <body class="prose prose-headings:font-extralight overflow-x-hidden w-screen">
-    <nav>
-      <NavBar />
-    </nav>
-    <slot />
-  </body>
+  <div class="drawer">
+    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content">
+      <!-- Page content here -->
+      <body
+      class=" overflow-x-hidden w-screen min-w-full min-h-screen bg-base-300 flex flex-col "
+    >
+      <nav class="order-2 fixed bottom-0 md:top-0 md:bottom-auto min-w-full md:order-1 z-50 ">
+        <NavBar />
+      </nav>
+      <main class="order-1 md:order prose prose-headings:font-extralight min-w-full bg-base-300 ">
+        <div class="h-0 md:h-20"></div>
+        <slot />
+        <footer class="footer bg-base-200 text-base-content">foot</footer>
+        <div class="md:h-0 h-20"></div>
+  
+      </main>
+    </body>
+    
+    </div> 
+    <div class="drawer-side">
+      <label for="my-drawer" class="drawer-overlay"></label>
+      <ul class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+        <!-- Sidebar content here -->
+        <li><a href="/explore">Explore Sites</a></li>
+        <li><a href="/submit">Submit a Site</a></li>
+        <li><a>About</a></li>
+        
+      </ul>
+    </div>
+  </div>
 </html>
+
