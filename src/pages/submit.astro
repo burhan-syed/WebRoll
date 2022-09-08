@@ -23,12 +23,12 @@ const userIp = Astro.clientAddress;
         class="bg-base-100 border border-base-300 rounded-lg w-full p-4 shadow-lg"
       >
         <h1 class="text-3xl">Site Submission</h1>
-        <p>
+        <p class="text-sm font-light py-0 my-0">
           Sites will be reviewed after submission. In general, we only accept
           high quality websites that are distinctly beautiful, useful, or
-          interesting. We do not allow sites containing or promoting illegal
-          activity, hatespeech, pornography, graphic content, or highly
-          controversial content.
+          interesting. <br/> <span>We do not allow sites containing or promoting illegal
+            activity, hatespeech, pornography, graphic content, or highly
+            controversial content.</span>
         </p>
       </div>
       <SubmissionPage client:load userIp={userIp} />

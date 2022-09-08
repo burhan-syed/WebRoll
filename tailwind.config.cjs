@@ -4,7 +4,7 @@ module.exports = {
 		extend: {},
 	},
   darkMode: 'class',
-	plugins: [require("@tailwindcss/typography"), require("daisyui")],
+	plugins: [require("@tailwindcss/typography"), require("daisyui"), require('tailwind-scrollbar')],
   daisyui: {
     styled: true,
     themes: ["garden","winter"],
