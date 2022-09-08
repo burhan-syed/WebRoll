@@ -82,7 +82,7 @@ const main = async () => {
   const categories = [
     {
       category: "Arts & Design",
-      description: "Painting, Illustration, Fashion, Photography, Sculpting",
+      description: "Painting, Illustration, Photography, Sculpting",
     },
     {
       category: "Autos & Vehicles",
@@ -118,7 +118,7 @@ const main = async () => {
     },
     {
       category: "Home & Garden",
-      description: "Interior, Gardening, Construction, personal Farming",
+      description: "Interior Decor, Gardening, Construction, personal Farming",
     },
     {
       category: "Jobs & Education",
