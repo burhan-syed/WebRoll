@@ -1,29 +1,29 @@
 import he from "he";
-import chrome from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+// import chrome from "chrome-aws-lambda";
+// import puppeteer from "puppeteer-core";
 import { putImageObject } from "../aws/bucket";
 const decode = (str: string) => {
   const text = he.decode(str);
   return text;
 };
 const fetchMetadata = async (url: string) => {
-  const options = import.meta.env.AWS_REGION
-    ? {
-        args: chrome.args,
-        executablePath: await chrome.executablePath,
-        headless: chrome.headless,
-      }
-    : {
-        args: [],
-        executablePath:
-          process.platform === "win32"
-            ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-            : process.platform === "linux"
-            ? "/usr/bin/google-chrome"
-            : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      };
+  // const options = import.meta.env.AWS_REGION
+  //   ? {
+  //       args: chrome.args,
+  //       executablePath: await chrome.executablePath,
+  //       headless: chrome.headless,
+  //     }
+  //   : {
+  //       args: [],
+  //       executablePath:
+  //         process.platform === "win32"
+  //           ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+  //           : process.platform === "linux"
+  //           ? "/usr/bin/google-chrome"
+  //           : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  //     };
 
-  console.log("fetch..", url, "options:", options);
+  // console.log("fetch..", url, "options:", options);
   let metadata = {} as any;
 
   const checkMetas = (html: string) => {
@@ -62,32 +62,35 @@ const fetchMetadata = async (url: string) => {
   };
 
   try {
-    const browser = await puppeteer.launch(options);
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0"
-    );
-    await page.setViewport({ width: 1920, height: 1080 });
-    let res = await page.goto(url, { waitUntil: "networkidle0" });
+    const res = null as any; 
+    // const browser = await puppeteer.launch(options);
+    // const page = await browser.newPage();
+    // await page.setUserAgent(
+    //   "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0"
+    // );
+    // await page.setViewport({ width: 1920, height: 1080 });
+    // let res = await page.goto(url, { waitUntil: "networkidle0" });
 
-    const screenshot = await page.screenshot({
-      // path: `./images/${
-      //   url.replace("https://", "").split(".")?.[url.split(".").length - 2] ??
-      //   (Math.random() * 1000).toFixed(0).toString()
-      // }.png`,
-      type: "webp",
-    });
+    // const screenshot = await page.screenshot({
+    //   // path: `./images/${
+    //   //   url.replace("https://", "").split(".")?.[url.split(".").length - 2] ??
+    //   //   (Math.random() * 1000).toFixed(0).toString()
+    //   // }.png`,
+    //   type: "webp",
+    // });
 
     //browser.close();
 
     if (!res) {
       throw new Error("Unable to fetch page");
+    }else{
+      // const resURL = res.request().redirectChain()?.[0]?.url() ?? url;
+      // metadata["resURL"] = resURL;
+      // await uploadImage(resURL, screenshot);
+      // const html = await res.text();
+      // checkMetas(html);
     }
-    const resURL = res.request().redirectChain()?.[0]?.url() ?? url;
-    metadata["resURL"] = resURL;
-    await uploadImage(resURL, screenshot);
-    const html = await res.text();
-    checkMetas(html);
+  
   } catch (err) {
     console.log("FALLBACK", err);
     const res = await fetch(url, {
