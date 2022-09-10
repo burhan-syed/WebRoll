@@ -20,24 +20,24 @@ enum SiteStatus {
 }
 
 model Site {
-  id          Int        @id @unique @map("id") @default(autoincrement())
-  name        String     
-  url         String     @unique
-  sourceLink  String?    @map("source_link")
-  views       Int        @default(0)
-  dislikes    Int        @default(0)
-  reports     Int        @default(0)
+  id          Int          @id @unique @default(autoincrement()) @map("id")
+  name        String
+  url         String       @unique
+  sourceLink  String?      @map("source_link")
+  views       Int          @default(0)
+  dislikes    Int          @default(0)
+  reports     Int          @default(0)
   description String?
-  privacy     Boolean    @default(false)
-  adult       Boolean    @default(false)
-  status      SiteStatus @default(REVIEW)
-  submitterIP String     @map("submitter_ip") @db.VarChar(45)
-  submittedAt DateTime   @default(now()) @map("submitted_at")
-
-  tags       Tags[]
-  categories Categories[]
-  likes      Likes[]
-  Reports    Reports[]
+  privacy     Boolean      @default(false)
+  adult       Boolean      @default(false)
+  status      SiteStatus   @default(REVIEW)
+  submitterIP String       @map("submitter_ip") @db.VarChar(45)
+  submittedAt DateTime     @default(now()) @map("submitted_at")
+  imgKey      String?      @map("img_key")
+  tags        Tags[]
+  categories  Categories[]
+  likes       Likes[]
+  Reports     Reports[]
 }
 
 model Likes {
@@ -59,12 +59,13 @@ model Reports {
   date   DateTime @default(now())
 
   site Site @relation(fields: [siteId], references: [id])
+
   @@unique([siteId, ip])
 }
 
 model Tags {
-  id  Int    @id @unique @map("id") @default(autoincrement())
-  tag String @db.VarChar(24) @unique
+  id  Int    @id @unique @default(autoincrement()) @map("id")
+  tag String @unique @db.VarChar(24)
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -72,8 +73,8 @@ model Tags {
 }
 
 model Categories {
-  id        Int      @id @unique @map("id") @default(autoincrement())
-  category  String   @db.VarChar(24) @unique
+  id        Int      @id @unique @default(autoincrement()) @map("id")
+  category  String   @unique @db.VarChar(24)
   createdAt DateTime @default(now()) @map("created_at")
 
   description String?
@@ -81,8 +82,8 @@ model Categories {
 }
 
 model Sessions {
-  id String @id @unique @default(uuid())
-  createdAt DateTime @default(now())  @map("created_at")
-  expiresAt DateTime @default(now())  @map("expires_at")
-  ip String   @db.VarChar(45)
+  id        String   @id @unique @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @default(now()) @map("expires_at")
+  ip        String   @db.VarChar(45)
 }

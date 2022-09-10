@@ -7,21 +7,6 @@ const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
 const isPROD = import.meta.env.PROD;
 
 export async function post({ request }: any) {
-  // const test = await prisma.site.create({
-  //   data: {
-  //     name: "Reddit - Dive into anything",
-  //     url: "https://reddit.com",
-  //     description: "Reddit is a network of communities where people can dive into their interests, hobbies and passions. There\x1Bs a community for whatever you\x1Bre interested in on Reddit.",
-  //     submitterIP: "127.0.0.1",
-  //     categories: { connect: { category: "People & Society" } },
-  //     tags: {
-  //       connectOrCreate: ["REDDIT", "INTERNET", "MEME"].map(t => ({where: {tag: t}, create: {tag: t}}))
-  //     },
-  //   },
-  // });
-  // console.log("insert?", test);
-  // return new Response(JSON.stringify({}), { status: 200 });
-
   const data = await request.json();
 
   const { tags, url, category, privacy, sourceLink, captchaToken, userIP } =
@@ -30,7 +15,7 @@ export async function post({ request }: any) {
 
   if (!url || !category || !(tags.length > 3) || !captchaToken) {
     return new Response(
-      JSON.stringify({ ERROR: "required value not provided" }),
+      JSON.stringify({ ERROR: "required data not provided" }),
       { status: 401 }
     );
   }
@@ -72,17 +57,43 @@ export async function post({ request }: any) {
 
   let filter = new Filter({});
   let cleanedTags = [] as string[];
+  let invalidTags = [] as string[]; 
+  const checkTag = (tag: string) => {
+    let checkedTag = filter
+      .clean(tag)
+      ?.replaceAll("*", "")
+      ?.trim()
+      ?.toUpperCase();
+    if (
+      checkedTag.match(/[A-Z ]/)?.[0]?.length === checkTag.length &&
+      checkedTag.length <= 48 &&
+      checkedTag?.replaceAll(" ", "").length >= 2
+    ) {
+      return checkedTag;
+    }
+    return "";
+  };
   tags.forEach((tag: { name: string }, i: number) => {
     if (i === tags.length - 1) return;
-    let r = filter.clean(tag.name);
-    if (!r.includes("*") && r.length > 0) {
-      cleanedTags.push(r.toUpperCase());
+    let checked = checkTag(tag.name);
+    if (checked) {
+      cleanedTags.push(checked);
+    }else{
+      invalidTags.push(tag.name); 
     }
   });
-
+  console.log(cleanedTags); 
+  if (invalidTags.length > 0) {
+    return new Response(
+      JSON.stringify({
+        ERROR: `${invalidTags.length} invalid tag${invalidTags.length === 1 ? "" : "s"}: ${invalidTags.join(",")}`,
+      }),
+      { status: 400 }
+    );
+  }
   try {
     //console.log("URL:", baseUrl);
-    const { metadata, resURL } = await fetchMetadata(baseUrl);
+    const resURL = (await fetch(baseUrl)).url;
 
     try {
       const pData = await prisma.site.findFirst({
@@ -91,15 +102,20 @@ export async function post({ request }: any) {
           url: true,
           name: true,
           description: true,
+          status: true,
+          imgKey: true,
+          sourceLink: true,
           categories: { select: { category: true } },
           tags: { select: { tag: true } },
         },
       });
       if (pData) {
+        console.log("SITE EXISTS");
+
         return new Response(
           JSON.stringify({ ERROR: "site already exists", data: pData }),
           {
-            status: 401,
+            status: 400,
           }
         );
       }
@@ -110,23 +126,29 @@ export async function post({ request }: any) {
       });
     }
 
+    const { description, title, imgKey, imgLocation } = await fetchMetadata(
+      baseUrl
+    );
+
     try {
-      const description = metadata["description"];
-      const title = metadata["SiteTitle"] ?? resURL.split(".")?.[1] ?? resURL;
-      console.log("try create..", {
-        url: resURL,
-        submitterIP: userIP,
-        name: title,
-        description: description,
-        categories: { connect: { category: category } },
-        tags: cleanedTags,
-      });
+      // const description = metadata["description"];
+      // const title = metadata["SiteTitle"] ?? resURL.split(".")?.[1] ?? resURL;
+      // console.log("try create..", {
+      //   url: resURL,
+      //   submitterIP: userIP,
+      //   name: title,
+      //   description: description,
+      //   categories: { connect: { category: category } },
+      //   tags: cleanedTags,
+      // });
       const create = await prisma.site.create({
         data: {
           url: resURL,
           submitterIP: userIP,
           name: title,
           description: description,
+          imgKey,
+          sourceLink,
           categories: { connect: { category: category } },
           tags: {
             connectOrCreate: cleanedTags.map((tag: string) => ({
@@ -139,15 +161,20 @@ export async function post({ request }: any) {
           url: true,
           name: true,
           description: true,
+          status: true,
+          imgKey: true,
+          sourceLink: true,
           categories: { select: { category: true, description: true } },
           tags: { select: { tag: true } },
         },
       });
       console.log("Create:", create);
-      return new Response(JSON.stringify({ data: {...create} }), { status: 200 });
+      return new Response(JSON.stringify({ data: { ...create } }), {
+        status: 200,
+      });
     } catch (err) {
       console.log("CREATE ERR:", err);
-      return new Response(JSON.stringify({ ERROR: "Error adding site" }), {
+      return new Response(JSON.stringify({ ERROR: "Server Error" }), {
         status: 500,
       });
     }
