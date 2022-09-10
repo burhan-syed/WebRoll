@@ -7,7 +7,23 @@ const decode = (str: string) => {
   return text;
 };
 const fetchMetadata = async (url: string) => {
-  console.log("fetch..", url);
+  const options = import.meta.env.AWS_REGION
+    ? {
+        args: chrome.args,
+        executablePath: await chrome.executablePath,
+        headless: chrome.headless,
+      }
+    : {
+        args: [],
+        executablePath:
+          process.platform === "win32"
+            ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+            : process.platform === "linux"
+            ? "/usr/bin/google-chrome"
+            : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      };
+
+  console.log("fetch..", url, "options:", options);
   let metadata = {} as any;
 
   const checkMetas = (html: string) => {
@@ -38,15 +54,15 @@ const fetchMetadata = async (url: string) => {
     try {
       const imgKey = await putImageObject({ image: screen, siteURL: url });
       //metadata["ETAG"] = data.ETag;
-      metadata["imgKey"] = imgKey; 
-      // metadata["imgLocation"] = data.Location; 
+      metadata["imgKey"] = imgKey;
+      // metadata["imgLocation"] = data.Location;
     } catch (err) {
       console.log("couldn't upload image", err);
     }
   };
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(options);
     const page = await browser.newPage();
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0"
