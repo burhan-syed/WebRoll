@@ -5,8 +5,8 @@ import crypto from 'crypto';
 
 const bucket = import.meta.env.AWS_BUCKET_NAME;
 const region = import.meta.env.AWS_BUCKET_REGION;
-const accessKeyId = import.meta.env.AWS_ACCESS_KEY as string;
-const secretAccessKey = import.meta.env.AWS_SECRET_KEY as string;
+const accessKeyId = import.meta.env.MY_AWS_ACCESS_KEY as string;
+const secretAccessKey = import.meta.env.MY_AWS_SECRET_KEY as string;
 const cloudfrontDomain = import.meta.env.CLOUDFRONT_DOMAIN; 
 //const cloudfrontPrivateKey = fs.readFileSync('private_key.pem'); 
 const cloudfrontPrivateKey = Buffer.from(import.meta.env.CLOUDFRONT_PRIVATE_KEY_64, 'base64');
