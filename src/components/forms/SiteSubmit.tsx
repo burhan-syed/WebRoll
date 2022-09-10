@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { HelpCircle, CornerDownLeft } from "react-feather";
 import { DevTool } from "@hookform/devtools";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import type { SiteResData } from "../../types";
+import SiteCard from "../SiteCard";
 
 interface SiteFormData {
   url: string;
@@ -23,10 +24,10 @@ const categories = [
     category: "Arts & Design",
     description: "Painting, Illustration, Photography, Sculpting",
   },
-  {
-    category: "Autos & Vehicles",
-    description: "Cars, Motorcycles, Boats, Bikes, Aircraft",
-  },
+  // {
+  //   category: "Autos & Vehicles",
+  //   description: "Cars, Motorcycles, Boats, Bikes, Aircraft",
+  // },
   {
     category: "Beauty & Fashion",
     description: "Cosmetics, Hygiene, Makeup, Fashion",
@@ -65,8 +66,8 @@ const categories = [
       "Online Courses and Certifications, Internships, Jobs, Career Resources",
   },
   {
-    category: "People & Society",
-    description: "Anthropology, Social networks, News, History",
+    category: "Music & Audio",
+    description: "Radios, Music Stations, Sounds, Music History",
   },
   {
     category: "Nature & Animals",
@@ -75,6 +76,10 @@ const categories = [
   {
     category: "Other",
     description: "Anything else",
+  },
+  {
+    category: "People & Society",
+    description: "Anthropology, Social networks, News, History",
   },
   {
     category: "Philosophy & Life",
@@ -133,7 +138,7 @@ export default function SiteSubmit({
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
   const captchaRef = useRef<HCaptcha>(null);
-  const [submissions, setSubmissions] = useState<SiteResData[]>();
+  const [prevSubmission, setPrevSubmission] = useState<SiteResData>();
   const [formError, setFormError] = useState("");
   const onFormSubmit = async (data: SiteFormData) => {
     console.log("f?", data);
@@ -149,10 +154,18 @@ export default function SiteSubmit({
         const resData = await res.json();
         console.log("return?", resData);
         if (resData?.data?.["url"]) {
-          returnSubmissions(resData.data);
-          setSubmissions((s) =>
-            s && s?.length > 0 ? [resData.data, ...s] : [resData.data]
-          );
+          if (res.ok) {
+            setPrevSubmission(undefined);
+            clearErrors();
+            returnSubmissions(resData.data);
+            // setSubmissions((s) =>
+            //   s && s?.length > 0 ? [resData.data, ...s] : [resData.data]
+            // );
+          } else if (resData?.["ERROR"]) {
+            setError("url", { type: "siteExists" });
+            setFormError(`${resData?.["ERROR"]}:`);
+            setPrevSubmission(resData.data);
+          }
         } else if (resData?.["ERROR"]) {
           setFormError(resData["ERROR"]);
         }
@@ -167,48 +180,69 @@ export default function SiteSubmit({
       captchaRef.current?.execute();
     }
   };
-
+  const [tagError, setTagError] = useState("");
   const checkNewTag = () => {
     //console.log(cTags);
+    if (cTags.length > 21) {
+      setTagError("maximumNumber");
+      return 1;
+    }
     const last = cTags[cTags.length - 1];
-    console.log(last.name.match(/[A-Za-z0-9]+/), last.name);
+    const lastName = last.name.trim();
+    console.log(lastName.match(/[A-Za-z0-9 ]+/), lastName);
     if (last.name === "") {
-      clearErrors("tags");
+      setTagError("");
       return 1;
     }
-    if (last.name.match(/[A-Za-z0-9]+/)?.[0]?.length !== last.name.length) {
-      setError("tags", { type: "pattern" });
+    if (lastName.match(/[A-Za-z0-9 ]+/)?.[0]?.length !== lastName.length) {
+      setTagError("pattern");
       return 1;
     }
-    if (last.name.trim()?.length > 0 && last.name.trim()?.length < 3) {
-      setError("tags", { type: "minLength" });
+    if (lastName?.length > 0 && lastName?.replaceAll(" ", "")?.length < 2) {
+      setTagError("minLength");
       return 1;
     }
-    clearErrors("tags");
+    if (lastName?.length > 0 && lastName?.length > 48) {
+      setTagError("maxLength");
+      return 1;
+    }
+    setTagError("");
+    //clearErrors("tags");
     const dups = cTags.filter((t, i) => {
       if (i === cTags.length - 1) {
         return false;
       }
-      if (t.name.trim().toUpperCase() === last.name.trim().toUpperCase()) {
+      if (t.name.trim().toUpperCase() === lastName.toUpperCase()) {
         return true;
       }
       return false;
     });
     if (dups.length > 0) {
-      setError("tags", { type: "duplicate" });
+      setTagError("duplicate");
     }
     return dups.length > 0;
   };
+
+  useEffect(() => {
+    if (cTags.length < 4) {
+      setError("tags", { type: "minAmount" });
+    } else {
+      clearErrors("tags");
+    }
+  }, [cTags.length < 4]);
 
   return (
     <>
       <form
         action=""
         onSubmit={handleSubmit(onFormSubmit)}
-        className=" flex flex-col gap-4 min-w-full flex-1 bg-base-100 px-4 rounded-lg"
+        className=" flex flex-col gap-4 min-w-full flex-1 px-4 rounded-lg"
+        // style={{ scrollMarginTop: "80px" }}
       >
         <div>
-          <h2 className="mb-0 pb-0">Site URL</h2>
+          <h2 className="mb-0 pb-0 flex items-baseline justify-between flex-wrap">
+            Site URL<span className="text-sm">Enter the site's URL</span>
+          </h2>
           <label className="label text-xs ">
             <span className="label-text"></span>
             {errors.url?.type === "required" && (
@@ -243,10 +277,12 @@ export default function SiteSubmit({
 
         <h2 className="mb-0 pb-4 w-full flex justify-between items-baseline">
           Site Category
-          {errors.category?.type === "required" && (
+          {errors.category?.type === "required" ? (
             <span className="label-text-alt text-error font-normal ml-auto">
               category required
             </span>
+          ) : (
+            <span className="text-sm"></span>
           )}
         </h2>
 
@@ -267,7 +303,7 @@ export default function SiteSubmit({
                 <span className="text-base-content text-lg font-light ">
                   {category.category}
                 </span>
-                <span className="text-xs pt-1 font-extralight">
+                <span className="text-xs pt-1 font-light">
                   {category.description}
                 </span>
               </div>
@@ -277,27 +313,37 @@ export default function SiteSubmit({
 
         <>
           <div className="">
-            <h2 className="mb-0 pb-0">Site Tags</h2>
+            <h2 className="mb-0 pb-0 flex items-baseline justify-between flex-wrap">
+              Site Tags<span className="text-sm">Site Topics & Content</span>
+            </h2>
             {fields.map((field, index) => (
               <div key={field.name}>
                 {index === fields.length - 1 && (
                   <>
                     <label className="label">
                       <span className="label-text-alt"></span>
-                      {errors.tags?.type === "pattern" ? (
+                      {tagError === "pattern" ? (
                         <span className="label-text-alt text-error">
                           invalid characters
                         </span>
-                      ) : errors.tags?.type === "minLength" ? (
+                      ) : tagError === "minLength" ? (
                         <span className="label-text-alt text-error">
-                          3 characters minimum
+                          2 characters minimum
                         </span>
-                      ) : errors.tags?.type === "duplicate" ? (
+                      ) : tagError === "maxLength" ? (
+                        <span className="label-text-alt text-error">
+                          tag is too long
+                        </span>
+                      ) : tagError === "duplicate" ? (
                         <span className="label-text-alt text-error">
                           duplicate
                         </span>
+                      ) : tagError === "maximumNumber" ? (
+                        <span className="label-text-alt text-error">
+                          20 maximum tags
+                        </span>
                       ) : (
-                        cTags.length < 4 && (
+                        errors.tags?.type === "minAmount" && (
                           <span className="label-text-alt text-error">
                             enter at least 3 tags
                           </span>
@@ -308,7 +354,7 @@ export default function SiteSubmit({
                       <input
                         className={
                           "input w-full " +
-                          (errors.tags?.type || cTags.length < 4
+                          (errors.tags?.type || tagError
                             ? "input-error bg-base-200 "
                             : "input-primary ")
                         }
@@ -389,7 +435,9 @@ export default function SiteSubmit({
         </>
 
         <div>
-          <h2>Extra</h2>
+          <h2 className="justify-between items-baseline flex flex-wrap">
+            Extra<span className="text-sm">Optional Info</span>
+          </h2>
 
           <label className="flex justify-between items-center cursor-pointer select-none px-1 py-2">
             <span className="label-text flex items-center gap-2">
@@ -419,7 +467,6 @@ export default function SiteSubmit({
               (showPrivacyHelp ? "collapse-open" : "collapse-close")
             }
           >
-            {" "}
             <div className="collapse-content">
               <p
                 className={
@@ -513,7 +560,7 @@ export default function SiteSubmit({
         </div>
         {errors.captchaToken?.type === "required" && (
           <span className="label label-text-alt text-error text-xs text-right flex items-center justify-center">
-            captcha required
+            submit after completing captcha
           </span>
         )}
         <button
@@ -535,8 +582,11 @@ export default function SiteSubmit({
         >
           submit
         </button>
-        <span className="text-error">{formError}</span>
+        <span className="text-error text-sm flex items-center justify-center">
+          {formError}
+        </span>
       </form>
+      {prevSubmission && <SiteCard {...prevSubmission} />}
       <DevTool control={control} />
     </>
   );

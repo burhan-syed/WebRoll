@@ -16,14 +16,16 @@ import NavBar from "../components/NavBar.astro";
       <body
       class=""
     >
-    <div class=" h-screen w-screen overflow-x-hidden overflow-y-auto scrollbar-thin">
-      <nav class=" min-w-full fixed md:sticky bottom-0 md:bottom-auto md:top-0  z-50 bg-base-300 ">
+    <div class="h-screen w-screen overflow-x-hidden overflow-y-auto  scrollbar scrollbar-track-base-200 scrollbar-thumb-primary">
+      <nav class=" min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50  ">
         <NavBar />
       </nav>
-      <main class="prose prose-headings:font-extralight min-w-full bg-base-300  ">
-        <!-- <div class="h-0 md:h-20"></div> -->
-        <slot />
-        <footer class="footer bg-base-200 text-base-content">foot</footer>
+      <main class="prose prose-headings:font-extralight min-w-full bg-base-300 min-h-screen flex flex-col">
+        <div class="h-0 md:h-20"></div>
+        <div class="flex-grow">
+          <slot />
+        </div>
+        <footer class="footer bg-base-200 text-base-content ">foot</footer>
         <div class="md:h-0 h-20"></div>
   
       </main>

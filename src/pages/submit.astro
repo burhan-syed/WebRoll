@@ -26,9 +26,9 @@ const userIp = Astro.clientAddress;
         <p class="text-sm font-light py-0 my-0">
           Sites will be reviewed after submission. In general, we only accept
           high quality websites that are distinctly beautiful, useful, or
-          interesting. <br/> <span>We do not allow sites containing or promoting illegal
+          interesting. Sites must use the HTTPS protocol. <br/> <span>We do not allow sites containing or promoting illegal
             activity, hatespeech, pornography, graphic content, or highly
-            controversial content.</span>
+            controversial content.</span><br/>We only index hostnames. Any provided path will be omitted. 
         </p>
       </div>
       <SubmissionPage client:load userIp={userIp} />
