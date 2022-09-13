@@ -116,7 +116,7 @@ export async function post({ request }: any) {
         console.log("SITE EXISTS");
 
         return new Response(
-          JSON.stringify({ ERROR: "site already exists", data: pData }),
+          JSON.stringify({ ERROR: "site previously submitted", data: pData }),
           {
             status: 400,
           }

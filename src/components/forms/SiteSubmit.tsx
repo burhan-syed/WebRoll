@@ -112,6 +112,7 @@ export default function SiteSubmit({
   userIP: string;
   returnSubmissions: Function;
 }) {
+  const submitButton = useRef<HTMLButtonElement>(null); 
   const {
     register,
     control,
@@ -123,7 +124,7 @@ export default function SiteSubmit({
     watch,
     setValue,
   } = useForm<SiteFormData>({
-    defaultValues: { tags: [{ name: "" }], captchaToken: "captcha" },
+    defaultValues: { tags: [{ name: "" }], captchaToken: "" },
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -137,13 +138,24 @@ export default function SiteSubmit({
   const cTags = watch("tags");
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
+  useEffect(() => {
+    if(captchaValue){
+      clearErrors("captchaToken"); 
+      //formRef?.current?.submit();
+      console.log("submit?");
+      submitButton.current?.click(); 
+      //handleSubmit(onFormSubmit); 
+
+    }
+  }, [captchaValue])
+  
   const captchaRef = useRef<HCaptcha>(null);
   const [prevSubmission, setPrevSubmission] = useState<SiteResData>();
   const [formError, setFormError] = useState("");
   const onFormSubmit = async (data: SiteFormData) => {
     console.log("f?", data);
     setFormSubmitLoading(true);
-    if (captchaValue || import.meta.env.MODE !== "production") {
+    if (captchaValue) {
       clearErrors("captchaToken");
       console.log("captcha:", captchaValue);
       try {
@@ -176,6 +188,7 @@ export default function SiteSubmit({
 
       setFormSubmitLoading(false);
     } else {
+      setFormSubmitLoading(false);
       setError("captchaToken", { type: "required" });
       captchaRef.current?.execute();
     }
@@ -234,6 +247,7 @@ export default function SiteSubmit({
   return (
     <>
       <form
+        //ref={formRef}
         action=""
         onSubmit={handleSubmit(onFormSubmit)}
         className=" flex flex-col gap-4 min-w-full flex-1 px-4 rounded-lg"
@@ -544,16 +558,19 @@ export default function SiteSubmit({
         </div>
         <div className="">
           <HCaptcha
-            // size="invisible"
+            size="invisible"
             sitekey={
-              import.meta.env.MODE === "production"
+              import.meta.env.MODE === "production" 
                 ? "39185a62-e29f-441d-8be0-b2989f326879"
                 : "10000000-ffff-ffff-ffff-000000000001"
             }
             ref={captchaRef}
+            onError={(e) => {console.log("captcha error",e)}}
             onVerify={(t) => {
+              console.log(t); 
               setValue("captchaToken", t);
-              setFormSubmitLoading(false);
+              //setFormSubmitLoading(false);
+              //formRef.current?.submit(); 
             }}
             onExpire={() => setValue("captchaToken", "")}
           />
@@ -572,6 +589,7 @@ export default function SiteSubmit({
           //     console.log("CAPTHA!");
           //   }
           // }}
+          ref={submitButton}
           className={
             "btn btn-primary text-base-100 shadow-xl " +
             (formError ? "" : " mb-12 ") +
