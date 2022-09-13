@@ -196,7 +196,7 @@ export default function SiteSubmit({
   const [tagError, setTagError] = useState("");
   const checkNewTag = () => {
     //console.log(cTags);
-    if (cTags.length > 21) {
+    if (cTags.length > 20) {
       setTagError("maximumNumber");
       return 1;
     }
@@ -268,12 +268,6 @@ export default function SiteSubmit({
             {errors.url?.type === "siteExists" && (
               <span className="label-text-alt text-error">site exists</span>
             )}
-            {/* {errors.url?.type && (
-              <button type="button" onClick={() => clearErrors("url")}>
-                x
-              </button>
-            )} */}
-            {/* <span className="label-text-alt text-error">err</span>{" "} */}
           </label>
           <label className="input-group">
             <span>{`https://`}</span>
@@ -357,10 +351,14 @@ export default function SiteSubmit({
                           20 maximum tags
                         </span>
                       ) : (
-                        errors.tags?.type === "minAmount" && (
+                        errors.tags?.type === "minAmount" ? (
                           <span className="label-text-alt text-error">
                             enter at least 3 tags
                           </span>
+                        ) : cTags.length < 20 && (
+                          <span className="label-text-alt text-primary">
+                          you can enter more
+                        </span>
                         )
                       )}
                     </label>
@@ -453,7 +451,7 @@ export default function SiteSubmit({
             Extra<span className="text-sm">Optional Info</span>
           </h2>
 
-          <label className="flex justify-between items-center cursor-pointer select-none px-1 py-2">
+          {/* <label className="flex justify-between items-center cursor-pointer select-none px-1 py-2">
             <span className="label-text flex items-center gap-2">
               Privacy Respecting
               <button
@@ -499,7 +497,7 @@ export default function SiteSubmit({
                 {`Most sites will not meet these criteria. Sites submitted with this toggled will be scrutinized.`}
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
         <div>
           <label className="label" htmlFor="sourceLink w-full">
