@@ -2,8 +2,10 @@ import prisma from "../../server/utils/prisma";
 import fetchMetadata from "../../server/metaparser/parse";
 import { makeUrlSecure } from "../../server/metaparser/utils";
 import Filter from "bad-words";
+import { generateId } from "../../server/utils/generateSiteId";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
+const parseDomain = import.meta.env.PARSER_DOMAIN; 
 const isPROD = import.meta.env.PROD;
 
 export async function post({ request }: any) {
@@ -99,6 +101,7 @@ export async function post({ request }: any) {
       const pData = await prisma.site.findFirst({
         where: { url: resURL },
         select: {
+          id:true,
           url: true,
           name: true,
           description: true,
@@ -125,11 +128,24 @@ export async function post({ request }: any) {
         status: 500,
       });
     }
+    const res = await fetch(true ? `${parseDomain}api/parse` : 'http://localhost:3001/api/parse-data', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({url: baseUrl, key: "akey"}),
+    })
+    console.log("res?", res);
 
-    const { description, title, imgKey, imgLocation } = await fetchMetadata(
-      baseUrl
-    );
+    if(!res.ok){
+      return new Response(JSON.stringify({ERROR: "couldn't parse site"}), {status: 500})
+    }
 
+    const data = await res.json(); 
+    console.log("data:", data); 
+    const { description, title, imgKey } = data;
+    // const { description, title, imgKey } = await fetchMetadata(
+    //   baseUrl
+    // );
+    const siteId = generateId(); 
     try {
       // const description = metadata["description"];
       // const title = metadata["SiteTitle"] ?? resURL.split(".")?.[1] ?? resURL;
@@ -143,6 +159,7 @@ export async function post({ request }: any) {
       // });
       const create = await prisma.site.create({
         data: {
+          id: siteId,
           url: resURL,
           submitterIP: userIP,
           name: title,
@@ -158,6 +175,7 @@ export async function post({ request }: any) {
           },
         },
         select: {
+          id: true,
           url: true,
           name: true,
           description: true,

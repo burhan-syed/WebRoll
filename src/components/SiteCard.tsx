@@ -23,7 +23,13 @@ const SiteCard = ({
       <div className="card-body p-4  ">
         <div className=" ">
           <h1 className="card-title text-2xl font-semibold flex items-start justify-between ">
-            <span className="">{name}</span>
+            <span className="flex items-center justify-start gap-1">
+              <img
+                className={"my-0 aspect-square"}
+                src={`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=32`}
+              ></img>
+              {name}
+            </span>
 
             <span
               className={
@@ -50,10 +56,19 @@ const SiteCard = ({
                 : "?"}
             </span>
           </h1>
-          <span className=""><a href={url} target={"_blank"} className="link link-primary flex items-centergap-2">{url}<ExternalLink size={15}/></a></span>
+          <span className="">
+            <a
+              href={url}
+              target={"_blank"}
+              className="link link-primary flex items-centergap-2"
+            >
+              {url}
+              <ExternalLink size={15} />
+            </a>
+          </span>
           {imgKey && (
-            <div className="bg-neutral rounded-sm overflow-hidden p-2">
-              <SecureImg imgKey={imgKey} styles={"rounded-md my-0"} />
+            <div className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh]">
+              <SecureImg imgKey={imgKey} styles={"rounded-md my-0 aspect-video "} />
             </div>
           )}
           <span className="text-md font-semibold pb-2">

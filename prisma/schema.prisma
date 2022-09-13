@@ -20,14 +20,14 @@ enum SiteStatus {
 }
 
 model Site {
-  id          Int          @id @unique @default(autoincrement()) @map("id")
+  id          String       @id @unique @map("id") @db.VarChar(21)
   name        String
   url         String       @unique
   sourceLink  String?      @map("source_link")
   views       Int          @default(0)
   dislikes    Int          @default(0)
   reports     Int          @default(0)
-  description String?
+  description String?      @db.Text
   privacy     Boolean      @default(false)
   adult       Boolean      @default(false)
   status      SiteStatus   @default(REVIEW)
@@ -42,8 +42,9 @@ model Site {
 
 model Likes {
   id        Int      @id @unique @default(autoincrement())
-  siteId    Int      @map("site_id")
+  siteId    String   @map("site_id") @db.VarChar(21)
   ip        String   @db.VarChar(45)
+  sessionId String   @db.VarChar(25)
   date      DateTime @default(now())
   direction Boolean  @default(true)
 
@@ -54,7 +55,7 @@ model Likes {
 
 model Reports {
   id     Int      @id @unique @default(autoincrement())
-  siteId Int      @map("site_id")
+  siteId String   @map("site_id") @db.VarChar(21)
   ip     String   @db.VarChar(45)
   date   DateTime @default(now())
 
@@ -65,7 +66,7 @@ model Reports {
 
 model Tags {
   id  Int    @id @unique @default(autoincrement()) @map("id")
-  tag String @unique @db.VarChar(24)
+  tag String @unique @db.VarChar(48)
 
   createdAt DateTime @default(now()) @map("created_at")
 
