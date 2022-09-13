@@ -95,7 +95,11 @@ export async function post({ request }: any) {
   }
   try {
     //console.log("URL:", baseUrl);
-    const resURL = (await fetch(baseUrl)).url;
+    const response = (await fetch(baseUrl));
+    const resURL = response.url; 
+    const xFrameOptions = response.headers?.get('X-Frame-Options');
+    console.log("headers?", response.headers, xFrameOptions );
+    const allowEmbed = !(xFrameOptions === "DENY" || xFrameOptions === "SAMEORIGIN" || xFrameOptions === "ALLOW-FROM"); 
 
     try {
       const pData = await prisma.site.findFirst({
@@ -104,6 +108,7 @@ export async function post({ request }: any) {
           id:true,
           url: true,
           name: true,
+          allowEmbed: true,
           description: true,
           status: true,
           imgKey: true,
@@ -162,7 +167,8 @@ export async function post({ request }: any) {
           id: siteId,
           url: resURL,
           submitterIP: userIP,
-          name: title,
+          allowEmbed,
+          name: title ?? resURL?.replaceAll("https://", ""),
           description: description,
           imgKey,
           sourceLink,
@@ -181,6 +187,7 @@ export async function post({ request }: any) {
           description: true,
           status: true,
           imgKey: true,
+          allowEmbed: true,
           sourceLink: true,
           categories: { select: { category: true, description: true } },
           tags: { select: { tag: true } },

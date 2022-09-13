@@ -1,5 +1,5 @@
 ---
-//const { content } = Astro.props;
+const { pageTitle="WebRoll" } = Astro.props;
 import NavBar from "../components/NavBar.astro";
 ---
 
@@ -8,7 +8,7 @@ import NavBar from "../components/NavBar.astro";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{"webroll"}</title>
+    <title>{pageTitle}</title>
   </head>
   <div class="drawer">
     <input id="my-drawer" type="checkbox" class="drawer-toggle" />
@@ -16,7 +16,7 @@ import NavBar from "../components/NavBar.astro";
       <body
       class=""
     >
-    <div class="h-screen w-screen overflow-x-hidden overflow-y-auto  scrollbar scrollbar-track-base-200 scrollbar-thumb-primary">
+    <div class="h-screen w-screen overflow-x-hidden overflow-y-auto  scrollbar-track-base-200 scrollbar-thumb-primary scrollbar-thin">
       <nav class=" min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50  ">
         <NavBar />
       </nav>

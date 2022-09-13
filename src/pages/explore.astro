@@ -13,11 +13,14 @@ const sites = await prisma.site.findMany({
   take: 3,
   skip: Math.floor(Math.random() * allSitesCount),
   select: {
+    id: true,
+    imgKey: true,
     url: true,
     name: true,
     description: true,
     sourceLink: true,
     status: true,
+    allowEmbed: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: true } },
   },
@@ -40,21 +43,24 @@ console.log("random site:", sites);
     <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content">
       <!-- Page content here -->
-      <main class="min-h-screen w-screen flex flex-col">
-        <!-- <label for="my-drawer-4" class="drawer-button btn btn-primary">Open drawer</label> -->
-        {
-          sites.length > 0 ? (
-            <ExplorePage
-              initialSites={sites}
-              ip={ip}
-              session={session.id}
-              client:only="react"
-            />
-          ) : (
-            <span>no sites found</span>
-          )
-        }
-      </main>
+      <!-- <body class="h-screen w-screen overflow-hidden"> -->
+        <main class="min-h-screen min-w-full flex flex-col">
+          <!-- <label for="my-drawer-4" class="drawer-button btn btn-primary">Open drawer</label> -->
+          {
+            sites.length > 0 ? (
+              <ExplorePage
+                initialSites={sites}
+                ip={ip}
+                session={session.id}
+                client:load
+              />
+            ) : (
+              <span>no sites found</span>
+            )
+          }
+        </main>
+      <!-- </body> -->
+      
     </div>
     <div class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>

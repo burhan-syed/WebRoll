@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ExploreNavBar from "./ui/ExploreNavBar";
 import type { SiteResData } from "../types";
+import SecureImg from "./ui/SecureImg";
 const site = "https://www.troddit.com";
 
 export default function ExplorePage({
@@ -49,16 +50,30 @@ export default function ExplorePage({
 
   return (
     <>
-      <div className="z-10 order-2 md:order-1">
+      <nav className="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
         <ExploreNavBar site={sites[index]} advance={advance} />
-      </div>
+      </nav>
       {/* <div className="relative flex flex-grow  overflow-y-auto order-1 md:order-2"> */}
-      <div className="relative order-1 md:order-2 flex-grow flex flex-col">
-        <iframe
-          className="flex-1 w-full bg-transparent"
-          src={sites[index].url}
-        ></iframe>
-      </div>
+      <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
+        <div className="h-0 md:h-20"></div>
+        <div className="flex-grow flex flex-col">
+          {sites[index].allowEmbed ? (
+            <iframe
+              className="flex-1 h-full w-full bg-transparent"
+              src={sites[index].url}
+            ></iframe>
+          ) : (
+            <div className="flex items-start md:items-center">
+              <SecureImg
+                imgKey={sites[index].imgKey}
+                styles={"min-w-full aspect-video"}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="md:h-0 h-20"></div>
+      </main>
       {/* </div> */}
       {/* <div className="fixed top-0 left-0 z-0 bg-base-300 h-screen w-screen">a</div> */}
     </>

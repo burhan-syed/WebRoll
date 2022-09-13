@@ -28,6 +28,7 @@ model Site {
   dislikes    Int          @default(0)
   reports     Int          @default(0)
   description String?      @db.Text
+  allowEmbed  Boolean      @default(true) @map("allow_embed")
   privacy     Boolean      @default(false)
   adult       Boolean      @default(false)
   status      SiteStatus   @default(REVIEW)

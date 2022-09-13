@@ -573,11 +573,11 @@ export default function SiteSubmit({
             onExpire={() => setValue("captchaToken", "")}
           />
         </div>
-        {errors.captchaToken?.type === "required" && (
+        {/* {errors.captchaToken?.type === "required" && (
           <span className="label label-text-alt text-error text-xs text-right flex items-center justify-center">
             submit after completing captcha
           </span>
-        )}
+        )} */}
         <button
           // onClick={(e) => {
           //   if (!captchaValue) {

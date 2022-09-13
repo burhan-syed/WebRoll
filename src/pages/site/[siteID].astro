@@ -14,6 +14,7 @@ const site = await prisma.site.findFirst({
     status: true,
     imgKey: true,
     sourceLink: true,
+    allowEmbed: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: true } },
   },

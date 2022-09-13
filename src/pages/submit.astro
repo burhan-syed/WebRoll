@@ -8,30 +8,23 @@ const userIp = Astro.clientAddress;
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro + TailwindCSS</title>
-  </head>
-
-  <MainLayout>
-    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
-      <div
-        class="bg-base-100 border border-base-300 rounded-lg w-full p-4 shadow-lg"
-      >
-        <h1 class="text-3xl">Site Submission</h1>
-        <p class="text-sm font-light py-0 my-0">
-          Sites will be reviewed after submission. In general, we only accept
-          high quality websites that are distinctly beautiful, useful, or
-          interesting. Sites must use the HTTPS protocol. <br/> <span>We do not allow sites containing or promoting illegal
-            activity, hatespeech, pornography, graphic content, or highly
-            controversial content.</span><br/>We only index hostnames. Any provided path will be omitted. 
-        </p>
-      </div>
-      <SubmissionPage client:load userIp={userIp} />
+<MainLayout siteTile={"Submit | WebRoll"}>
+  <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
+    <div
+      class="bg-base-100 border border-base-300 rounded-lg w-full p-4 shadow-lg"
+    >
+      <h1 class="text-3xl">Site Submission</h1>
+      <p class="text-sm font-light py-0 my-0">
+        Sites will be reviewed after submission. In general, we only accept high
+        quality websites that are distinctly beautiful, useful, or interesting.
+        Sites must use the HTTPS protocol. <br />
+        <span
+          >We do not allow sites containing or promoting illegal activity,
+          hatespeech, pornography, graphic content, or highly controversial
+          content.</span
+        ><br />We only index hostnames. Any provided path will be omitted.
+      </p>
     </div>
-  </MainLayout>
-</html>
+    <SubmissionPage client:load userIp={userIp} />
+  </div>
+</MainLayout>

@@ -27,10 +27,13 @@ export default function ExploreNavBar({ site, advance }: NavBarProps) {
             WebRoll
           </a>
         </h1>
-        <div className="flex flex-col md:absolute md:left-1/2 left-auto md:-translate-x-1/2  mb-2 md:mb-0 md:mt-2">
+        <div className="flex flex-col absolute left-1/2  -translate-x-1/2  mb-2 md:mb-0 md:mt-2">
           <div className="flex items-center gap-2 order-2 md:order-1 ">
+            <div className="order-2 md:order-1">
             <DiceButton action={advance} />
-            <button className="btn btn-ghost ">
+
+            </div>
+            <button className="btn btn-ghost order-3 md:order-2 ">
               <ThumbsUp size={20} />
             </button>
             <button
@@ -39,7 +42,7 @@ export default function ExploreNavBar({ site, advance }: NavBarProps) {
                 e.stopPropagation();
                 setShowInfo((s) => !s);
               }}
-              className="btn btn-ghost "
+              className="btn btn-ghost order-1 md:order-3"
             >
               <Info size={20} />
             </button>

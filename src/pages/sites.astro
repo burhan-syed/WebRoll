@@ -13,6 +13,7 @@ const sites = await prisma.site.findMany({
     status: true,
     imgKey: true,
     sourceLink: true,
+    allowEmbed: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: true } },
   },
@@ -20,5 +21,15 @@ const sites = await prisma.site.findMany({
 ---
 
 <MainLayout>
-  {sites ? <>{sites.map(site => <SiteCard {...site} client:load/>)}</> : <h1>404</h1>}
+  {
+    sites ? (
+      <>
+        {sites.map((site) => (
+          <SiteCard {...site} client:load />
+        ))}
+      </>
+    ) : (
+      <h1>404</h1>
+    )
+  }
 </MainLayout>

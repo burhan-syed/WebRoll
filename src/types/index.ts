@@ -24,6 +24,7 @@ export interface SiteResData {
   status: SiteStatus;
   imgKey: string | null;
   sourceLink: string | null;
+  allowEmbed: boolean;
   categories: {
     description: string | null;
     category: string;

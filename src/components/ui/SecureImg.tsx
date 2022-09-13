@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const SecureImg = ({imgKey,styles=""}:{imgKey:string,styles?:string}) => {
+const SecureImg = ({imgKey,styles=""}:{imgKey:string|null,styles?:string}) => {
   const [imgSrc, setImgSrc] = useState("");
   useEffect(() => {
     const getImage = async() => {
