@@ -544,7 +544,7 @@ export default function SiteSubmit({
         </div>
         <div className="">
           <HCaptcha
-            size="invisible"
+            // size="invisible"
             sitekey={
               import.meta.env.MODE === "production"
                 ? "39185a62-e29f-441d-8be0-b2989f326879"

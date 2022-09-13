@@ -13,7 +13,7 @@ export async function post({ request }: any) {
 
   const { tags, url, category, privacy, sourceLink, captchaToken, userIP } =
     data;
-  console.log(userIP, tags, url, category, privacy, sourceLink);
+  console.log(userIP, tags, url, category, privacy, sourceLink, captchaToken);
 
   if (!url || !category || !(tags.length > 3) || !captchaToken) {
     return new Response(
@@ -128,7 +128,7 @@ export async function post({ request }: any) {
         status: 500,
       });
     }
-    const res = await fetch(true ? `${parseDomain}api/parse` : 'http://localhost:3001/api/parse-data', {
+    const res = await fetch(true ? `${parseDomain}/api/parse` : 'http://localhost:3001/api/parse-data', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({url: baseUrl, key: "akey"}),
