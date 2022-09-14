@@ -1,6 +1,6 @@
 import prisma from "../../server/utils/prisma";
 import fetchMetadata from "../../server/metaparser/parse";
-import { makeUrlSecure } from "../../server/metaparser/utils";
+import { extractUrl, parseTags } from "../../server/metaparser/utils";
 import Filter from "bad-words";
 import { generateId } from "../../server/utils/generateSiteId";
 
@@ -13,12 +13,12 @@ export async function post({ request }: any) {
 
   const { tags, url, category, privacy, sourceLink, captchaToken, userIP } =
     data;
-  console.log(userIP, tags, url, category, privacy, sourceLink, captchaToken);
+  // console.log(userIP, tags, url, category, privacy, sourceLink, captchaToken);
 
   if (!url || !category || !(tags.length > 3) || !captchaToken) {
     return new Response(
       JSON.stringify({ ERROR: "required data not provided" }),
-      { status: 401 }
+      { status: 400 }
     );
   }
 
@@ -43,48 +43,11 @@ export async function post({ request }: any) {
     });
   }
 
-  const extractUrl = (url: string) => {
-    let urlCopy = url;
-    if (urlCopy.includes("http")) {
-      urlCopy = makeUrlSecure(url);
-    } else {
-      urlCopy = `https://${urlCopy}`;
-    }
-    let pathArray = urlCopy.split("/");
-    let protocol = pathArray[0];
-    let host = pathArray[2];
-    return `${protocol}//${host}`;
-  };
   const baseUrl = extractUrl(url);
 
-  let filter = new Filter({});
-  let cleanedTags = [] as string[];
-  let invalidTags = [] as string[]; 
-  const checkTag = (tag: string) => {
-    let checkedTag = filter
-      .clean(tag)
-      ?.replaceAll("*", "")
-      ?.trim()
-      ?.toUpperCase();
-    if (
-      checkedTag.match(/[A-Z ]/)?.[0]?.length === checkTag.length &&
-      checkedTag.length <= 48 &&
-      checkedTag?.replaceAll(" ", "").length >= 2
-    ) {
-      return checkedTag;
-    }
-    return "";
-  };
-  tags.forEach((tag: { name: string }, i: number) => {
-    if (i === tags.length - 1) return;
-    let checked = checkTag(tag.name);
-    if (checked) {
-      cleanedTags.push(checked);
-    }else{
-      invalidTags.push(tag.name); 
-    }
-  });
-  console.log(cleanedTags); 
+  const {cleanedTags, invalidTags} = parseTags(tags);
+
+  //console.log(cleanedTags); 
   if (invalidTags.length > 0) {
     return new Response(
       JSON.stringify({
@@ -98,7 +61,7 @@ export async function post({ request }: any) {
     const response = (await fetch(baseUrl));
     const resURL = response.url; 
     const xFrameOptions = response.headers?.get('X-Frame-Options');
-    console.log("headers?", response.headers, xFrameOptions );
+    //console.log("headers?", response.headers, xFrameOptions );
     const allowEmbed = !(xFrameOptions === "DENY" || xFrameOptions === "SAMEORIGIN" || xFrameOptions === "ALLOW-FROM"); 
 
     try {
@@ -152,16 +115,6 @@ export async function post({ request }: any) {
     // );
     const siteId = generateId(); 
     try {
-      // const description = metadata["description"];
-      // const title = metadata["SiteTitle"] ?? resURL.split(".")?.[1] ?? resURL;
-      // console.log("try create..", {
-      //   url: resURL,
-      //   submitterIP: userIP,
-      //   name: title,
-      //   description: description,
-      //   categories: { connect: { category: category } },
-      //   tags: cleanedTags,
-      // });
       const create = await prisma.site.create({
         data: {
           id: siteId,
@@ -206,7 +159,7 @@ export async function post({ request }: any) {
   } catch (err) {
     console.log("FETCH ERR:", err);
     return new Response(JSON.stringify({ ERROR: "Unable to fetch url" }), {
-      status: 401,
+      status: 400,
     });
   }
 

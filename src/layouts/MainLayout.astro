@@ -1,5 +1,9 @@
 ---
-const { pageTitle="WebRoll" } = Astro.props;
+const {
+  pageTitle = "WebRoll",
+  noScrollBar = false,
+  noFooter = false,
+} = Astro.props;
 import NavBar from "../components/NavBar.astro";
 ---
 
@@ -13,35 +17,41 @@ import NavBar from "../components/NavBar.astro";
   <div class="drawer">
     <input id="my-drawer" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content">
-      <body
-      class=""
-    >
-    <div class="h-screen w-screen overflow-x-hidden overflow-y-auto  scrollbar-track-base-200 scrollbar-thumb-primary scrollbar-thin">
-      <nav class=" min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50  ">
-        <NavBar />
-      </nav>
-      <main class="prose prose-headings:font-extralight min-w-full bg-base-300 min-h-screen flex flex-col">
-        <div class="h-0 md:h-20"></div>
-        <div class="flex-grow">
-          <slot />
-        </div>
-        <footer class="footer bg-base-200 text-base-content ">foot</footer>
-        <div class="md:h-0 h-20"></div>
-  
-      </main>
+      <div
+        class={`h-screen w-screen overflow-x-hidden scrollbar-track-base-200 scrollbar-thumb-primary  overflow-y-auto ${
+          noScrollBar ? " scrollbar-none " : " scrollbar-thin "
+        }`}
+      >
+        <nav class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
+          <NavBar />
+        </nav>
+        <main
+          class="prose prose-headings:font-extralight min-w-full bg-base-300 min-h-screen flex flex-col"
+        >
+          <div class="h-0 md:h-20"></div>
+          <div class="flex-grow flex flex-col">
+            <slot />
+          </div>
+          {
+            !noFooter && (
+              <footer class="footer bg-base-200 text-base-content ">
+                foot
+              </footer>
+            )
+          }
+          <div class="md:h-0 h-20"></div>
+        </main>
+      </div>
     </div>
-    </body>
-    
-    </div> 
     <div class="drawer-side">
       <label for="my-drawer" class="drawer-overlay"></label>
-      <ul class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+      <ul
+        class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
+      >
         <li><a href="/explore">Explore Sites</a></li>
         <li><a href="/submit">Submit a Site</a></li>
         <li><a>About</a></li>
-        
       </ul>
     </div>
   </div>
 </html>
-

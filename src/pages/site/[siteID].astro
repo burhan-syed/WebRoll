@@ -1,6 +1,7 @@
 ---
-import SiteCard from "../../components/SiteCard";
+import SitePage from "../../components/ui/SitePage";
 import MainLayout from "../../layouts/MainLayout.astro";
+import { getSignedImageUrl } from "../../server/aws/bucket";
 import prisma from "../../server/utils/prisma";
 const { siteID } = Astro.params;
 
@@ -13,14 +14,35 @@ const site = await prisma.site.findFirst({
     description: true,
     status: true,
     imgKey: true,
+    views: true,
     sourceLink: true,
     allowEmbed: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: true } },
+    _count: {
+      select: {
+        likes: true
+      }
+    }
   },
 });
+const likesCount = site?._count?.likes ?? 0; 
+const siteImgURL = site
+  ? (await getSignedImageUrl(site.imgKey as string)) ?? ""
+  : "";
 ---
 
-<MainLayout>
-  {site ? <SiteCard {...site} client:load/> : <h1>404</h1>}
+<MainLayout
+  noScrollBar={true}
+  noFooter={true}
+  pageTitle={`${site?.name ? `${site.name} | ` : ""}WebRoll`}
+>
+  {
+    site ? (
+      <SitePage siteImgURL={siteImgURL} siteData={{...site, likes: likesCount}} />
+    ) : (
+      <div class="w-full h-screen flex items-center justify-center pb-20 ">site not found</div>
+    )
+  }
+
 </MainLayout>

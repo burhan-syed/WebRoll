@@ -9,7 +9,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "filteredRelationCount"]
 }
 
 enum SiteStatus {
