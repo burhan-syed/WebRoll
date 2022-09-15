@@ -12,18 +12,24 @@ const SitePage = ({
 }) => {
   return (
     <div className="flex flex-col flex-grow ">
+        <header
+        className="fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top z-10 bg-neutral md:invisible"
+        style={siteImgURL ? { backgroundImage: `url(${siteImgURL})` } : {}}
+      >
+        {!siteImgURL && <span className="text-xs">no image</span>}
+      </header>
       <header
-        className="fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top z-0 bg-neutral md:invisible"
+        className="fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top bg-neutral md:top-20 "
         style={siteImgURL ? { backgroundImage: `url(${siteImgURL})` } : {}}
       >
         {!siteImgURL && <span className="text-xs">no image</span>}
       </header>
       <div className="aspect-video w-full md:invisible md:w-0"></div>
-      <div className="rounded-t-2xl md:rounded-t-none bg-base-200 border-t border-base-100 -mt-10 md:mt-0 z-10 relative flex-grow  flex flex-col overflow-auto">
-        {/* <div className="flex items-center justify-center mt-0.5 absolute h-4 top-0 z-20">
-        <div className="bg-neutral rounded opacity-40 w-1/3 h-2 z-20"></div>
+      <div className="rounded-t-2xl md:rounded-t-none bg-base-200/80 md:bg-base-200 border-t border-base-100 -mt-10 md:mt-0 z-10 relative flex-grow  flex flex-col overflow-auto backdrop-blur-md">
+        <div className="flex items-center justify-center  absolute h-4 top-0 z-20 w-full md:hidden">
+        <div className="bg-black rounded opacity-40 w-10 h-1 z-20"></div>
 
-        </div> */}
+        </div>
         <div
           className=" md:max-w-none m-auto flex-grow flex flex-col min-w-full "
           style={{}}
@@ -42,7 +48,7 @@ const SitePage = ({
               ></img>
             </a>
           </h1>
-          <div className="flex flex-col flex-grow lg:flex-row-reverse lg:justify-end ">
+          <div className="flex flex-col flex-grow lg:flex-row-reverse lg:justify-end bg-base-200 ">
             <p className="my-0 pt-0 px-4 lg:hidden lg:p-0 lg:m-0  ">
               {siteData.description}
             </p>
@@ -55,14 +61,14 @@ const SitePage = ({
               {siteData.allowEmbed ? (
                 <iframe className="w-full h-full " src={siteData.url}></iframe>
               ) : (
-                <div className="flex items-center justify-center h-[50vh] lg:h-full ">
+                <div className="flex items-center justify-center h-[50vh] lg:h-full overflow-hidden">
                   <img
-                    className="w-full z-10 shadow"
+                    className="aspect-video max-h-[50vh] lg:max-h-[80vh] z-10 shadow"
                     src={siteImgURL}
                     alt="site screen"
                   />
                   <img
-                    className="w-full h-full absolute blur-lg "
+                    className="w-full h-full absolute blur-lg brightness-[0.8] "
                     src={siteImgURL} 
                     alt="site screen"
                   />
@@ -72,7 +78,7 @@ const SitePage = ({
                 </div>
               )}
             </div>
-            <div className="flex flex-col lg:w-1/3 xl:w-1/4 lg:px-4 ">
+            <div className="flex flex-col lg:w-1/3 xl:w-1/4 lg:px-4 flex-grow ">
               <span className="w-full lg:flex items-center justify-start hidden order-1  ">
                 <a
                   href={siteData.url}
@@ -123,7 +129,7 @@ const SitePage = ({
                 <div className="bg-base-100 text-sm border p-4 pt-2 shadow w-full ">
                   <span className="">tags</span>
                   <div className="my-1"></div>
-                  <div className="flex justify-center items-center gap-1">
+                  <div className="flex justify-center items-center flex-wrap gap-1">
                     {siteData.tags.length > 0 ? (
                       <>
                         {siteData.tags.map((tag) => (
@@ -164,8 +170,8 @@ const SitePage = ({
                   Report
                 </button>
               </div>
-
-              <div className="max-w-lg px-4 py-4 w-full mx-auto order-6">
+              <div className="flex-grow order-6 lg:hidden"></div>
+              <div className="max-w-lg px-4 py-4 w-full mx-auto order-7">
                 <a
                   href="/submit"
                   className="btn btn-primary text-base-100 shadow-xl w-full capitalize max-w-lg"
@@ -174,7 +180,7 @@ const SitePage = ({
                 </a>
               </div>
 
-              <p className="text-xs font-light text-center px-4 max-w-lg mx-auto order-7">{`Please use the Report button if you think this site is categorized incorrectly, has invalid tags, is broken, or breaks WebRoll submission rules. `}</p>
+              <p className="text-xs font-light text-center px-4 max-w-lg mx-auto order-8">{`Please use the Report button if you think this site is categorized incorrectly, has invalid tags, is broken, or breaks WebRoll submission rules. `}</p>
             </div>
           </div>
         </div>

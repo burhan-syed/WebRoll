@@ -99,10 +99,9 @@ export default function ExplorePage({
           sessionID={session}
         />
       </nav>
-      {/* <div className="relative flex flex-grow  overflow-y-auto order-1 md:order-2"> */}
-      <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
+      {/* <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
         {index},{sites[index].allowEmbed ? "allowed" : "nope"}
-      </div>
+      </div> */}
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
         <div className="flex-grow flex flex-col">
@@ -121,7 +120,20 @@ export default function ExplorePage({
             ></iframe>
           ) : (
             siteImgURL.url === sites[index].url && (
-              <div className="flex items-start md:items-center justify-center flex-grow relative shadow-inner">
+              <div className="flex items-start overflow-hidden md:items-center justify-center flex-grow relative shadow-inner">
+                <div className="fixed z-20 top-1/2 left-1/2 card -translate-y-1/2 -translate-x-1/2 bg-base-100/80 backdrop-blur-md shadow-xl   max-w-sm md:max-w-2xl border border-base-200 w-full">
+                  <div className="card-body ">
+                    <p>We can't display this site directly but you can visit it below</p>
+                  
+                    <h2 className="card-title">{sites[index].name}</h2>
+                    <a href={sites[index].url}>{sites[index].url}</a>
+                    <p className="max-h-80 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary text-sm text-neutral ">{sites[index].description}</p>
+                    <div className="card-actions justify-end mt-2">
+                      <a href={`/site/${sites[index].id}`} className="btn">View Page</a>
+                      <a href={sites[index].url} className="btn btn-primary">Visit Site</a>
+                    </div>
+                  </div>
+                </div>
                 <img
                   className="w-full z-10 shadow"
                   src={siteImgURL.img}
@@ -132,13 +144,13 @@ export default function ExplorePage({
                   }}
                 />
                 <img
-                  className="w-full h-full absolute blur-lg "
+                  className="w-full h-full absolute blur-lg brightness-[0.8]"
                   src={siteImgURL.img}
                   alt="site screen"
                 />
                 <span
                   className="absolute bottom-2 text-xs text-neutral text-opacity-50"
-                  style={{ textShadow: "0px 1px #FFFF" }}
+                  style={{ textShadow: "0px 1px #FFFFFF90" }}
                 >
                   embed unavailable, showing screenshot
                 </span>

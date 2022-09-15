@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ThumbsUp, Flag, Info, Menu, Share } from "react-feather";
+import { ThumbsUp, Flag, Info, Menu, Share, ExternalLink, Search } from "react-feather";
 import type { minSiteResDataWithLikes } from "../../types";
 
 import DiceButton from "./buttons/DiceButton";
@@ -78,9 +78,9 @@ export default function ExploreNavBar({
               <Info size={20} />
             </button>
           </div>
-          <span className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1">
+          <a target={"_blank"} href={site.url} className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1">
             {site.url}
-          </span>
+          </a>
         </div>
         {/* <div className="dropdown"> */}
         <label
@@ -108,19 +108,30 @@ export default function ExploreNavBar({
           <div className="card-body p-4 w-[80vw] max-w-3xl ">
             <div className=" ">
               <h2 className="card-title text-lg">{site.name}</h2>
-              <h3 className="text-md font-semibold pb-2">
-                {site.categories[0].category}
+              <h3 className="text-md font-semibold pb-2 flex items-center justify-between">
+                {site.categories[0].category}       <a
+                  href={site.url}
+                  target={"_blank"}
+                  className="link link-primary flex items-center gap-2 max-w-full"
+                >
+                  <span className="truncate">{site.url}</span>
+                  <ExternalLink size={15} />
+                </a>
               </h3>
               {(site.description || true) && (
                 <p className="pb-4 font-light text-sm">{site.description}</p>
               )}
 
               <div className="flex items-center w-full justify-between gap-1">
-                <button className="btn btn-ghost btn-active w-1/2 gap-2 btn-sm ">
+                <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
                   <Share size={15} />
                   Share
                 </button>
-                <button className="btn btn-ghost btn-active w-1/2 gap-2 btn-sm ">
+                <a href={`/site/${site.id}`} target={"_blank"} className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
+                  <Search size={15} />
+                  Page
+                </a>
+                <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
                   <Flag size={15} />
                   Report
                 </button>
