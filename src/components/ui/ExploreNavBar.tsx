@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ThumbsUp, Flag, Info, Menu, Share } from "react-feather";
-import Dice from "./icons/Dice";
 import type { SiteResData } from "../../types";
 
 import DiceButton from "./buttons/DiceButton";
@@ -8,9 +7,10 @@ import DiceButton from "./buttons/DiceButton";
 interface NavBarProps {
   site: SiteResData;
   advance: Function;
+  advanced: number;
 }
 
-export default function ExploreNavBar({ site, advance }: NavBarProps) {
+export default function ExploreNavBar({ site, advance, advanced }: NavBarProps) {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -30,7 +30,7 @@ export default function ExploreNavBar({ site, advance }: NavBarProps) {
         <div className="flex flex-col absolute left-1/2  -translate-x-1/2  mb-2 md:mb-0 md:mt-2">
           <div className="flex items-center gap-2 order-2 md:order-1 ">
             <div className="order-2 md:order-1">
-            <DiceButton action={advance} />
+            <DiceButton action={advance} advanced={advanced} />
 
             </div>
             <button className="btn btn-ghost order-3 md:order-2 ">
@@ -41,6 +41,7 @@ export default function ExploreNavBar({ site, advance }: NavBarProps) {
                 e.preventDefault();
                 e.stopPropagation();
                 setShowInfo((s) => !s);
+                
               }}
               className="btn btn-ghost order-1 md:order-3"
             >
@@ -68,21 +69,6 @@ export default function ExploreNavBar({ site, advance }: NavBarProps) {
               />
             </svg>
           </label>
-          {/* <ul
-            tabIndex={0}
-            className="menu menu-compact dropdown-content  mt-3 p-2 shadow-2xl bg-base-100 rounded-box w-52 bottom-[130%] top-auto right-0 origin-bottom-left md:top-full md:bottom-auto md:origin-top-right border border-base-300"
-          >
-            <li>
-              <a href="/explore">Explore</a>
-            </li>
-            <li>
-              <a href="/submit">Submit</a>
-            </li>
-            <li>
-              <a>About</a>
-            </li>
-          </ul>
-        </div> */}
       </div>
       {showInfo && (
         <div className="card fixed bottom-[4.9rem] md:top-[4.9rem] md:bottom-auto left-1/2 -translate-x-1/2 bg-base-100 border shadow-2xl border border-base-300 ">

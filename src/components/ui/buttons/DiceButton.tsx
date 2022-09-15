@@ -1,17 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Dice from '../icons/Dice'
 import "../../../styles/animation.css"
-const DiceButton = ({action}:{action:Function}) => {
+const DiceButton = ({action, advanced}:{action:Function, advanced:number}) => {
   const [animate, setAnimate] = useState(false)
   const animateRef = useRef<any>(null); 
   useEffect(() => {
     if(animate){
-      animateRef.current = setTimeout(() => {setAnimate(false)}, 500)
+      animateRef.current = setTimeout(() => {setAnimate(false)}, 10000)
     }
     return () => {
-      clearTimeout(animateRef.current)
+      clearTimeout(animateRef.current);
     }
   }, [animate])
+  useEffect(() => {
+    animateRef.current && clearTimeout(animateRef.current); 
+    setAnimate(false); 
+    // return () => {
+    //   second
+    // }
+  }, [advanced])
+  
   
   return (
     <button

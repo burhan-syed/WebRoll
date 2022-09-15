@@ -169,6 +169,7 @@ export default function SiteSubmit({
           if (res.ok) {
             setPrevSubmission(undefined);
             clearErrors();
+            window.location.href = `/site/${resData.data.id}`
             returnSubmissions(resData.data);
             // setSubmissions((s) =>
             //   s && s?.length > 0 ? [resData.data, ...s] : [resData.data]

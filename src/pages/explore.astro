@@ -1,6 +1,7 @@
 ---
 // Component Imports
 import ExplorePage from "../components/ExplorePage";
+import { getSignedImageUrl } from "../server/aws/bucket";
 import prisma from "../server/utils/prisma";
 const ip = Astro.clientAddress;
 await prisma.sessions.deleteMany({ where: { ip: ip } });
@@ -25,7 +26,11 @@ const sites = await prisma.site.findMany({
     tags: { select: { tag: true } },
   },
 });
-console.log("random site:", sites);
+let siteImgURL = "";
+if (!sites[0].allowEmbed) {
+  siteImgURL = await getSignedImageUrl(sites[0].imgKey as string);
+}
+console.log("random sites:", sites);
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -42,25 +47,21 @@ console.log("random site:", sites);
   <div class="drawer drawer-end">
     <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content">
-      <!-- Page content here -->
-      <!-- <body class="h-screen w-screen overflow-hidden"> -->
-        <main class="min-h-screen min-w-full flex flex-col">
-          <!-- <label for="my-drawer-4" class="drawer-button btn btn-primary">Open drawer</label> -->
-          {
-            sites.length > 0 ? (
-              <ExplorePage
-                initialSites={sites}
-                ip={ip}
-                session={session.id}
-                client:load
-              />
-            ) : (
-              <span>no sites found</span>
-            )
-          }
-        </main>
-      <!-- </body> -->
-      
+      <main class="min-h-screen min-w-full flex flex-col">
+        {
+          sites.length > 0 ? (
+            <ExplorePage
+              initialSiteImgURL={siteImgURL}
+              initialSites={sites}
+              ip={ip}
+              session={session.id}
+              client:load
+            />
+          ) : (
+            <span>no sites found</span>
+          )
+        }
+      </main>
     </div>
     <div class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>

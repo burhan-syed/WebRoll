@@ -8,9 +8,9 @@ export async function post({ request }: any) {
   try {
     const sess = await prisma.sessions.findMany({
       where: { ip: userIP, id: session },
-      orderBy: {expiresAt: 'desc'}
+      orderBy: { expiresAt: "desc" },
     });
-    if(!(sess.length > 0)){
+    if (!(sess.length > 0)) {
       return new Response(JSON.stringify({}), { status: 401 });
     }
 
@@ -22,9 +22,14 @@ export async function post({ request }: any) {
       take: 3,
       skip: Math.floor(Math.random() * allSitesCount),
       select: {
+        id: true,
         url: true,
         name: true,
         description: true,
+        status: true,
+        imgKey: true,
+        allowEmbed: true,
+        sourceLink: true,
         categories: { select: { category: true, description: true } },
         tags: { select: { tag: true } },
       },
