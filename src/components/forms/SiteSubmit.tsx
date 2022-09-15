@@ -107,9 +107,11 @@ const categories = [
 
 export default function SiteSubmit({
   userIP,
+  sessionID, 
   returnSubmissions = (a: SiteResData) => {},
 }: {
   userIP: string;
+  sessionID: string;
   returnSubmissions: Function;
 }) {
   const submitButton = useRef<HTMLButtonElement>(null); 
@@ -160,7 +162,7 @@ export default function SiteSubmit({
       console.log("captcha:", captchaValue);
       try {
         const res = await fetch("/api/submit", {
-          body: JSON.stringify({ ...data, userIP: userIP }),
+          body: JSON.stringify({ ...data, userIP: userIP, sessionID: sessionID }),
           method: "post",
         });
         const resData = await res.json();

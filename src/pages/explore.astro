@@ -1,15 +1,19 @@
 ---
 // Component Imports
 import ExplorePage from "../components/ExplorePage";
+import NavBar from "../components/NavBar.astro";
 import { getSignedImageUrl } from "../server/aws/bucket";
+import { checkAndReturnSessionID } from "../server/utils/handleSession";
 import prisma from "../server/utils/prisma";
-const ip = Astro.clientAddress;
-await prisma.sessions.deleteMany({ where: { ip: ip } });
-const session = await prisma.sessions.create({ data: { ip: ip } });
-const allSitesCount = await prisma.site.count({
+const userIp = Astro.clientAddress;
+const cookie = Astro.request.headers.get('cookie'); 
+const r = await checkAndReturnSessionID(userIp, cookie); 
+console.log("cookie?", cookie); 
+console.log("response", r)
+const allSitesCount = await prisma.sites.count({
   where: { status: "APPROVED" },
 });
-const sites = await prisma.site.findMany({
+const sites = await prisma.sites.findMany({
   where: { status: "APPROVED" },
   take: 3,
   skip: Math.floor(Math.random() * allSitesCount),
@@ -19,21 +23,22 @@ const sites = await prisma.site.findMany({
     url: true,
     name: true,
     description: true,
-    sourceLink: true,
-    status: true,
     allowEmbed: true,
-    categories: { select: { category: true, description: true } },
-    tags: { select: { tag: true } },
+    categories: { select: { category: true} },
+    likes: {where: {sessionId: r}}
   },
 });
 let siteImgURL = "";
-if (!sites[0].allowEmbed) {
-  siteImgURL = await getSignedImageUrl(sites[0].imgKey as string);
+if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
+  siteImgURL = await getSignedImageUrl(sites?.[0]?.imgKey as string);
 }
 console.log("random sites:", sites);
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
+<script is:inline define:vars={{r}}>
+  document.cookie = "webroll_session=" + r + ";"
+</script>
 
 <html lang="en">
   <head>
@@ -41,7 +46,7 @@ console.log("random sites:", sites);
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro + TailwindCSS</title>
+    <title>Explore | WebRoll</title>
   </head>
 
   <div class="drawer drawer-end">
@@ -53,12 +58,18 @@ console.log("random sites:", sites);
             <ExplorePage
               initialSiteImgURL={siteImgURL}
               initialSites={sites}
-              ip={ip}
-              session={session.id}
+              ip={userIp}
+              session={r}
               client:load
             />
           ) : (
-            <span>no sites found</span>
+            <>
+            <NavBar/>
+            <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4">
+              <span>{`No sites Found :(`}</span>
+              <a href="/submit" class="btn btn-primary">Submit a Site</a>
+              </div>
+            </>
           )
         }
       </main>

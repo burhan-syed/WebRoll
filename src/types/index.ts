@@ -1,26 +1,10 @@
-import type { SiteStatus } from "@prisma/client";
-
-// export interface SiteResData {
-//   tags: {
-//     tag: string;
-//   }[];
-//   status: "REVIEW" | "APPROVED" | "QUARANTINE" | "BANNED";
-//   url: string;
-//   name: string;
-//   description: string | null;
-//   imgKey: string | null;
-//   sourceLink: string | null;
-//   categories: {
-//     category: string;
-//     description: string | null;
-//   }[];
-// }
-
+import type { Likes, SiteStatus, Sites, Categories } from "@prisma/client";
 export interface SiteResData {
   url: string;
   id: string;
   name: string;
   description: string | null;
+  views: number;
   status: SiteStatus;
   imgKey: string | null;
   sourceLink: string | null;
@@ -29,7 +13,22 @@ export interface SiteResData {
     description: string | null;
     category: string;
   }[];
-  tags: {
-    tag: string;
-  }[];
+  tags:{ tag: { tag: string; }; }[]
+}
+export interface SiteResDataWithLikes extends SiteResData {
+  likes: number;
+}
+
+export interface minSiteResData {
+    id: string,
+    imgKey: string | null,
+    url: string,
+    name: string,
+    description: string | null,
+    allowEmbed: boolean,
+    categories: { category: string; }[],
+  
+}
+export interface minSiteResDataWithLikes extends minSiteResData {
+  likes: Likes[];
 }

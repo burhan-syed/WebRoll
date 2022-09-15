@@ -5,7 +5,7 @@ import { getSignedImageUrl } from "../../server/aws/bucket";
 import prisma from "../../server/utils/prisma";
 const { siteID } = Astro.params;
 
-const site = await prisma.site.findFirst({
+const site = await prisma.sites.findFirst({
   where: { id: siteID as string },
   select: {
     id: true,
@@ -18,7 +18,7 @@ const site = await prisma.site.findFirst({
     sourceLink: true,
     allowEmbed: true,
     categories: { select: { category: true, description: true } },
-    tags: { select: { tag: true } },
+    tags: { select: { tag: {select: {tag: true}} } },
     _count: {
       select: {
         likes: true

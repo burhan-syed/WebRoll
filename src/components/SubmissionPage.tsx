@@ -3,7 +3,7 @@ import type { SiteResData } from "../types";
 import SiteSubmit from "./forms/SiteSubmit";
 import SiteCard from "./SiteCard";
 
-const SubmissionPage = ({ userIp }: { userIp: string }) => {
+const SubmissionPage = ({ userIp, sessionID }: { userIp: string, sessionID: string }) => {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
     console.log("submit:", submission);
@@ -37,7 +37,7 @@ const SubmissionPage = ({ userIp }: { userIp: string }) => {
         </>
       ) : (
         <div className="rounded-lg border border-base-300 shadow-lg bg-base-100 ">
-          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} />
+          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} sessionID={sessionID} />
         </div>
       )}
     </>

@@ -15,11 +15,35 @@ generator client {
 enum SiteStatus {
   REVIEW
   APPROVED
-  QUARANTINE
+  REPORTED
+  REJECTED
   BANNED
 }
 
-model Site {
+enum TagStatus {
+  REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum ReportType {
+  CATEGORY
+  BROKEN
+  TAGS
+  TOS
+  OTHER
+  RESOLVED
+}
+
+enum SessionRole {
+  BOT
+  USER
+  MOD 
+  ADMIN 
+  BANNED
+}
+
+model Sites {
   id          String       @id @unique @map("id") @db.VarChar(21)
   name        String
   url         String       @unique
@@ -33,9 +57,13 @@ model Site {
   adult       Boolean      @default(false)
   status      SiteStatus   @default(REVIEW)
   submitterIP String       @map("submitter_ip") @db.VarChar(45)
+  submitterID String       @map("submitted_id") @db.VarChar(48)
   submittedAt DateTime     @default(now()) @map("submitted_at")
   imgKey      String?      @map("img_key")
-  tags        Tags[]
+
+
+  submitter   Sessions @relation(fields: [submitterID], references: [id])
+  tags        SiteTags[]
   categories  Categories[]
   likes       Likes[]
   Reports     Reports[]
@@ -45,33 +73,50 @@ model Likes {
   id        Int      @id @unique @default(autoincrement())
   siteId    String   @map("site_id") @db.VarChar(21)
   ip        String   @db.VarChar(45)
-  sessionId String   @db.VarChar(25)
+  sessionId String   @db.VarChar(48)
   date      DateTime @default(now())
-  direction Boolean  @default(true)
+  direction Boolean  
 
-  site Site @relation(fields: [siteId], references: [id])
+  user     Sessions @relation(fields: [sessionId], references: [id])
+  site     Sites       @relation(fields: [siteId], references: [id])
 
-  @@unique([siteId, ip])
+  @@unique([siteId, sessionId])
 }
 
 model Reports {
-  id     Int      @id @unique @default(autoincrement())
-  siteId String   @map("site_id") @db.VarChar(21)
-  ip     String   @db.VarChar(45)
-  date   DateTime @default(now())
+  id        Int    @id @unique @default(autoincrement())
+  siteId    String @map("site_id") @db.VarChar(21)
+  sessionId String @db.VarChar(48)
+  ip   String   @db.VarChar(45)
+  date DateTime @default(now())
+  type ReportType
+  categoryID Int?
 
-  site Site @relation(fields: [siteId], references: [id])
+  category Categories? @relation(fields: [categoryID], references: [id])
+  user Sessions @relation(fields: [sessionId], references: [id])
+  site Sites @relation(fields: [siteId], references: [id])
 
   @@unique([siteId, ip])
 }
 
 model Tags {
-  id  Int    @id @unique @default(autoincrement()) @map("id")
-  tag String @unique @db.VarChar(48)
-
+  tag String @unique @id @db.VarChar(48)
   createdAt DateTime @default(now()) @map("created_at")
 
-  sites Site[]
+  sites SiteTags[]
+}
+
+model SiteTags {
+  siteID String 
+  site Sites @relation(fields: [siteID], references: [id])
+  tagID String @db.VarChar(48)
+  tag Tags @relation(fields: [tagID], references: [tag])
+  assignedAt DateTime @default(now())
+  assignedBy String @db.VarChar(48)
+  status TagStatus @default(APPROVED)
+  assigner Sessions @relation(fields: [assignedBy], references: [id])
+
+  @@id([siteID, tagID])
 }
 
 model Categories {
@@ -80,12 +125,21 @@ model Categories {
   createdAt DateTime @default(now()) @map("created_at")
 
   description String?
-  sites       Site[]
+  sites       Sites[]
+  reports     Reports[]
 }
 
 model Sessions {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique @db.VarChar(48)
   createdAt DateTime @default(now()) @map("created_at")
+  lastAccessed DateTime @default(now()) @map("last_accessed")
   expiresAt DateTime @default(now()) @map("expires_at")
   ip        String   @db.VarChar(45)
+  role SessionRole @default(USER)
+
+
+  sites Sites[]
+  tags SiteTags[]
+  likes Likes[]
+  reports Reports[]
 }

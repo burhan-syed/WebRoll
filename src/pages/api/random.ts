@@ -1,37 +1,36 @@
+import type { APIRoute } from "astro";
 import prisma from "../../server/utils/prisma";
-export async function post({ request }: any) {
+export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
-  const { userIP, session } = data;
-  if (!userIP || !session) {
+  const { userIP, sessionID } = data;
+  if (!userIP || !sessionID) {
     return new Response(JSON.stringify({}), { status: 401 });
   }
   try {
-    const sess = await prisma.sessions.findMany({
-      where: { ip: userIP, id: session },
+    const sess = await prisma.sessions.findFirst({
+      where: { id: sessionID },
       orderBy: { expiresAt: "desc" },
     });
-    if (!(sess.length > 0)) {
+    if (!(sess)) {
       return new Response(JSON.stringify({}), { status: 401 });
     }
 
-    const allSitesCount = await prisma.site.count({
+    const allSitesCount = await prisma.sites.count({
       where: { status: "APPROVED" },
     });
-    const sites = await prisma.site.findMany({
+    const sites = await prisma.sites.findMany({
       where: { status: "APPROVED" },
       take: 3,
       skip: Math.floor(Math.random() * allSitesCount),
       select: {
         id: true,
+        imgKey: true,
         url: true,
         name: true,
         description: true,
-        status: true,
-        imgKey: true,
         allowEmbed: true,
-        sourceLink: true,
-        categories: { select: { category: true, description: true } },
-        tags: { select: { tag: true } },
+        categories: { select: { category: true} },
+        likes: {where: {sessionId: sessionID}}
       },
     });
     return new Response(JSON.stringify({ data: sites }), { status: 200 });

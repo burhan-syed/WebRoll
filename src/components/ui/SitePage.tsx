@@ -1,33 +1,14 @@
-import type { SiteStatus } from "@prisma/client";
-import React from "react";
-import { ExternalLink, Flag, Share } from "react-feather";
 
-interface SiteData {
-  url: string;
-  id: string;
-  name: string;
-  description: string | null;
-  status: SiteStatus;
-  imgKey: string | null;
-  sourceLink: string | null;
-  views: number;
-  allowEmbed: boolean;
-  likes: number;
-  categories: {
-    category: string;
-    description: string | null;
-  }[];
-  tags: {
-    tag: string;
-  }[];
-}
+import { ExternalLink, Flag, Share } from "react-feather";
+import type { SiteResDataWithLikes } from "../../types";
+
 
 const SitePage = ({
   siteImgURL,
   siteData,
 }: {
   siteImgURL: string;
-  siteData: SiteData;
+  siteData: SiteResDataWithLikes;
 }) => {
   return (
     <div className="flex flex-col flex-grow ">
@@ -115,7 +96,7 @@ const SitePage = ({
                   </span>
                   <span className="flex justify-between">
                     <span>likes</span>
-                    {siteData.likes}
+                    <span>{siteData.likes}</span>
                   </span>
                   {siteData.sourceLink && (
                     <span className="flex justify-between">
@@ -146,8 +127,8 @@ const SitePage = ({
                     {siteData.tags.length > 0 ? (
                       <>
                         {siteData.tags.map((tag) => (
-                          <div className="lowercase btn btn-xs text-xs font-light text-base-100 flex items-center px-2 rounded-full bg-primary-focus">
-                            {tag.tag}
+                          <div key={tag.tag.tag} className="lowercase btn btn-xs text-xs font-light text-base-100 flex items-center px-2 rounded-full bg-primary-focus">
+                            {tag.tag.tag}
                           </div>
                         ))}
                       </>

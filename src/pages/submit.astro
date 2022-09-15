@@ -2,11 +2,20 @@
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
+import { checkAndReturnSessionID } from "../server/utils/handleSession";
 const userIp = Astro.clientAddress;
+const cookie = Astro.request.headers.get('cookie'); 
+const r = await checkAndReturnSessionID(userIp, cookie); 
+console.log("cookie?", cookie); 
+console.log("response", r)
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
+
+<script is:inline define:vars={{r}}>
+  document.cookie = "webroll_session=" + r + ";"
+</script>
 
 <MainLayout siteTile={"Submit | WebRoll"}>
   <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
@@ -25,6 +34,6 @@ const userIp = Astro.clientAddress;
         ><br />We only index hostnames. Any provided path will be omitted.
       </p>
     </div>
-    <SubmissionPage client:load userIp={userIp} />
+    <SubmissionPage client:load userIp={userIp} sessionID={r} />
   </div>
 </MainLayout>

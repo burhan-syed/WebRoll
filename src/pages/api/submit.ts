@@ -3,19 +3,28 @@ import fetchMetadata from "../../server/metaparser/parse";
 import { extractUrl, parseTags } from "../../server/metaparser/utils";
 import Filter from "bad-words";
 import { generateId } from "../../server/utils/generateSiteId";
+import type { APIRoute } from "astro";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
-const parseDomain = import.meta.env.PARSER_DOMAIN; 
+const parseDomain = import.meta.env.PARSER_DOMAIN;
 const isPROD = import.meta.env.PROD;
 
-export async function post({ request }: any) {
+export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
 
-  const { tags, url, category, privacy, sourceLink, captchaToken, userIP } =
-    data;
+  const {
+    tags,
+    url,
+    category,
+    privacy,
+    sourceLink,
+    captchaToken,
+    userIP,
+    sessionID,
+  } = data;
   // console.log(userIP, tags, url, category, privacy, sourceLink, captchaToken);
 
-  if (!url || !category || !(tags.length > 3) || !captchaToken) {
+  if (!url || !category || !(tags.length > 3) || !captchaToken || !sessionID) {
     return new Response(
       JSON.stringify({ ERROR: "required data not provided" }),
       { status: 400 }
@@ -45,30 +54,36 @@ export async function post({ request }: any) {
 
   const baseUrl = extractUrl(url);
 
-  const {cleanedTags, invalidTags} = parseTags(tags);
+  const { cleanedTags, invalidTags } = parseTags(tags);
 
-  //console.log(cleanedTags); 
+  //console.log(cleanedTags);
   if (invalidTags.length > 0) {
     return new Response(
       JSON.stringify({
-        ERROR: `${invalidTags.length} invalid tag${invalidTags.length === 1 ? "" : "s"}: ${invalidTags.join(",")}`,
+        ERROR: `${invalidTags.length} invalid tag${
+          invalidTags.length === 1 ? "" : "s"
+        }: ${invalidTags.join(",")}`,
       }),
       { status: 400 }
     );
   }
   try {
     //console.log("URL:", baseUrl);
-    const response = (await fetch(baseUrl));
-    const resURL = response.url; 
-    const xFrameOptions = response.headers?.get('X-Frame-Options');
+    const response = await fetch(baseUrl);
+    const resURL = response.url;
+    const xFrameOptions = response.headers?.get("X-Frame-Options");
     //console.log("headers?", response.headers, xFrameOptions );
-    const allowEmbed = !(xFrameOptions === "DENY" || xFrameOptions === "SAMEORIGIN" || xFrameOptions === "ALLOW-FROM"); 
+    const allowEmbed = !(
+      xFrameOptions === "DENY" ||
+      xFrameOptions === "SAMEORIGIN" ||
+      xFrameOptions === "ALLOW-FROM"
+    );
 
     try {
-      const pData = await prisma.site.findFirst({
+      const pData = await prisma.sites.findFirst({
         where: { url: resURL },
         select: {
-          id:true,
+          id: true,
           url: true,
           name: true,
           allowEmbed: true,
@@ -96,30 +111,60 @@ export async function post({ request }: any) {
         status: 500,
       });
     }
-    const res = await fetch(true ? `${parseDomain}/api/parse` : 'http://localhost:3001/api/parse-data', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({url: baseUrl, key: "akey"}),
-    })
+    const res = await fetch(
+      true
+        ? `${parseDomain}/api/parse`
+        : "http://localhost:3001/api/parse-data",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: baseUrl, key: "akey" }),
+      }
+    );
     console.log("res?", res);
 
-    if(!res.ok){
-      return new Response(JSON.stringify({ERROR: "couldn't parse site"}), {status: 500})
+    if (!res.ok) {
+      return new Response(JSON.stringify({ ERROR: "couldn't parse site" }), {
+        status: 500,
+      });
     }
 
-    const data = await res.json(); 
-    console.log("data:", data); 
+    const data = await res.json();
+    console.log("data:", data);
     const { description, title, imgKey } = data;
     // const { description, title, imgKey } = await fetchMetadata(
     //   baseUrl
     // );
-    const siteId = generateId(); 
+    const siteId = generateId();
     try {
-      const create = await prisma.site.create({
+      // await prisma.$transaction(
+      //   cleanedTags.map((tag) =>
+      //     prisma.siteTags.upsert({
+      //       where: { siteID_tagID: { siteID: siteId, tagID: tag } },
+      //       create: {
+      //         tag: {
+      //           connectOrCreate: {
+      //             where: {tag: tag}, create: {tag: tag}
+      //           }
+      //         },
+      //         site: {connectOrCreate: {where: {id: siteId}, create: {
+
+      //         }}},
+      //         assigner: {connect: {id: "someone"}}
+      //       },
+      //       update: {
+
+      //       }
+      //     })
+      //   )
+      // );
+
+      const create = await prisma.sites.create({
         data: {
           id: siteId,
           url: resURL,
           submitterIP: userIP,
+          submitter: { connect: { id: sessionID } },
           allowEmbed,
           name: title ?? resURL?.replaceAll("https://", ""),
           description: description,
@@ -128,23 +173,37 @@ export async function post({ request }: any) {
           categories: { connect: { category: category } },
           tags: {
             connectOrCreate: cleanedTags.map((tag: string) => ({
-              where: { tag: tag },
-              create: { tag: tag },
+              where: { siteID_tagID: { siteID: siteId, tagID: tag } },
+              create: {
+                tag: { create: { tag: tag } },
+                // site: { connect: { id: siteId } },
+                assigner: { connect: { id: sessionID } },
+              },
             })),
           },
         },
+        // select: {
+        //   id: true,
+        //   url: true,
+        //   name: true,
+        //   description: true,
+        //   status: true,
+        //   imgKey: true,
+        //   allowEmbed: true,
+        //   sourceLink: true,
+        //   categories: { select: { category: true, description: true } },
+        //   tags: { select: { tag: true } },
+        // },
         select: {
           id: true,
+          imgKey: true,
           url: true,
           name: true,
           description: true,
-          status: true,
-          imgKey: true,
           allowEmbed: true,
-          sourceLink: true,
-          categories: { select: { category: true, description: true } },
-          tags: { select: { tag: true } },
-        },
+          categories: { select: { category: true} },
+          likes: {where: {sessionId: sessionID}}
+        }
       });
       console.log("Create:", create);
       return new Response(JSON.stringify({ data: { ...create } }), {
@@ -166,4 +225,4 @@ export async function post({ request }: any) {
   return new Response(JSON.stringify({ ERROR: "Something went wrong" }), {
     status: 500,
   });
-}
+};

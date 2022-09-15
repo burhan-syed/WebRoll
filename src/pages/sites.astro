@@ -4,7 +4,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import prisma from "../server/utils/prisma";
 const { siteID } = Astro.params;
 
-const sites = await prisma.site.findMany({
+const sites = await prisma.sites.findMany({
   select: {
     id: true,
     url: true,
@@ -25,7 +25,7 @@ const sites = await prisma.site.findMany({
     sites ? (
       <>
         {sites.map((site) => (
-          <SiteCard {...site} client:load />
+          <h1>{site.name}</h1>
         ))}
       </>
     ) : (
