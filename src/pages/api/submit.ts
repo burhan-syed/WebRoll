@@ -176,21 +176,26 @@ export const post: APIRoute = async function post({ request }) {
         },
       });
       console.log("Create:", create);
-      const res = fetch(
-        false
-          ? `${parseDomain}/api/parse`
-          : "http://localhost:3001/api/parse",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: resURL,
-            key: key,
-            siteID: siteID,
-            assigner: sessionID,
-          }),
-        }
-      );
+      try{
+        const res = fetch(
+          isPROD
+            ? `${parseDomain}/api/parse`
+            : "http://localhost:3001/api/parse",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              url: resURL,
+              key: key,
+              siteID: siteID,
+              assigner: sessionID,
+            }),
+          }
+        );
+      }catch(err){
+        console.error("pasre post error", err)
+      }
+      
       return new Response(JSON.stringify({ data: { ...create } }), {
         status: 200,
       });
