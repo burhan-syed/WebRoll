@@ -19,7 +19,7 @@ const SitePage = ({
                 backgroundRepeat: `no-repeat`,
               }
             : {
-                backgroundImage: ` radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`, //`radial-gradient(circle, hsl(var(--nc)) 0%, hsl(var(--n)) 1%);`,
+                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
                 backgroundSize: `5px 5px`,
               }
         }
@@ -32,7 +32,7 @@ const SitePage = ({
           siteImgURL
             ? { backgroundImage: `url(${siteImgURL})` }
             : {
-                backgroundImage: `radial-gradient(circle, hsl(var(--nc)) 0%, hsl(var(--n)) 1%);`,
+                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
                 backgroundSize: `5px 5px`,
               }
         }
@@ -63,17 +63,20 @@ const SitePage = ({
             </a>
           </h1>
           <div className="flex flex-col flex-grow lg:flex-row-reverse lg:justify-end ">
-            <p className="my-0 pt-0 px-4 lg:hidden lg:p-0 lg:m-0  ">
-              {siteData.description}
-            </p>
-            <div className="py-2"></div>
+            {siteData.description && (
+              <p className="my-0 pt-0 px-4 pb-2 lg:hidden lg:p-0 lg:m-0  ">
+                {siteData.description}
+              </p>
+            )}
+
+            {/* <div className="py-2"></div> */}
             <div
               className={
                 " rounded-none shadow-inner h-[50vh] lg:h-auto lg:flex-grow bg-neutral w-full lg:w-2/3 xl:w-3/4 relative " +
                 (siteData.allowEmbed ? "  " : " hidden md:block my-4 lg:my-0 ")
               }
               style={{
-                backgroundImage: ` radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`, 
+                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
                 backgroundSize: `5px 5px`,
               }}
             >
@@ -81,26 +84,37 @@ const SitePage = ({
                 <iframe className="w-full h-full " src={siteData.url}></iframe>
               ) : (
                 <div className="flex items-center justify-center h-[50vh] lg:h-full overflow-hidden">
-                  <img
-                    className="aspect-video max-h-[50vh] lg:max-h-[80vh] z-10 shadow"
-                    src={siteImgURL}
-                    alt="site screen"
-                  />
-                  <img
-                    className="w-full h-full absolute blur-lg brightness-[0.8] "
-                    src={siteImgURL}
-                    alt="site screen"
-                  />
-                  <span
-                    className="absolute bottom-2 text-xs text-neutral text-opacity-50"
-                    style={{ textShadow: "0px 1px #FFFF" }}
-                  >
-                    embed unavailable, showing screenshot
-                  </span>
+                  {siteImgURL ? (
+                    <>
+                      <img
+                        className="aspect-video max-h-[50vh] lg:max-h-[80vh] z-10 shadow"
+                        src={siteImgURL}
+                        alt=""
+                      />
+                      <img
+                        className="w-full h-full absolute blur-3xl brightness-[0.8] "
+                        src={siteImgURL}
+                        alt=""
+                      />
+                      <span
+                        className="absolute bottom-2 text-xs text-white text-opacity-50 "
+                        style={{ textShadow: "0px 1px #FFFFFF20" }}
+                      >
+                        embed unavailable, displaying screenshot
+                      </span>
+                    </>
+                  ) : (
+                    <span
+                      className="absolute bottom-2 text-xs text-white text-opacity-50 "
+                      style={{ textShadow: "0px 1px #FFFFFF20" }}
+                    >
+                      awaiting screenshot
+                    </span>
+                  )}
                 </div>
               )}
             </div>
-            <div className="flex flex-col lg:w-1/3 xl:w-1/4 lg:px-4 flex-grow bg-base-200 ">
+            <div className="flex flex-col lg:w-1/3 xl:w-1/4 lg:px-4 flex-grow md:bg-base-200">
               <span className="w-full lg:flex items-center justify-start hidden order-1  ">
                 <a
                   href={siteData.url}
@@ -154,7 +168,7 @@ const SitePage = ({
                     {siteData.status === "REVIEW" ? (
                       <span>{`Submitted site under review.`}</span>
                     ) : (
-                      <span>{`Submitted site is being parsed. Check back later for review status.`}</span>
+                      <span>{`Site is being parsed. Check back later for review status.`}</span>
                     )}
                   </div>
                 )}
@@ -179,7 +193,6 @@ const SitePage = ({
                     )}
                   </div>
                 </div>
-               
               </div>
 
               <div className="flex flex-col items-center w-full justify-between gap-4 max-w-lg mx-auto my-4 px-4 lg:order-5 order-4">

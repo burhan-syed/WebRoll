@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { ThumbsUp, Flag, Info, Menu, Share, ExternalLink, Search } from "react-feather";
+import {
+  ThumbsUp,
+  Flag,
+  Info,
+  Menu,
+  Share,
+  ExternalLink,
+  Search,
+} from "react-feather";
 import type { minSiteResDataWithLikes } from "../../types";
 
 import DiceButton from "./buttons/DiceButton";
@@ -24,10 +32,10 @@ export default function ExploreNavBar({
     site.likes?.length > 0 ? site.likes[0]?.direction : false
   );
   useEffect(() => {
-    console.log("likes?", site.likes, site.url)
-   setLiked(site.likes?.length > 0 ? site.likes[0]?.direction : false)
-  }, [site])
-  
+    console.log("likes?", site.likes, site.url);
+    setLiked(site.likes?.length > 0 ? site.likes[0]?.direction : false);
+  }, [site]);
+
   const handleLike = async () => {
     setLiked((l) => {
       fetch("/api/update-likes", {
@@ -65,7 +73,11 @@ export default function ExploreNavBar({
               onClick={handleLike}
               className="btn btn-ghost order-3 md:order-2 "
             >
-              <ThumbsUp size={20} className={"brightness-125"} fill={liked ? "#5C7F67" : "#5C7F6700"} />
+              <ThumbsUp
+                size={20}
+                className={"brightness-125"}
+                fill={liked ? "#5C7F67" : "#5C7F6700"}
+              />
             </button>
             <button
               onClick={(e) => {
@@ -78,7 +90,11 @@ export default function ExploreNavBar({
               <Info size={20} />
             </button>
           </div>
-          <a target={"_blank"} href={site.url} className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1">
+          <a
+            target={"_blank"}
+            href={site.url}
+            className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1"
+          >
             {site.url}
           </a>
         </div>
@@ -104,20 +120,21 @@ export default function ExploreNavBar({
         </label>
       </div>
       {showInfo && (
-        <div className="card fixed bottom-[4.9rem] md:top-[4.9rem] md:bottom-auto left-1/2 -translate-x-1/2 bg-base-100 border shadow-2xl border border-base-300 ">
+        <div className="card fixed bottom-[4.9rem] md:top-[4.9rem] md:bottom-auto left-1/2 -translate-x-1/2 bg-base-100 border shadow-2xl border-base-300 ">
           <div className="card-body p-4 w-[80vw] max-w-3xl ">
             <div className=" ">
-              <h2 className="card-title text-lg">{site.name}</h2>
-              <h3 className="text-md font-semibold pb-2 flex items-center justify-between">
-                {site.categories[0].category}       <a
+              <h1 className="card-title text-xl font-light">{site.name}</h1>
+              <h2 className="text-md font-light pb-2  py-0.5 flex items-center justify-between gap-2 flex-wrap">
+                <span>{site.categories[0].category} </span>{" "}
+                <a
                   href={site.url}
                   target={"_blank"}
-                  className="link link-primary flex items-center gap-2 max-w-full"
+                  className="link link-primary flex items-center gap-2 max-w-lg truncate"
                 >
                   <span className="truncate">{site.url}</span>
-                  <ExternalLink size={15} />
+                  <ExternalLink size={15} className="flex-none" />
                 </a>
-              </h3>
+              </h2>
               {(site.description || true) && (
                 <p className="pb-4 font-light text-sm">{site.description}</p>
               )}
@@ -127,7 +144,11 @@ export default function ExploreNavBar({
                   <Share size={15} />
                   Share
                 </button>
-                <a href={`/site/${site.id}`} target={"_blank"} className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
+                <a
+                  href={`/site/${site.id}`}
+                  target={"_blank"}
+                  className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm "
+                >
                   <Search size={15} />
                   Page
                 </a>

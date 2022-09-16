@@ -55,12 +55,13 @@ export const post: APIRoute = async function post({ request }) {
         },
       });
 
-      console.log("site update!", update)
+      console.log("site update!", update);
 
       return new Response(JSON.stringify({ data: {} }), {
         status: 200,
       });
     } catch (err) {
+      console.log("update error", err);
       return new Response(JSON.stringify({ ERROR: "" }), { status: 500 });
     }
   }

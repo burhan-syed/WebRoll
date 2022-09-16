@@ -104,7 +104,10 @@ export default function ExplorePage({
       </div> */}
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
-        <div className="flex-grow flex flex-col">
+        <div className="flex-grow flex flex-col bg-neutral" style={ {
+                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+                backgroundSize: `5px 5px`,
+              }}>
           {sites[index].allowEmbed === true ? (
             <iframe
               className="flex-1 h-full w-full bg-transparent"
@@ -128,9 +131,9 @@ export default function ExplorePage({
                     <h2 className="card-title">{sites[index].name}</h2>
                     <a href={sites[index].url}>{sites[index].url}</a>
                     <p className="max-h-80 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary text-sm text-neutral ">{sites[index].description}</p>
-                    <div className="card-actions justify-end mt-2">
-                      <a href={`/site/${sites[index].id}`} className="btn">View Page</a>
-                      <a href={sites[index].url} className="btn btn-primary">Visit Site</a>
+                    <div className="card-actions justify-center md:justify-end mt-2">
+                      {/* <a href={`/site/${sites[index].id}`} className="btn">View Page</a> */}
+                      <a href={sites[index].url} className="btn btn-primary">Visit Page</a>
                     </div>
                   </div>
                 </div>
@@ -144,16 +147,16 @@ export default function ExplorePage({
                   }}
                 />
                 <img
-                  className="w-full h-full absolute blur-lg brightness-[0.8]"
+                  className="w-full h-full absolute blur-3xl brightness-[0.8]"
                   src={siteImgURL.img}
                   alt="site screen"
                 />
-                <span
-                  className="absolute bottom-2 text-xs text-neutral text-opacity-50"
-                  style={{ textShadow: "0px 1px #FFFFFF90" }}
-                >
-                  embed unavailable, showing screenshot
-                </span>
+                   <span
+                        className="absolute bottom-2 text-xs text-white text-opacity-50"
+                        style={{ textShadow: "0px 1px #FFFFFF20" }}
+                      >
+                        embed unavailable, displaying screenshot
+                      </span>
               </div>
             )
           )}
