@@ -13,6 +13,7 @@ generator client {
 }
 
 enum SiteStatus {
+  PARSING
   REVIEW
   APPROVED
   REPORTED
@@ -55,10 +56,11 @@ model Sites {
   allowEmbed  Boolean      @default(true) @map("allow_embed")
   privacy     Boolean      @default(false)
   adult       Boolean      @default(false)
-  status      SiteStatus   @default(REVIEW)
+  status      SiteStatus   @default(PARSING)
   submitterIP String       @map("submitter_ip") @db.VarChar(45)
   submitterID String       @map("submitted_id") @db.VarChar(48)
   submittedAt DateTime     @default(now()) @map("submitted_at")
+  updatedAt   DateTime     @default(now()) @map("updated_at")
   imgKey      String?      @map("img_key")
 
 

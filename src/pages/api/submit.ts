@@ -1,5 +1,5 @@
 import prisma from "../../server/utils/prisma";
-import fetchMetadata from "../../server/metaparser/parse";
+import parseMetadata from "../../server/metaparser/parse";
 import { extractUrl, parseTags } from "../../server/metaparser/utils";
 import Filter from "bad-words";
 import { generateId } from "../../server/utils/generateSiteId";
@@ -7,6 +7,7 @@ import type { APIRoute } from "astro";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
 const parseDomain = import.meta.env.PARSER_DOMAIN;
+const key = import.meta.env.MY_SECRET_KEY;
 const isPROD = import.meta.env.PROD;
 
 export const post: APIRoute = async function post({ request }) {
@@ -84,15 +85,13 @@ export const post: APIRoute = async function post({ request }) {
         where: { url: resURL },
         select: {
           id: true,
+          imgKey: true,
           url: true,
           name: true,
-          allowEmbed: true,
           description: true,
-          status: true,
-          imgKey: true,
-          sourceLink: true,
+          allowEmbed: true,
           categories: { select: { category: true } },
-          tags: { select: { tag: true } },
+          likes: { where: { sessionId: sessionID } },
         },
       });
       if (pData) {
@@ -111,69 +110,40 @@ export const post: APIRoute = async function post({ request }) {
         status: 500,
       });
     }
-    const res = await fetch(
-      true
-        ? `${parseDomain}/api/parse`
-        : "http://localhost:3001/api/parse-data",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: baseUrl, key: "akey" }),
-      }
-    );
-    console.log("res?", res);
 
-    if (!res.ok) {
-      return new Response(JSON.stringify({ ERROR: "couldn't parse site" }), {
-        status: 500,
-      });
-    }
+    const siteID = generateId();
 
-    const data = await res.json();
-    console.log("data:", data);
-    const { description, title, imgKey } = data;
-    // const { description, title, imgKey } = await fetchMetadata(
-    //   baseUrl
-    // );
-    const siteId = generateId();
+    // console.log("res?", res);
+
+    // if (!res.ok) {
+    //   return new Response(JSON.stringify({ ERROR: "couldn't parse site" }), {
+    //     status: 500,
+    //   });
+    // }
+
+    // const data = await res.json();
+    // console.log("data:", data);
+    // const { description, title, imgKey } = data;
+
+    const { description, title } = await parseMetadata(response);
+    console.log("metadata", siteID, description, title);
     try {
-      // await prisma.$transaction(
-      //   cleanedTags.map((tag) =>
-      //     prisma.siteTags.upsert({
-      //       where: { siteID_tagID: { siteID: siteId, tagID: tag } },
-      //       create: {
-      //         tag: {
-      //           connectOrCreate: {
-      //             where: {tag: tag}, create: {tag: tag}
-      //           }
-      //         },
-      //         site: {connectOrCreate: {where: {id: siteId}, create: {
-
-      //         }}},
-      //         assigner: {connect: {id: "someone"}}
-      //       },
-      //       update: {
-
-      //       }
-      //     })
-      //   )
-      // );
-
       const create = await prisma.sites.create({
         data: {
-          id: siteId,
+          id: siteID,
           url: resURL,
           submitterIP: userIP,
           submitter: { connect: { id: sessionID } },
           allowEmbed,
           name: title ?? resURL?.replaceAll("https://", ""),
           description: description,
-          imgKey,
+          //imgKey,
           sourceLink,
           categories: { connect: { category: category } },
           tags: {
             connectOrCreate: cleanedTags.map((tag: string) => ({
-              where: { siteID_tagID: { siteID: siteId, tagID: tag } },
+              where: { siteID_tagID: { siteID: siteID, tagID: tag } },
+              // connect: {tag: {connect: {tag: tag}, assigner: {connect: {id: sessionID}}}},
               create: {
                 tag: { create: { tag: tag } },
                 // site: { connect: { id: siteId } },
@@ -201,11 +171,26 @@ export const post: APIRoute = async function post({ request }) {
           name: true,
           description: true,
           allowEmbed: true,
-          categories: { select: { category: true} },
-          likes: {where: {sessionId: sessionID}}
-        }
+          categories: { select: { category: true } },
+          likes: { where: { sessionId: sessionID } },
+        },
       });
       console.log("Create:", create);
+      const res = fetch(
+        false
+          ? `${parseDomain}/api/parse`
+          : "http://localhost:3001/api/parse",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url: resURL,
+            key: key,
+            siteID: siteID,
+            assigner: sessionID,
+          }),
+        }
+      );
       return new Response(JSON.stringify({ data: { ...create } }), {
         status: 200,
       });

@@ -27,7 +27,7 @@ const site = await prisma.sites.findFirst({
   },
 });
 const likesCount = site?._count?.likes ?? 0; 
-const siteImgURL = site
+const siteImgURL = site?.imgKey
   ? (await getSignedImageUrl(site.imgKey as string)) ?? ""
   : "";
 ---

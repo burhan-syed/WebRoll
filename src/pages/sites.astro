@@ -25,7 +25,7 @@ const sites = await prisma.sites.findMany({
     sites ? (
       <>
         {sites.map((site) => (
-          <h1>{site.name}</h1>
+          <a href={`/site/${site.id}`}>{site.name}</a>
         ))}
       </>
     ) : (
