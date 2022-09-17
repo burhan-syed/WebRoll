@@ -154,6 +154,12 @@ export const post: APIRoute = async function post({ request }) {
       });
       console.log("Create:", create);
       try {
+        console.log("send to", parseDomain,{
+          url: resURL,
+          key: key,
+          siteID: siteID,
+          assigner: sessionID,
+        }); 
         const res = fetch(parseDomain, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
