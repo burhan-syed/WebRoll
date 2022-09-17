@@ -23,11 +23,11 @@ const DiceButton = ({action, advanced}:{action:Function, advanced:number}) => {
   
   return (
     <button
-    className="flex gap-2 btn btn-primary text-primary-content "
+    className="flex gap-2 btn btn-primary text-primary-content group "
     onClick={() => {setAnimate(true); action()}}
   >
     Next
-    <div className={"flex-none animated " + (animate ? " rotate " : "") }>
+    <div className={"flex-none animated group-hover:rotate-180 transition-transform ease-out duration-300 " + (animate ? " rotate " : "") }>
       <Dice size={20} strokeWidth={30} color={"currentColor"} />
     </div>
   </button>

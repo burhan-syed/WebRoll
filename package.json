@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@astrojs/image": "^0.7.0",
+    "@astrojs/prefetch": "^0.0.7",
     "@astrojs/react": "^1.1.1",
     "@astrojs/tailwind": "^1.0.0",
     "@astrojs/vercel": "^1.0.2",

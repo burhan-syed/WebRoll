@@ -1,4 +1,4 @@
-import type { SiteStatus } from "@prisma/client";
+import type { SiteStatus, TagStatus } from "@prisma/client";
 import type { APIRoute } from "astro";
 import { parseTags } from "../../server/metaparser/utils";
 import prisma from "../../server/utils/prisma";
@@ -10,7 +10,7 @@ export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
   console.log("RESPONSE RECEIVED", data);
 
-  const { siteData, secret, assigner } = data as {
+  const { siteData, secret, assigner, removedTags, newTagStatus, updatedTags } = data as {
     siteData: {
       id: string;
       description?: string;
@@ -24,6 +24,9 @@ export const post: APIRoute = async function post({ request }) {
     };
     secret: string;
     assigner: string;
+    removedTags?:string[];
+    updatedTags?:string[]; 
+    newTagStatus?:TagStatus
   };
   if (secret !== key) {
     return new Response(null, { status: 401 });
@@ -33,6 +36,13 @@ export const post: APIRoute = async function post({ request }) {
       const { cleanedTags } = parseTags(
         siteData?.tags?.map((tag) => ({ name: tag })) ?? [{ name: "" }]
       );
+
+      if(removedTags){
+        await prisma.siteTags.deleteMany({where: {siteID: siteData.id, tagID: {in: removedTags} }})
+      }
+      if(updatedTags){
+        await prisma.siteTags.updateMany({where: {siteID: siteData.id, tagID: {in: updatedTags}}, data: {status: newTagStatus}})
+      }
 
       const update = await prisma.sites.update({
         where: { id: siteData.id },
@@ -50,10 +60,11 @@ export const post: APIRoute = async function post({ request }) {
                 tag: {
                   connectOrCreate: {
                     where: { tag: tag },
-                    create: { tag: tag },
+                    create: { tag: tag,},
                   },
                 },
                 assigner: { connect: { id: assigner } },
+
               }
             })),
           },

@@ -1,4 +1,3 @@
-import React from "react";
 
 const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
   return (

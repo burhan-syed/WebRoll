@@ -3,6 +3,7 @@ const {
   pageTitle = "WebRoll",
   noScrollBar = false,
   noFooter = false,
+  noProse = false,
 } = Astro.props;
 import NavBar from "../components/NavBar.astro";
 ---
@@ -26,7 +27,7 @@ import NavBar from "../components/NavBar.astro";
           <NavBar />
         </nav>
         <main
-          class="prose prose-headings:font-extralight min-w-full bg-base-300 min-h-screen flex flex-col"
+          class={(noProse ? "" : " prose prose-headings:font-light " ) + " min-w-full bg-base-300 min-h-screen flex flex-col"}
         >
           <div class="h-0 md:h-20"></div>
           <div class="flex-grow flex flex-col">
@@ -48,8 +49,8 @@ import NavBar from "../components/NavBar.astro";
       <ul
         class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
       >
-        <li><a href="/explore">Explore Sites</a></li>
-        <li><a href="/submit">Submit a Site</a></li>
+        <li><a rel="prefetch" href="/explore">Explore Sites</a></li>
+        <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
         <li><a>About</a></li>
       </ul>
     </div>
