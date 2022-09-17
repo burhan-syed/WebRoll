@@ -5,7 +5,7 @@ const SitePage = ({
   siteImgURL,
   siteData,
 }: {
-  siteImgURL: string;
+  siteImgURL: string | undefined | null;
   siteData: SiteResDataWithLikes;
 }) => {
   return (

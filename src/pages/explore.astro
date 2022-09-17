@@ -1,5 +1,6 @@
 ---
 // Component Imports
+import { getImage } from "@astrojs/image";
 import ExplorePage from "../components/ExplorePage";
 import NavBar from "../components/NavBar.astro";
 import { getSignedImageUrl } from "../server/aws/bucket";
@@ -31,6 +32,9 @@ const sites = await prisma.sites.findMany({
 let siteImgURL = "";
 if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
   siteImgURL = await getSignedImageUrl(sites?.[0]?.imgKey as string);
+  const {src} = await getImage({format: 'webp', quality: 80, width: 1080, height: 1920, src: siteImgURL, fit: 'outside'})
+  if(src) siteImgURL = src; 
+
 }
 console.log("random sites:", sites);
 // Full Astro Component Syntax:

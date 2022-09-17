@@ -178,9 +178,7 @@ export const post: APIRoute = async function post({ request }) {
       console.log("Create:", create);
       try{
         const res = fetch(
-          isPROD
-            ? `${parseDomain}/api/parse`
-            : "http://localhost:3001/api/parse",
+          parseDomain,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -12,6 +12,7 @@
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\""
   },
   "devDependencies": {
+    "@astrojs/image": "^0.7.0",
     "@astrojs/react": "^1.1.1",
     "@astrojs/tailwind": "^1.0.0",
     "@astrojs/vercel": "^1.0.2",
