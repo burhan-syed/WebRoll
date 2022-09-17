@@ -1,6 +1,7 @@
 ---
 import Button from '../../components/ui/buttons/Button'
 import BgImage from '../../components/ui/BgImage'
+import {ExternalLink} from 'react-feather'
 import MainLayout from "../../layouts/MainLayout.astro";
 import { getSignedImageUrl } from "../../server/aws/bucket";
 import prisma from "../../server/utils/prisma";
@@ -108,8 +109,6 @@ if(siteImgURL){
                 {site.description}
               </p>
             )}
-
-            {/* <div class="py-2"></div> */}
             <div
               class={
                 " rounded-none shadow-inner h-[50vh] lg:h-auto lg:flex-grow bg-neutral w-full lg:w-2/3 xl:w-3/4 relative " +
@@ -125,24 +124,6 @@ if(siteImgURL){
               ) : (
                 <div class="flex items-center justify-center h-[50vh] lg:h-full overflow-hidden">
                   {siteImgURL ? (
-                    // <>
-                    //   <img
-                    //     class="aspect-video max-h-[50vh] lg:max-h-[80vh] z-10 shadow"
-                    //     src={siteImgURL}
-                    //     alt=""
-                    //   />
-                    //   <img
-                    //     class="w-full h-full absolute blur-3xl brightness-[0.8] "
-                    //     src={siteImgURL}
-                    //     alt=""
-                    //   />
-                    //   <span
-                    //     class="absolute bottom-2 text-xs text-white text-opacity-50 "
-                    //     style={{ textShadow: "0px 1px #FFFFFF20" }}
-                    //   >
-                    //     embed unavailable, displaying screenshot
-                    //   </span>
-                    // </>
                     <BgImage src={siteImgURL} client:load/>
                   ) : (
                     <span
@@ -163,6 +144,7 @@ if(siteImgURL){
                   class="link link-primary flex items-center gap-2 max-w-full"
                 >
                   <span class="truncate">{site.url}</span>
+                  <ExternalLink size={15} />
                 </a>
               </span>
               <p class="pt-0 hidden lg:block order-2 ">
@@ -242,6 +224,7 @@ if(siteImgURL){
                     class="link link-primary flex items-center gap-2 max-w-full"
                   >
                     <span class="truncate">{site.url}</span>
+                    <ExternalLink size={15} />
                   </a>
                 </span>
                 <Button client:load styles={"btn-ghost btn-active w-full gap-2 btn-sm "} type={"share"}/>

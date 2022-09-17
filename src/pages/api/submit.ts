@@ -57,7 +57,6 @@ export const post: APIRoute = async function post({ request }) {
 
   const { cleanedTags, invalidTags } = parseTags(tags);
 
-  //console.log(cleanedTags);
   if (invalidTags.length > 0) {
     return new Response(
       JSON.stringify({
@@ -69,11 +68,9 @@ export const post: APIRoute = async function post({ request }) {
     );
   }
   try {
-    //console.log("URL:", baseUrl);
     const response = await fetch(baseUrl);
     const resURL = response.url;
     const xFrameOptions = response.headers?.get("X-Frame-Options");
-    //console.log("headers?", response.headers, xFrameOptions );
     const allowEmbed = !(
       xFrameOptions === "DENY" ||
       xFrameOptions === "SAMEORIGIN" ||
@@ -113,21 +110,10 @@ export const post: APIRoute = async function post({ request }) {
 
     const siteID = generateId();
 
-    // console.log("res?", res);
-
-    // if (!res.ok) {
-    //   return new Response(JSON.stringify({ ERROR: "couldn't parse site" }), {
-    //     status: 500,
-    //   });
-    // }
-
-    // const data = await res.json();
-    // console.log("data:", data);
-    // const { description, title, imgKey } = data;
-
     const { description, title } = await parseMetadata(response);
     console.log("metadata", siteID, description, title);
     try {
+      //await prisma.$transaction(cleanedTags.map((tag:string) => prisma.tags.upsert({where: {tag: tag}, create: {tag: tag, sites: {connectOrCreate: {where: {siteID_tagID}}}}})))
       const create = await prisma.sites.create({
         data: {
           id: siteID,
@@ -143,27 +129,18 @@ export const post: APIRoute = async function post({ request }) {
           tags: {
             connectOrCreate: cleanedTags.map((tag: string) => ({
               where: { siteID_tagID: { siteID: siteID, tagID: tag } },
-              // connect: {tag: {connect: {tag: tag}, assigner: {connect: {id: sessionID}}}},
               create: {
-                tag: { create: { tag: tag } },
-                // site: { connect: { id: siteId } },
+                tag: {
+                  connectOrCreate: {
+                    where: { tag: tag },
+                    create: { tag: tag },
+                  },
+                },
                 assigner: { connect: { id: sessionID } },
               },
             })),
           },
         },
-        // select: {
-        //   id: true,
-        //   url: true,
-        //   name: true,
-        //   description: true,
-        //   status: true,
-        //   imgKey: true,
-        //   allowEmbed: true,
-        //   sourceLink: true,
-        //   categories: { select: { category: true, description: true } },
-        //   tags: { select: { tag: true } },
-        // },
         select: {
           id: true,
           imgKey: true,
@@ -176,24 +153,21 @@ export const post: APIRoute = async function post({ request }) {
         },
       });
       console.log("Create:", create);
-      try{
-        const res = fetch(
-          parseDomain,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              url: resURL,
-              key: key,
-              siteID: siteID,
-              assigner: sessionID,
-            }),
-          }
-        );
-      }catch(err){
-        console.error("pasre post error", err)
+      try {
+        const res = fetch(parseDomain, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url: resURL,
+            key: key,
+            siteID: siteID,
+            assigner: sessionID,
+          }),
+        });
+      } catch (err) {
+        console.error("parse post error", err);
       }
-      
+
       return new Response(JSON.stringify({ data: { ...create } }), {
         status: 200,
       });
