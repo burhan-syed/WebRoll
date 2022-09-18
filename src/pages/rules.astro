@@ -1,0 +1,110 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+const Rules = {
+  Allowed: [
+    {
+      heading: "Something you made",
+      span: "As long as it doesn't break any rules we welcome sites you have made",
+    },
+    {
+      heading: "Something Interesting",
+      span: "Sites that make you think, offer great material to browse and read, or are great educational references.",
+    },
+    {
+      heading: "Something Beautiful",
+      span: "Sites that are well designed or are otherwise appealing.",
+    },
+    {
+      heading: "Something Unique",
+      span: "Sites that are one of a kind.",
+    },
+    {
+      heading: "Something Useful",
+      span: "Sites that are great resources and are worthwhile to share with others.",
+    },
+    {
+      heading: "Something Fun",
+      span: "Sites that can pass the time. For example, exceptional collections, browser games, or demos.",
+    },
+  ],
+  NotAllowed: [
+    {
+      heading: "Individual pages, blog posts, or news articles",
+      span: "We only index full hostnames. That means a submission should represent a site as a whole. For example, a submission of webroll.com/rules will be indexed as webroll.com.",
+    },
+    {
+      heading: "Low quality",
+      span: "Sites that are uninspired, lacking material, unfinished, have excessive advertising, or are otherwise low quality.",
+    },
+    {
+      heading: "Misleading or Malicious",
+      span: "Nothing that may lead a user to unwanted downloads, popups, alerts, or malicious forms.",
+    },
+    {
+      heading: "Blocked or Paywalled Content",
+      span: "Sites that require payment or registration to access content will generally not be accepted. Exceptions may be made for exceptional landing pages.",
+    },
+    {
+      heading: "Anything illegal or containing, hatespeech, pornography, or graphic content",
+      span: "",
+    },
+  ],
+};
+---
+
+<MainLayout>
+  <div
+    class="bg-neutral flex-grow"
+    style={{
+      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+      backgroundSize: `5px 5px`,
+    }}
+  >
+    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
+      <div
+        class="bg-base-100/90 backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
+      >
+        <h1 class="text-3xl">Submission Rules</h1>
+        <p class="text-sm font-light ">
+          We review all submitted sites before they can be discovered on
+          WebRoll. <br/>No account is necessary but repeated submissions breaking the
+          following rules will get your access restricted.<br />
+          You can submit a new site <a href="/submit">here</a> for us to review.
+        </p>
+      </div>
+      <div
+        class="bg-base-100/90 backdrop-blur-md border border-success rounded-lg w-full p-4 shadow-lg"
+      >
+        <h1 class="text-2xl">Allowed</h1>
+        <ul class="">
+          {
+            Rules.Allowed.map((rule) => (
+              <li>
+                {rule.heading}
+                <br />
+                <span class="text-xs leading-tight">{rule.span}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div
+        class="bg-base-100/90 backdrop-blur-md border border-error rounded-lg w-full p-4 shadow-lg"
+      >
+        <h1 class="text-2xl">Not Allowed</h1>
+        <ul class="">
+          {
+            Rules.NotAllowed.map((rule) => (
+              <li>
+                {rule.heading}
+                <br />
+                <span class="text-xs">{rule.span}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</MainLayout>
