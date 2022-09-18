@@ -4,36 +4,42 @@ import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
 const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get('cookie'); 
-const r = await checkAndReturnSessionID(userIp, cookie); 
-console.log("cookie?", cookie); 
-console.log("response", r)
+const cookie = Astro.request.headers.get("cookie");
+const r = await checkAndReturnSessionID(userIp, cookie);
+console.log("cookie?", cookie);
+console.log("response", r);
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<script is:inline define:vars={{r}}>
-  document.cookie = "webroll_session=" + r + ";"
+<script is:inline define:vars={{ r }}>
+  document.cookie = "webroll_session=" + r + ";";
 </script>
 
 <MainLayout siteTile={"Submit | WebRoll"}>
-  <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
-    <div
-      class="bg-base-100 border border-base-300 rounded-lg w-full p-4 shadow-lg"
-    >
-      <h1 class="text-3xl">Site Submission</h1>
-      <p class="text-sm font-light py-0 my-0">
-        Sites will be reviewed after submission. In general, we only accept high
-        quality websites that are distinctly beautiful, useful, or interesting.
-        Sites must use the HTTPS protocol. <br />
-        <span
-          >We do not allow sites containing or promoting illegal activity,
-          hatespeech, pornography, graphic content, or highly controversial
-          content.</span
-        ><br />We only index hostnames. Any provided path will be omitted.
-      </p>
+  <div
+    class="bg-neutral flex-grow"
+    style={{
+      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+      backgroundSize: `5px 5px`,
+    }}
+  >
+    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
+      <div
+        class="bg-base-100/90  backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
+      >
+        <h1 class="text-3xl">Site Submission</h1>
+        <p class="text-sm font-light ">
+          Do you know of a cool site we haven't added to our collection? Submit
+          it here for us to review.<br />Please read our <a rel="preload" href="/rules">submission rules</a>
+          prior to submitting.
+          <br />
+          Do note, we only index hostnames. That means any path submitted in the
+          url will be trimmed.
+        </p>
+      </div>
+      <SubmissionPage client:load userIp={userIp} sessionID={r} />
     </div>
-    <SubmissionPage client:load userIp={userIp} sessionID={r} />
   </div>
 </MainLayout>

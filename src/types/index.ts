@@ -26,6 +26,7 @@ export interface minSiteResData {
     name: string,
     description: string | null,
     allowEmbed: boolean,
+    status: SiteStatus;
     categories: { category: string; }[],
   
 }

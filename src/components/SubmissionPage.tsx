@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { SiteResData } from "../types";
 import SiteSubmit from "./forms/SiteSubmit";
 import SiteCard from "./SiteCard";
 
-const SubmissionPage = ({ userIp, sessionID }: { userIp: string, sessionID: string }) => {
+const SubmissionPage = ({
+  userIp,
+  sessionID,
+}: {
+  userIp: string;
+  sessionID: string;
+}) => {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
     console.log("submit:", submission);
@@ -14,30 +20,35 @@ const SubmissionPage = ({ userIp, sessionID }: { userIp: string, sessionID: stri
     <>
       {submissions.length > 0 ? (
         <>
-          {/* <div className="rounded-lg border border-base-300 shadow-lg bg-base-100 ">
-            <SiteCard
-              url="https://test.com"
-              name="test name"
-              categories={[{ category: "category", description: "" }]}
-              description="site description"
-              tags={[{ tag: "tag1" }, { tag: "tag2" }, { tag: "tag3" }]}
-              status="REVIEW"
-            />
-          </div> */}
           {submissions.map((submission) => (
-            <div className="rounded-lg border border-base-300 shadow-lg bg-base-100 ">
+            <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
+              <div className="my-5"></div>
+
               <SiteCard {...submission} />
+              <div className="my-5"></div>
+              <span className="w-full flex items-center justify-center">
+                You should be redirected soon. If nothing is happening click
+                <a href={`/sites/${submission.id}`}>{" here "}</a>to view the site
+                page.
+              </span>
             </div>
           ))}
-          <div className="rounded-lg border border-base-300 shadow-lg p-4 bg-base-100  ">
-            <button onClick={() => setSubmissions([])} className="btn btn-primary text-base-100 shadow-xl w-full">
+          <div className="rounded-lg border border-base-300 shadow-lg p-4 bg-base-100/90  backdrop-blur-md  ">
+            <button
+              onClick={() => setSubmissions([])}
+              className="btn btn-primary text-base-100 shadow-xl w-full"
+            >
               Submit Another Site
             </button>
-          </div>{" "}
+          </div>
         </>
       ) : (
-        <div className="rounded-lg border border-base-300 shadow-lg bg-base-100 ">
-          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} sessionID={sessionID} />
+        <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
+          <SiteSubmit
+            userIP={userIp}
+            returnSubmissions={returnSubmissions}
+            sessionID={sessionID}
+          />
         </div>
       )}
     </>

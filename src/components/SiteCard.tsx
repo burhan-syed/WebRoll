@@ -1,20 +1,13 @@
-import React from "react";
-import { Share, ExternalLink } from "react-feather";
+import { Share, ExternalLink, Search } from "react-feather";
 import type { SiteResData } from "../types";
 import SecureImg from "./ui/SecureImg";
-// interface Props{
-//   url:string,
-//   name:string,
-//   description?:string,
-//   categories: {category:string,description:string}[],
-//   tags: {tag:string}[]
-// }
+
 const SiteCard = ({
+  id,
   url,
   name,
   description,
   categories,
-  tags,
   imgKey,
   status,
 }: SiteResData) => {
@@ -38,50 +31,61 @@ const SiteCard = ({
                   ? " badge-primary "
                   : status === "APPROVED"
                   ? " badge-success "
-                  : status === "QUARANTINE"
+                  : status === "REPORTED" || status === "PARSING"
                   ? " badge-warning "
                   : status === "BANNED"
                   ? " badge-error "
                   : " badge-error-content ")
               }
             >
-              {status === "REVIEW"
-                ? "IN REVIEW"
-                : status === "APPROVED"
-                ? "APPROVED"
-                : status === "QUARANTINE"
-                ? "QUARANTINE"
-                : status === "BANNED"
-                ? "BANNED"
-                : "?"}
+              {status}
             </span>
           </h1>
-          <span className="">
+          <span className="flex w-full items-center justify-between gap-2 pb-2">
+            <span className="text-md font-semibold ">
+              {categories[0].category}
+            </span>
             <a
               href={url}
               target={"_blank"}
-              className="link link-primary flex items-centergap-2"
+              className="link link-primary flex items-center gap-2"
             >
-              {url}
+              <span className="max-w-md truncate">{url}</span>
               <ExternalLink size={15} />
             </a>
           </span>
           {imgKey && (
-            <div className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh]">
-              <SecureImg imgKey={imgKey} styles={"rounded-md my-0 aspect-video "} />
+            <div
+              style={{
+                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+                backgroundSize: `5px 5px`,
+              }}
+              className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh]"
+            >
+              <SecureImg
+                imgKey={imgKey}
+                styles={"rounded-md my-0 aspect-video "}
+              />
             </div>
           )}
-          <span className="text-md font-semibold pb-2">
-            {categories[0].category}
-          </span>
+
           {description && (
             <p className="pb-4 font-light text-sm">{description}</p>
           )}
-          <div className="flex items-center w-full justify-between gap-1">
+          <div className="my-4"></div>
+          <div className="flex flex-col items-center w-full justify-between gap-4">
             <button className="btn btn-ghost btn-active w-full gap-2 btn-sm ">
               <Share size={15} />
               Share
             </button>
+            <a
+              href={`/site/${id}`}
+              target={"_blank"}
+              className="btn btn-ghost btn-active w-full gap-2 btn-sm "
+            >
+              <Search size={15} />
+              Page
+            </a>
           </div>
         </div>
       </div>

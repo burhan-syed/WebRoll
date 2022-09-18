@@ -87,8 +87,8 @@ export const post: APIRoute = async function post({ request }) {
           name: true,
           description: true,
           allowEmbed: true,
+          status: true,
           categories: { select: { category: true } },
-          likes: { where: { sessionId: sessionID } },
         },
       });
       if (pData) {
@@ -148,18 +148,18 @@ export const post: APIRoute = async function post({ request }) {
           name: true,
           description: true,
           allowEmbed: true,
+          status: true,
           categories: { select: { category: true } },
-          likes: { where: { sessionId: sessionID } },
         },
       });
       console.log("Create:", create);
       try {
-        console.log("send to", parseDomain,{
-          url: resURL,
-          key: key,
-          siteID: siteID,
-          assigner: sessionID,
-        }); 
+        // console.log("send to", parseDomain,{
+        //   url: resURL,
+        //   key: key,
+        //   siteID: siteID,
+        //   assigner: sessionID,
+        // }); 
         const res = fetch(parseDomain, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

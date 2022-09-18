@@ -107,14 +107,14 @@ const categories = [
 
 export default function SiteSubmit({
   userIP,
-  sessionID, 
+  sessionID,
   returnSubmissions = (a: SiteResData) => {},
 }: {
   userIP: string;
   sessionID: string;
   returnSubmissions: Function;
 }) {
-  const submitButton = useRef<HTMLButtonElement>(null); 
+  const submitButton = useRef<HTMLButtonElement>(null);
   const {
     register,
     control,
@@ -141,20 +141,20 @@ export default function SiteSubmit({
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
   useEffect(() => {
-    if(captchaValue){
-      clearErrors("captchaToken"); 
-      //formRef?.current?.submit();
+    if (captchaValue) {
+      clearErrors("captchaToken");
       console.log("submit?");
-      submitButton.current?.click(); 
-      //handleSubmit(onFormSubmit); 
-
+      submitButton.current?.click();
     }
-  }, [captchaValue])
-  
+  }, [captchaValue]);
+
   const captchaRef = useRef<HCaptcha>(null);
   const [prevSubmission, setPrevSubmission] = useState<SiteResData>();
   const [formError, setFormError] = useState("");
   const onFormSubmit = async (data: SiteFormData) => {
+    clearErrors();
+    setFormError("");
+    setPrevSubmission(undefined);
     console.log("f?", data);
     setFormSubmitLoading(true);
     if (captchaValue) {
@@ -162,7 +162,11 @@ export default function SiteSubmit({
       console.log("captcha:", captchaValue);
       try {
         const res = await fetch("/api/submit", {
-          body: JSON.stringify({ ...data, userIP: userIP, sessionID: sessionID }),
+          body: JSON.stringify({
+            ...data,
+            userIP: userIP,
+            sessionID: sessionID,
+          }),
           method: "post",
         });
         const resData = await res.json();
@@ -171,11 +175,8 @@ export default function SiteSubmit({
           if (res.ok) {
             setPrevSubmission(undefined);
             clearErrors();
-            window.location.href = `/site/${resData.data.id}`
+            window.location.href = `/site/${resData.data.id}`;
             returnSubmissions(resData.data);
-            // setSubmissions((s) =>
-            //   s && s?.length > 0 ? [resData.data, ...s] : [resData.data]
-            // );
           } else if (resData?.["ERROR"]) {
             setError("url", { type: "siteExists" });
             setFormError(`${resData?.["ERROR"]}:`);
@@ -250,7 +251,6 @@ export default function SiteSubmit({
   return (
     <>
       <form
-        //ref={formRef}
         action=""
         onSubmit={handleSubmit(onFormSubmit)}
         className=" flex flex-col gap-4 min-w-full flex-1 px-4 rounded-lg"
@@ -325,7 +325,7 @@ export default function SiteSubmit({
         <>
           <div className="">
             <h2 className="mb-0 pb-0 flex items-baseline justify-between flex-wrap">
-              Site Tags<span className="text-sm">Site Topics & Content</span>
+              Site Tags<span className="text-sm">Site Topics & Keywords</span>
             </h2>
             {fields.map((field, index) => (
               <div key={field.name}>
@@ -353,15 +353,15 @@ export default function SiteSubmit({
                         <span className="label-text-alt text-error">
                           20 maximum tags
                         </span>
-                      ) : (
-                        errors.tags?.type === "minAmount" ? (
-                          <span className="label-text-alt text-error">
-                            enter at least 3 tags
-                          </span>
-                        ) : cTags.length < 20 && (
-                          <span className="label-text-alt text-primary">
-                          you can enter more
+                      ) : errors.tags?.type === "minAmount" ? (
+                        <span className="label-text-alt text-error">
+                          enter at least 3 tags
                         </span>
+                      ) : (
+                        cTags.length < 20 && (
+                          <span className="label-text-alt text-primary">
+                            you can enter more
+                          </span>
                         )
                       )}
                     </label>
@@ -552,7 +552,7 @@ export default function SiteSubmit({
                   "border border-base-content shadow-xl text-sm  rounded-md p-4 "
                 }
               >
-                {`A link to the source code for the site. For example, from GitHub or sourcehut.`}
+                {`A link to the source code for the site or its primary product.`}
               </p>
             </div>
           </div>
@@ -561,17 +561,19 @@ export default function SiteSubmit({
           <HCaptcha
             size="invisible"
             sitekey={
-              import.meta.env.MODE === "production" 
+              import.meta.env.MODE === "production"
                 ? "39185a62-e29f-441d-8be0-b2989f326879"
                 : "10000000-ffff-ffff-ffff-000000000001"
             }
             ref={captchaRef}
-            onError={(e) => {console.log("captcha error",e)}}
+            onError={(e) => {
+              console.log("captcha error", e);
+            }}
             onVerify={(t) => {
-              console.log(t); 
+              console.log(t);
               setValue("captchaToken", t);
               //setFormSubmitLoading(false);
-              //formRef.current?.submit(); 
+              //formRef.current?.submit();
             }}
             onExpire={() => setValue("captchaToken", "")}
           />
@@ -582,19 +584,11 @@ export default function SiteSubmit({
           </span>
         )} */}
         <button
-          // onClick={(e) => {
-          //   if (!captchaValue) {
-          //     e.preventDefault();
-          //     e.stopPropagation();
-          //     captchaRef.current?.execute();
-          //     console.log("CAPTHA!");
-          //   }
-          // }}
           ref={submitButton}
           className={
-            "btn btn-primary text-base-100 shadow-xl " +
+            "btn btn-primary text-base-100 shadow-xl  " +
             (formError ? "" : " mb-12 ") +
-            (errors.captchaToken?.type === "required" ? "" : " mt-10 ") +
+            (errors.captchaToken?.type === "required" ? "mt-10" : " mt-10 ") +
             (formSubmitLoading ? " loading " : "")
           }
           type={"submit"}
@@ -605,8 +599,28 @@ export default function SiteSubmit({
           {formError}
         </span>
       </form>
-      {prevSubmission && <SiteCard {...prevSubmission} />}
-      <DevTool control={control} />
+      {prevSubmission && (
+        <>
+          <div className="my-10">
+            <SiteCard {...prevSubmission} />
+            <div className="p-4">
+            <button
+              onClick={() => {
+                setFormError("");
+                setPrevSubmission(undefined);
+                reset();
+              }}
+              className="btn btn-primary w-full"
+            >
+              Reset
+            </button>
+            </div>
+        
+          </div>
+        </>
+      )}
+
+      {/* <DevTool control={control} /> */}
     </>
   );
 }
