@@ -9,6 +9,7 @@ import {
   Search,
 } from "react-feather";
 import type { minSiteResDataWithLikes } from "../../types";
+import Button from "./buttons/Button";
 
 import DiceButton from "./buttons/DiceButton";
 
@@ -140,10 +141,16 @@ export default function ExploreNavBar({
               )}
 
               <div className="flex items-center w-full justify-between gap-1">
-                <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
+                {/* <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
                   <Share size={15} />
                   Share
-                </button>
+                </button> */}
+                <Button
+                  styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm  "}
+                  type={"share"}
+                  site={site}
+                  tooltipLocation={"top"}
+                />
                 <a
                   href={`/site/${site.id}`}
                   target={"_blank"}
@@ -152,10 +159,12 @@ export default function ExploreNavBar({
                   <Search size={15} />
                   Page
                 </a>
-                <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
+                <Button styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm "} type={"report"} site={site}/>
+
+                {/* <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
                   <Flag size={15} />
                   Report
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

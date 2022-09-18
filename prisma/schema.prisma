@@ -98,7 +98,7 @@ model Reports {
   user Sessions @relation(fields: [sessionId], references: [id])
   site Sites @relation(fields: [siteId], references: [id])
 
-  @@unique([siteId, ip])
+  @@unique([siteId, sessionId])
 }
 
 model Tags {

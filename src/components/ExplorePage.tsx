@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ExploreNavBar from "./ui/ExploreNavBar";
 import type { minSiteResDataWithLikes } from "../types";
 import BgImage from "./ui/BgImage";
+import ReportModal from "./ui/ReportModal";
 
 export default function ExplorePage({
   initialSites,
@@ -150,7 +151,7 @@ export default function ExplorePage({
                     <div className="card-actions justify-center md:justify-end mt-2">
                       {/* <a href={`/site/${sites[index].id}`} className="btn">View Page</a> */}
                       <a href={sites[index].url} className="btn btn-primary">
-                        Visit Page
+                        Visit Site
                       </a>
                     </div>
                   </div>
@@ -164,6 +165,7 @@ export default function ExplorePage({
 
         <div className="md:h-0 h-20"></div>
       </main>
+      <ReportModal sessionID={session} siteID={sites[index].id}/>
     </>
   );
 }

@@ -2,7 +2,7 @@
 // Component Imports
 import { getImage } from "@astrojs/image";
 import ExplorePage from "../components/ExplorePage";
-import NavBar from "../components/NavBar.astro";
+import NavBar from "../components/ui/NavBar.astro";
 import { getSignedImageUrl } from "../server/aws/bucket";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
 import prisma from "../server/utils/prisma";
@@ -25,6 +25,7 @@ const sites = await prisma.sites.findMany({
     name: true,
     description: true,
     allowEmbed: true,
+    status: true,
     categories: { select: { category: true} },
     likes: {where: {sessionId: r}}
   },
