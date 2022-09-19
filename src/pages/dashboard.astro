@@ -1,0 +1,15 @@
+---
+import {getUser, redirectUser} from '@astro-auth/core'
+import Logout from '../components/auth/Logout'
+import MainLayout from '../layouts/MainLayout.astro';
+const user = getUser({client: Astro})
+console.log("user?", user); 
+if(!user){
+  return redirectUser("/signin");
+}
+---
+
+<MainLayout>
+  dashboard
+  <Logout client:load/>
+</MainLayout>

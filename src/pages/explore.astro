@@ -9,8 +9,6 @@ import prisma from "../server/utils/prisma";
 const userIp = Astro.clientAddress;
 const cookie = Astro.request.headers.get('cookie'); 
 const r = await checkAndReturnSessionID(userIp, cookie); 
-console.log("cookie?", cookie); 
-console.log("response", r)
 const allSitesCount = await prisma.sites.count({
   where: { status: "APPROVED" },
 });
@@ -37,7 +35,7 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
   if(src) siteImgURL = src; 
 
 }
-console.log("random sites:", sites);
+//console.log("random sites:", sites);
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---

@@ -38,6 +38,9 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
+    "@astro-auth/client": "^1.0.5",
+    "@astro-auth/core": "^1.0.12",
+    "@astro-auth/providers": "^1.0.6",
     "@aws-sdk/client-s3": "^3.165.0",
     "@aws-sdk/cloudfront-signer": "^3.162.0",
     "@aws-sdk/s3-request-presigner": "^3.165.0",

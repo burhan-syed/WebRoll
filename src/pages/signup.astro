@@ -1,0 +1,28 @@
+---
+import { getUser, redirectUser } from "@astro-auth/core";
+import MainLayout from "../layouts/MainLayout.astro";
+import LoginForm from "../components/forms/LoginForm";
+const user = getUser({ client: Astro });
+console.log("signup user?", user);
+if (user) {
+  return redirectUser("/dashboard");
+}
+---
+
+<MainLayout>
+  <div
+    class="flex flex-col items-center justify-center flex-grow bg-neutral"
+    style={{
+      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+      backgroundSize: `5px 5px`,
+    }}
+  >
+    <div
+      class="flex flex-col gap-10 bg-base-200 rounded-md p-4 w-full max-w-xl"
+    >
+      <h1>Create an Account</h1>
+      <LoginForm signUp={true} client:load />
+      <a class="btn no-underline" href="/signin">Sign In Instead</a>
+    </div>
+  </div>
+</MainLayout>

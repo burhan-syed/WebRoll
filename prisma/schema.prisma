@@ -139,9 +139,18 @@ model Sessions {
   ip        String   @db.VarChar(45)
   role SessionRole @default(USER)
 
-
+  accountID String?
+  account Accounts? @relation(fields: [accountID], references: [email])
+  
   sites Sites[]
   tags SiteTags[]
   likes Likes[]
   reports Reports[]
+}
+
+model Accounts {
+  email String @id @unique @db.VarChar(254)
+  password String @db.VarChar(254)
+
+  sessions Sessions[]
 }
