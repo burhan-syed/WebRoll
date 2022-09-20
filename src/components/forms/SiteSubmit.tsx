@@ -107,11 +107,9 @@ const categories = [
 
 export default function SiteSubmit({
   userIP,
-  sessionID,
   returnSubmissions = (a: SiteResData) => {},
 }: {
   userIP: string;
-  sessionID: string;
   returnSubmissions: Function;
 }) {
   const submitButton = useRef<HTMLButtonElement>(null);
@@ -165,7 +163,6 @@ export default function SiteSubmit({
           body: JSON.stringify({
             ...data,
             userIP: userIP,
-            sessionID: sessionID,
           }),
           method: "post",
         });

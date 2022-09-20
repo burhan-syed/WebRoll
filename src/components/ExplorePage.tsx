@@ -8,11 +8,9 @@ export default function ExplorePage({
   initialSites,
   initialSiteImgURL,
   ip,
-  session,
 }: {
   initialSites: minSiteResDataWithLikes[];
   ip: string;
-  session: string;
   initialSiteImgURL: string;
 }) {
   const [sites, setSites] = useState(() => initialSites);
@@ -59,7 +57,7 @@ export default function ExplorePage({
       let more = (
         await (
           await fetch("/api/random", {
-            body: JSON.stringify({ userIP: ip, sessionID: session }),
+            body: JSON.stringify({ userIP: ip}),
             method: "post",
           })
         ).json()
@@ -80,7 +78,7 @@ export default function ExplorePage({
     setSitesAdvanced((pSites) => {
       if (!pSites.has(site.id)) {
         fetch("/api/update-view", {
-          body: JSON.stringify({ siteID: site.id, sessionID: session }),
+          body: JSON.stringify({ siteID: site.id }),
           method: "post",
         });
       }
@@ -105,7 +103,6 @@ export default function ExplorePage({
           advance={advance}
           advanced={advanced}
           ip={ip}
-          sessionID={session}
         />
       </nav>
       {/* <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
@@ -165,7 +162,7 @@ export default function ExplorePage({
 
         <div className="md:h-0 h-20"></div>
       </main>
-      <ReportModal sessionID={session} siteID={sites[index].id}/>
+      <ReportModal siteID={sites[index].id}/>
     </>
   );
 }

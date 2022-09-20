@@ -6,16 +6,12 @@ import { checkAndReturnSessionID } from "../server/utils/handleSession";
 const userIp = Astro.clientAddress;
 const cookie = Astro.request.headers.get("cookie");
 const r = await checkAndReturnSessionID(userIp, cookie);
-console.log("cookie?", cookie);
-console.log("response", r);
+Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
+
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
-
-<script is:inline define:vars={{ r }}>
-  document.cookie = "webroll_session=" + r + ";";
-</script>
 
 <MainLayout siteTile={"Submit | WebRoll"}>
   <div
@@ -39,7 +35,7 @@ console.log("response", r);
           url will be trimmed.
         </p>
       </div>
-      <SubmissionPage client:load userIp={userIp} sessionID={r} />
+      <SubmissionPage client:load userIp={userIp} />
     </div>
   </div>
 </MainLayout>

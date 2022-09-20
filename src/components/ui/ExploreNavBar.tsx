@@ -17,7 +17,6 @@ interface NavBarProps {
   site: minSiteResDataWithLikes;
   advance: Function;
   advanced: number;
-  sessionID: string;
   ip: string;
 }
 
@@ -25,7 +24,6 @@ export default function ExploreNavBar({
   site,
   advance,
   advanced,
-  sessionID,
   ip,
 }: NavBarProps) {
   const [showInfo, setShowInfo] = useState(false);
@@ -42,7 +40,6 @@ export default function ExploreNavBar({
       fetch("/api/update-likes", {
         body: JSON.stringify({
           siteID: site.id,
-          sessionID: sessionID,
           ip,
           direction: !l,
         }),

@@ -1,10 +1,13 @@
 import type { APIRoute } from "astro";
+import parseCookie from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
 export const post: APIRoute = async function post({ request }) {
-  console.log(request.headers);
+  const sessionID =   parseCookie(request.headers.get("cookie") ?? "")?.[
+    "webroll_session"
+  ];
   const data = await request.json();
   const ip = "";
-  const { siteID, sessionID, reportType } = data;
+  const { siteID, reportType } = data;
   if (!siteID || !sessionID || !reportType) {
     return new Response("invalid request", { status: 400 });
   }

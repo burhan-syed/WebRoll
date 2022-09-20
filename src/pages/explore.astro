@@ -9,6 +9,8 @@ import prisma from "../server/utils/prisma";
 const userIp = Astro.clientAddress;
 const cookie = Astro.request.headers.get('cookie'); 
 const r = await checkAndReturnSessionID(userIp, cookie); 
+Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
+
 const allSitesCount = await prisma.sites.count({
   where: { status: "APPROVED" },
 });
@@ -39,9 +41,6 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
-<script is:inline define:vars={{r}}>
-  document.cookie = "webroll_session=" + r + ";"
-</script>
 
 <html lang="en">
   <head>
@@ -62,7 +61,6 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
               initialSiteImgURL={siteImgURL}
               initialSites={sites}
               ip={userIp}
-              session={r}
               client:load
             />
           ) : (

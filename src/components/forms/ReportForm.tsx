@@ -6,10 +6,8 @@ interface ReportFormData {
   reportType: ReportType;
 }
 const ReportForm = ({
-  sessionID,
   siteID,
 }: {
-  sessionID: string;
   siteID: string;
 }) => {
   const options = [
@@ -41,7 +39,6 @@ const ReportForm = ({
       const res = await fetch("/api/report", {
         body: JSON.stringify({
           ...data,
-          sessionID: sessionID,
           siteID,
         }),
         method: "post",

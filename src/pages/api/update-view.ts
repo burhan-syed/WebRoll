@@ -1,8 +1,12 @@
 import type { APIRoute } from "astro";
+import parseCookie from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
-  const { siteID, sessionID } = data;
+  const sessionID = parseCookie(request.headers.get("cookie") ?? "")?.[
+    "webroll_session"
+  ];
+  const { siteID } = data;
   if (siteID && sessionID) {
     try {
       let session = await prisma.sessions.findFirst({where: {id: sessionID}});

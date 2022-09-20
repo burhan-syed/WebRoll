@@ -5,10 +5,8 @@ import SiteCard from "./SiteCard";
 
 const SubmissionPage = ({
   userIp,
-  sessionID,
 }: {
   userIp: string;
-  sessionID: string;
 }) => {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
@@ -47,7 +45,6 @@ const SubmissionPage = ({
           <SiteSubmit
             userIP={userIp}
             returnSubmissions={returnSubmissions}
-            sessionID={sessionID}
           />
         </div>
       )}

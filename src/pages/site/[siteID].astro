@@ -13,6 +13,8 @@ const { siteID } = Astro.params;
 const userIp = Astro.clientAddress;
 const cookie = Astro.request.headers.get("cookie");
 const r = await checkAndReturnSessionID(userIp, cookie);
+Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
+
 const site = await prisma.sites.findFirst({
   where: { id: siteID as string },
   select: {
@@ -56,9 +58,6 @@ if (siteImgURL) {
   noFooter={true}
   pageTitle={`${site?.name ? `${site.name} | ` : ""}WebRoll`}
   >
-  <script is:inline define:vars={{ r }}>
-    document.cookie = "webroll_session=" + r + ";";
-  </script>
   {
     site ? (
       <>
@@ -266,7 +265,7 @@ if (siteImgURL) {
             </div>
           </div>
         </div>
-        <ReportModal client:load sessionID={r} siteID={site.id} />
+        <ReportModal client:load siteID={site.id} />
 
       </>
     ) : (

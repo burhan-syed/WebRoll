@@ -3,20 +3,20 @@ import parseCookie from "../../../server/utils/parseCookieString";
 import { hashPassword } from "../../../server/utils/passwordHasher";
 import prisma from "../../../server/utils/prisma";
 export const post: APIRoute = async function post({ request }) {
-  const session = parseCookie(request.headers.get("cookie") ?? "")?.[
+  const sessionID = parseCookie(request.headers.get("cookie") ?? "")?.[
     "webroll_session"
   ];
 
   const data = await request.json();
   const { email, password } = data;
-  console.log("session?", session, "email?", email, "password?", password);
+  console.log("session?", sessionID, "email?", email, "password?", password);
 
-  if (!email || !password || !session) {
+  if (!email || !password || !sessionID) {
     return new Response(JSON.stringify({ ERROR: "invalid" }), { status: 400 });
   }
   try {
     const sessData = await prisma.sessions.findFirst({
-      where: { id: session },
+      where: { id: sessionID },
     });
     console.log("sess?", sessData); 
     if (!sessData || sessData?.role !== "ADMIN") {
@@ -37,7 +37,7 @@ export const post: APIRoute = async function post({ request }) {
       data: {
         email: email,
         password: hashed,
-        sessions: { connect: { id: session } },
+        sessions: { connect: { id: sessionID } },
       },
     });
     console.log("account?", account); 
