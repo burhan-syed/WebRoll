@@ -172,7 +172,7 @@ export default function SiteSubmit({
           if (res.ok) {
             setPrevSubmission(undefined);
             clearErrors();
-            window.location.href = `/site/${resData.data.id}`;
+            window.location.href = `/sites/${resData.data.id}`;
             returnSubmissions(resData.data);
           } else if (resData?.["ERROR"]) {
             setError("url", { type: "siteExists" });

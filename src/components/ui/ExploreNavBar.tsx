@@ -149,7 +149,7 @@ export default function ExploreNavBar({
                   tooltipLocation={"top"}
                 />
                 <a
-                  href={`/site/${site.id}`}
+                  href={`/sites/${site.id}`}
                   target={"_blank"}
                   className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm "
                 >

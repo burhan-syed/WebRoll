@@ -79,7 +79,7 @@ export default function SiteCard ({
               Share
             </button>
             <a
-              href={`/site/${id}`}
+              href={`/sites/${id}`}
               target={"_blank"}
               className="btn btn-ghost btn-active w-full gap-2 btn-sm "
             >

@@ -146,7 +146,6 @@ export default function ExplorePage({
                       {sites[index].description}
                     </p>
                     <div className="card-actions justify-center md:justify-end mt-2">
-                      {/* <a href={`/site/${sites[index].id}`} className="btn">View Page</a> */}
                       <a href={sites[index].url} className="btn btn-primary">
                         Visit Site
                       </a>

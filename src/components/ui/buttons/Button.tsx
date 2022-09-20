@@ -21,7 +21,7 @@ export default function Button({
         break;
       case "share":
         const domain = window.location.host;
-        const shareLink = `${domain}/site/${site.id}`;
+        const shareLink = `${domain}/sites/${site.id}`;
         const shareData = {
           title: site.name,
           text: "Learn web development on MDN!",

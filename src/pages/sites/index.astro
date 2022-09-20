@@ -1,8 +1,6 @@
 ---
-import SiteCard from "../components/SiteCard";
-import MainLayout from "../layouts/MainLayout.astro";
-import prisma from "../server/utils/prisma";
-const { siteID } = Astro.params;
+import MainLayout from "../../layouts/MainLayout.astro";
+import prisma from "../../server/utils/prisma";
 
 const sites = await prisma.sites.findMany({
   select: {
@@ -25,7 +23,7 @@ const sites = await prisma.sites.findMany({
     sites ? (
       <>
         {sites.map((site) => (
-          <a href={`/site/${site.id}`}>{site.name}</a>
+          <a href={`/sites/${site.id}`}>{site.name}</a>
         ))}
       </>
     ) : (
