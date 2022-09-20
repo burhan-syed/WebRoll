@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Flag, Share } from "react-feather";
 import type { minSiteResData } from "../../../types";
 
-const Button = ({
+export default function Button({
   type,
   label,
   styles,
@@ -14,7 +14,7 @@ const Button = ({
   styles?: string;
   tooltipLocation?: "top" | "bottom";
   site: minSiteResData;
-}) => {
+}) {
   const clickAction = async () => {
     switch (type) {
       case "report":
@@ -34,7 +34,7 @@ const Button = ({
           navigator.clipboard.writeText(shareLink);
         }
         setAlertMessage("link copied!");
-        setAlertTriggered(t => !t)
+        setAlertTriggered((t) => !t);
 
         break;
       default:
@@ -106,6 +106,4 @@ const Button = ({
       ></div>
     </button>
   );
-};
-
-export default Button;
+}

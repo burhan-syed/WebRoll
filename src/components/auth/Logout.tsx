@@ -1,8 +1,8 @@
 import { signOut } from "@astro-auth/client";
-const Logout = () => {
+export default function Logout() {
   return (
     <>
-        <button
+      <button
         onClick={() => {
           signOut("/");
         }}
@@ -10,7 +10,5 @@ const Logout = () => {
         Log Out
       </button>
     </>
-  )
+  );
 }
-
-export default Logout

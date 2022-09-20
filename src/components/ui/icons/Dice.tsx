@@ -1,5 +1,8 @@
-
-const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
+export default function Dice({
+  size = 20,
+  color = "currentColor",
+  strokeWidth = 0,
+}) {
   return (
     <>
       <svg
@@ -14,7 +17,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
         xmlSpace="preserve"
         width={size}
         height={size}
-        style={{fill: `${color}`}}
+        style={{ fill: `${color}` }}
       >
         <g>
           <g>
@@ -30,7 +33,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
             <path
               d="M144.829,85.673c-31.494,0-57.116,25.622-57.116,57.116c0,31.493,25.621,57.116,57.116,57.116    c31.494,0,57.116-25.622,57.116-57.116C201.944,111.296,176.323,85.673,144.829,85.673z M144.829,179.506    c-20.246,0-36.717-16.471-36.717-36.717c0-20.246,16.471-36.717,36.717-36.717c20.246,0,36.717,16.471,36.717,36.717    C181.546,163.035,165.075,179.506,144.829,179.506z"
               stroke={`${color}`}
-              strokeWidth={strokeWidth > 0 ? `${strokeWidth/4}px` : ""}
+              strokeWidth={strokeWidth > 0 ? `${strokeWidth / 4}px` : ""}
             />
           </g>
         </g>
@@ -39,7 +42,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
             <path
               d="M369.211,85.673c-31.494,0-57.116,25.622-57.116,57.116c0,31.493,25.621,57.116,57.116,57.116    c31.494,0,57.116-25.622,57.116-57.116C426.327,111.296,400.705,85.673,369.211,85.673z M369.211,179.506    c-20.246,0-36.717-16.471-36.717-36.717c0-20.246,16.471-36.717,36.717-36.717s36.717,16.471,36.717,36.717    C405.928,163.035,389.458,179.506,369.211,179.506z"
               stroke={`${color}`}
-              strokeWidth={strokeWidth > 0 ? `${strokeWidth/4}px` : ""}
+              strokeWidth={strokeWidth > 0 ? `${strokeWidth / 4}px` : ""}
             />
           </g>
         </g>
@@ -48,7 +51,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
             <path
               d="M143.809,312.096c-31.494,0-57.116,25.622-57.116,57.116s25.621,57.116,57.116,57.116s57.116-25.622,57.116-57.116    S175.303,312.096,143.809,312.096z M143.809,405.928c-20.246,0-36.717-16.471-36.717-36.717s16.471-36.717,36.717-36.717    c20.246,0,36.717,16.471,36.717,36.717S164.055,405.928,143.809,405.928z"
               stroke={`${color}`}
-              strokeWidth={strokeWidth > 0 ? `${strokeWidth/4}px` : ""}
+              strokeWidth={strokeWidth > 0 ? `${strokeWidth / 4}px` : ""}
             />
           </g>
         </g>
@@ -57,7 +60,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
             <path
               d="M369.211,312.096c-31.494,0-57.116,25.622-57.116,57.116s25.621,57.116,57.116,57.116    c31.494,0,57.116-25.622,57.116-57.116S400.705,312.096,369.211,312.096z M369.211,405.928c-20.246,0-36.717-16.471-36.717-36.717    s16.471-36.717,36.717-36.717s36.717,16.471,36.717,36.717S389.458,405.928,369.211,405.928z"
               stroke={`${color}`}
-              strokeWidth={strokeWidth > 0 ? `${strokeWidth/4}px` : ""}
+              strokeWidth={strokeWidth > 0 ? `${strokeWidth / 4}px` : ""}
             />
           </g>
         </g>
@@ -66,7 +69,7 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
             <path
               d="M256,198.884c-31.494,0-57.116,25.622-57.116,57.116s25.621,57.116,57.116,57.116s57.116-25.622,57.116-57.116    S287.494,198.884,256,198.884z M256,292.717c-20.246,0-36.717-16.471-36.717-36.717c0-20.246,16.471-36.717,36.717-36.717    c20.246,0,36.717,16.471,36.717,36.717S276.246,292.717,256,292.717z"
               stroke={`${color}`}
-              strokeWidth={strokeWidth > 0 ? `${strokeWidth/4}px` : ""}
+              strokeWidth={strokeWidth > 0 ? `${strokeWidth / 4}px` : ""}
             />
           </g>
         </g>
@@ -108,6 +111,4 @@ const Dice = ({ size = 20, color="currentColor", strokeWidth=0 }) => {
       </svg>
     </>
   );
-};
-
-export default Dice;
+}

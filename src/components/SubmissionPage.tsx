@@ -1,13 +1,9 @@
 import { useState } from "react";
 import type { SiteResData } from "../types";
 import SiteSubmit from "./forms/SiteSubmit";
-import SiteCard from "./SiteCard";
+import SiteCard from "./ui/SiteCard";
 
-const SubmissionPage = ({
-  userIp,
-}: {
-  userIp: string;
-}) => {
+export default function SubmissionPage({ userIp }: { userIp: string }) {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
     console.log("submit:", submission);
@@ -26,8 +22,8 @@ const SubmissionPage = ({
               <div className="my-5"></div>
               <span className="w-full flex items-center justify-center">
                 You should be redirected soon. If nothing is happening click
-                <a href={`/sites/${submission.id}`}>{" here "}</a>to view the site
-                page.
+                <a href={`/sites/${submission.id}`}>{" here "}</a>to view the
+                site page.
               </span>
             </div>
           ))}
@@ -42,14 +38,9 @@ const SubmissionPage = ({
         </>
       ) : (
         <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
-          <SiteSubmit
-            userIP={userIp}
-            returnSubmissions={returnSubmissions}
-          />
+          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} />
         </div>
       )}
     </>
   );
-};
-
-export default SubmissionPage;
+}

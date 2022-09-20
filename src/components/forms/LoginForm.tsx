@@ -7,7 +7,7 @@ interface LoginData {
   password: string;
 }
 
-const LoginForm = ({ signUp = false }: { signUp?: boolean }) => {
+export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
   const {
     register,
     control,
@@ -50,7 +50,7 @@ const LoginForm = ({ signUp = false }: { signUp?: boolean }) => {
           password: data.password,
         },
       });
-      console.log("s?", s); 
+      console.log("s?", s);
     }
 
     setLoading(false);
@@ -110,6 +110,4 @@ const LoginForm = ({ signUp = false }: { signUp?: boolean }) => {
       )}
     </>
   );
-};
-
-export default LoginForm;
+}

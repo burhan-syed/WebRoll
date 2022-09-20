@@ -5,11 +5,7 @@ import { useForm } from "react-hook-form";
 interface ReportFormData {
   reportType: ReportType;
 }
-const ReportForm = ({
-  siteID,
-}: {
-  siteID: string;
-}) => {
+export default function ReportForm({ siteID }: { siteID: string }) {
   const options = [
     { value: "CATEGORY", label: "Incorrect category" },
     { value: "BROKEN", label: "Site is broken" },
@@ -30,12 +26,12 @@ const ReportForm = ({
   } = useForm<ReportFormData>();
 
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false); 
+  const [submitted, setSubmitted] = useState(false);
   const onFormSubmit = async (data: ReportFormData) => {
     console.log("submit..", data);
-    clearErrors(); 
-    setLoading(true); 
-    try{
+    clearErrors();
+    setLoading(true);
+    try {
       const res = await fetch("/api/report", {
         body: JSON.stringify({
           ...data,
@@ -43,27 +39,23 @@ const ReportForm = ({
         }),
         method: "post",
       });
-      if(res.ok){
-        setSubmitted(true); 
-      }else{
-        setError("reportType", {message: "something went wrong"})
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError("reportType", { message: "something went wrong" });
       }
-    }catch(err){
+    } catch (err) {}
 
-    }
-
-    setLoading(false); 
+    setLoading(false);
   };
 
   useEffect(() => {
-  
     return () => {
       setLoading(false);
       setSubmitted(false);
-      reset(); 
-    }
-  }, [siteID])
-  
+      reset();
+    };
+  }, [siteID]);
 
   return (
     <form className="form-control gap-4" onSubmit={handleSubmit(onFormSubmit)}>
@@ -88,12 +80,17 @@ const ReportForm = ({
       >
         Submit
       </button>
-      {
-        errors.reportType?.message ? <span className="w-full text-center text-error">{errors.reportType.message}</span> : 
-        submitted && <span className="w-full text-center text-success">report received</span>
-      }
+      {errors.reportType?.message ? (
+        <span className="w-full text-center text-error">
+          {errors.reportType.message}
+        </span>
+      ) : (
+        submitted && (
+          <span className="w-full text-center text-success">
+            report received
+          </span>
+        )
+      )}
     </form>
   );
-};
-
-export default ReportForm;
+}

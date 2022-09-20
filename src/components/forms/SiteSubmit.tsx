@@ -4,7 +4,7 @@ import { HelpCircle, CornerDownLeft } from "react-feather";
 import { DevTool } from "@hookform/devtools";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import type { SiteResData } from "../../types";
-import SiteCard from "../SiteCard";
+import SiteCard from "../ui/SiteCard";
 
 interface SiteFormData {
   url: string;
@@ -601,18 +601,17 @@ export default function SiteSubmit({
           <div className="my-10">
             <SiteCard {...prevSubmission} />
             <div className="p-4">
-            <button
-              onClick={() => {
-                setFormError("");
-                setPrevSubmission(undefined);
-                reset();
-              }}
-              className="btn btn-primary w-full"
-            >
-              Reset
-            </button>
+              <button
+                onClick={() => {
+                  setFormError("");
+                  setPrevSubmission(undefined);
+                  reset();
+                }}
+                className="btn btn-primary w-full"
+              >
+                Reset
+              </button>
             </div>
-        
           </div>
         </>
       )}
