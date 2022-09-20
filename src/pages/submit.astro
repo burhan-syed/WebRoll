@@ -2,12 +2,7 @@
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
-import { checkAndReturnSessionID } from "../server/utils/handleSession";
-const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get("cookie");
-const r = await checkAndReturnSessionID(userIp, cookie);
-Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
-
+const userIp = Astro.clientAddress; 
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/

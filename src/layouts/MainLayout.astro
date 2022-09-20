@@ -6,6 +6,14 @@ const {
   noProse = false,
 } = Astro.props;
 import NavBar from "../components/ui/NavBar.astro";
+
+import { checkAndReturnSessionID } from "../server/utils/handleSession";
+const userIp = Astro.clientAddress;
+const cookie = Astro.request.headers.get("cookie");
+const r = await checkAndReturnSessionID(userIp, cookie);
+console.log("cookie set?", r)
+Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
+
 ---
 
 <html lang="en" class="">
