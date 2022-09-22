@@ -16,7 +16,7 @@ const someProps = {
     line-height: 1;
   }
   .shadow-text {
-    text-shadow: 0px 2px 20px hsl(var(--sc)/0.5);
+    text-shadow: 0px 2px 20px hsl(var(--sc) / 0.5);
   }
 </style>
 
@@ -28,27 +28,39 @@ const someProps = {
       class="hero-content col-start-1 row-start-1 w-full max-w-7xl flex-col justify-between gap-10 pb-40 lg:flex-row lg:items-end lg:gap-0 xl:gap-20"
     >
       <div class="lg:pl-10 lg:pb-32">
-        <div class="mb-2 py-4 text-center lg:py-10 lg:text-left flex flex-col gap-20 md:gap-4">
-          <h1 class="mb-2 text-7xl font-extrabold sm:text-5xl md:text-7xl lg:text-7xl shadow-text" >
-            <span class="">Rediscover the Web</span> 
+        <div
+          class="mb-2 py-4 text-center lg:py-10 lg:text-left flex flex-col gap-20 md:gap-4"
+        >
+          <h1
+            class="mb-2 text-7xl font-extrabold sm:text-5xl md:text-7xl lg:text-7xl shadow-text"
+          >
+            <span class="">Rediscover the Web</span>
           </h1>
-          <h2><span class="text-xl font-normal"
-            >Curating beautiful, interesting, and unique sites from across the internet</span
-          ></h2>
+          <h2>
+            <span class="text-xl font-normal"
+              >Curating beautiful, interesting, and unique sites from across the
+              internet</span>
+          </h2>
           <p>Roll the dice & see where you land.</p>
         </div>
         <div
           class="mt-4 flex flex-col lg:flex-row flex-1 justify-center gap-4 lg:mt-6 lg:justify-start"
         >
           <a
+            rel="preload"
             href="/explore"
             class="btn btn-primary btn-active lg:btn-lg normal-case hover:scale-105 hover:md:scale-110 transition-transform gap-2 group"
-            >
-            <span class="group-hover:rotate-180 transition-transform ease-out duration-300"><Dice strokeWidth={20}/></span>
+          >
+            <span
+              class="group-hover:rotate-180 transition-transform ease-out duration-300"
+              ><Dice strokeWidth={20} />
+            </span>
             <span class="inline">Start Rolling</span>
           </a>
-          <a href="/submit" class="btn btn-ghost lg:btn-lg normal-case"
-            >Submit a Site</a
+          <a
+            rel="preload"
+            href="/submit"
+            class="btn btn-ghost lg:btn-lg normal-case">Submit a Site</a
           >
         </div>
       </div>

@@ -94,7 +94,7 @@ const pages = Array.from(Array(totalPages), (e, i) => {
               <ul class="flex flex-col gap-2">
                 {likes.map(({ site }) => (
                   <li>
-                    <a href={`/sites/${site.id}`}>
+                    <a rel="preload" href={`/sites/${site.id}`}>
                       <SmallSiteCard site={site} />
                     </a>
                   </li>
