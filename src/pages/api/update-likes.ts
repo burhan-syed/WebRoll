@@ -1,13 +1,13 @@
 import type { APIRoute } from "astro";
-import parseCookie from "../../server/utils/parseCookieString";
+import {getWebRollSession} from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
-  const sessionID = parseCookie(request.headers.get("cookie") ?? "")?.[
-    "webroll_session"
-  ];
-  const { siteID, direction, ip } = data;
-  if (!siteID || !sessionID || !ip || (direction !== false && direction !== true)) {
+  const sessionID = getWebRollSession(request.headers.get("cookie")); 
+  const ip = (request as any)?.[Symbol.for("astro.clientAddress")] as string; 
+  console.log("IP?", ip )
+  const { siteID, direction } = data;
+  if (!siteID || !sessionID|| !ip || (direction !== false && direction !== true)) {
     return new Response("invalid request", { status: 400 });
   }
   try {

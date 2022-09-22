@@ -18,7 +18,6 @@ export default function ExplorePage({
     url: initialSites[0].url,
     img: initialSiteImgURL,
   }));
-  console.log("sites:", sites);
   const [index, setIndex] = useState(0);
   useEffect(() => {
     const fetchSecureImage = async (url: string, imgId: string | null) => {

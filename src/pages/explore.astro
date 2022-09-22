@@ -7,10 +7,12 @@ import { getSignedImageUrl } from "../server/aws/bucket";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
 import prisma from "../server/utils/prisma";
 const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get('cookie'); 
-const r = await checkAndReturnSessionID(userIp, cookie); 
-Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
-
+const cookie = Astro.request.headers.get("cookie");
+const { session, prev_session } = await checkAndReturnSessionID(Astro);
+Astro.response.headers.set(
+  "Set-Cookie",
+  `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+);
 const allSitesCount = await prisma.sites.count({
   where: { status: "APPROVED" },
 });
@@ -26,18 +28,23 @@ const sites = await prisma.sites.findMany({
     description: true,
     allowEmbed: true,
     status: true,
-    categories: { select: { category: true} },
-    likes: {where: {sessionId: r}}
+    categories: { select: { category: true } },
+    likes: { where: { sessionId: session } },
   },
 });
 let siteImgURL = "";
 if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
   siteImgURL = await getSignedImageUrl(sites?.[0]?.imgKey as string);
-  const {src} = await getImage({format: 'webp', quality: 80, width: 1080, height: 1920, src: siteImgURL, fit: 'outside'})
-  if(src) siteImgURL = src; 
-
+  const { src } = await getImage({
+    format: "webp",
+    quality: 80,
+    width: 1080,
+    height: 1920,
+    src: siteImgURL,
+    fit: "outside",
+  });
+  if (src) siteImgURL = src;
 }
-//console.log("random sites:", sites);
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -65,10 +72,12 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
             />
           ) : (
             <>
-            <NavBar/>
-            <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4">
-              <span>{`No sites Found :(`}</span>
-              <a href="/submit" class="btn btn-primary">Submit a Site</a>
+              <NavBar />
+              <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4">
+                <span>{`No sites Found :(`}</span>
+                <a href="/submit" class="btn btn-primary">
+                  Submit a Site
+                </a>
               </div>
             </>
           )
@@ -77,10 +86,11 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
     </div>
     <div class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>
-      <ul class="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+      <ul class="menu flex-col-reverse md:flex-col  p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
         <!-- Sidebar content here -->
-        <li><a href="/submit">Submit a Site</a></li>
-        <li><a>Sidebar Item 2</a></li>
+        <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
+        <li><a href="/likes">Likes</a></li>
+        <li><a href="/dashboard">Account</a></li>
       </ul>
     </div>
   </div>

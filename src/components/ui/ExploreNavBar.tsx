@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  ThumbsUp,
-  Flag,
   Info,
-  Menu,
-  Share,
   ExternalLink,
   Search,
 } from "react-feather";
@@ -67,16 +63,10 @@ export default function ExploreNavBar({
             <div className="order-2 md:order-1">
               <DiceButton action={advance} advanced={advanced} />
             </div>
-            <button
-              onClick={handleLike}
-              className="btn btn-ghost order-3 md:order-2 "
-            >
-              <ThumbsUp
-                size={20}
-                className={"brightness-125"}
-                fill={liked ? "#5C7F67" : "#5C7F6700"}
-              />
-            </button>
+            <div className="order-3 md:order-2">
+            <Button type="like" site={site} iconSize={20} label={""} styles="btn btn-ghost"/>
+
+            </div>
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -138,10 +128,6 @@ export default function ExploreNavBar({
               )}
 
               <div className="flex items-center w-full justify-between gap-1">
-                {/* <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
-                  <Share size={15} />
-                  Share
-                </button> */}
                 <Button
                   styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm  "}
                   type={"share"}
@@ -157,11 +143,6 @@ export default function ExploreNavBar({
                   Page
                 </a>
                 <Button styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm "} type={"report"} site={site}/>
-
-                {/* <button className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm ">
-                  <Flag size={15} />
-                  Report
-                </button> */}
               </div>
             </div>
           </div>

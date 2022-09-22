@@ -1,15 +1,103 @@
 ---
-import {getUser, redirectUser} from '@astro-auth/core'
-import Logout from '../components/auth/Logout'
-import MainLayout from '../layouts/MainLayout.astro';
-const user = getUser({client: Astro})
-console.log("user?", user); 
-if(!user){
+import { getUser, redirectUser } from "@astro-auth/core";
+import { AlertCircle } from "react-feather";
+import Logout from "../components/auth/Logout";
+import MergeLikes from "../components/ui/buttons/MergeLikes";
+import MainLayout from "../layouts/MainLayout.astro";
+import { checkAndReturnSessionID } from "../server/utils/handleSession";
+import prisma from "../server/utils/prisma";
+import type { User } from "../types";
+
+const user = getUser({ client: Astro }) as User | null;
+if (!user) {
   return redirectUser("/signin");
+}
+
+const { session, prev_session } = await checkAndReturnSessionID(Astro);
+Astro.response.headers.set(
+  "Set-Cookie",
+  `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+);
+const pSessData = await prisma.sessions.findFirst({
+  where: { id: prev_session },
+  include: { account: true },
+});
+
+let prevLikes = await (!pSessData?.account?.email ||
+pSessData?.account?.email === user.email
+  ? prisma.likes.findMany({
+      where: {
+        sessionId: prev_session,
+        direction: true,
+      },
+      select: {
+        siteId: true,
+      },
+    })
+  : []);
+if (prevLikes && prevLikes.length > 0) {
+  const userLikes = await prisma.likes.findMany({
+    where: { sessionId: user.session, direction: true },
+    select: { siteId: true },
+  });
+  const userLikesMap = userLikes.reduce((m, o) => {
+    m.set(o.siteId, 1);
+    return m; 
+  }, new Map());
+
+  prevLikes = prevLikes.filter(({siteId}) => userLikesMap.get(siteId) ? false : true);
 }
 ---
 
-<MainLayout>
-  dashboard
-  <Logout client:load/>
+<MainLayout
+  noFooter={true}
+  skipCookies={true}
+  pageTitle={"Dashboard | WebRoll"}
+>
+  <div
+    class="flex flex-col flex-grow bg-neutral items-center"
+    style={{
+      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+      backgroundSize: `5px 5px`,
+    }}
+  >
+    <div
+      class="flex flex-col flex-grow gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4"
+    >
+      <div
+        class="flex flex-col p-4 flex-grow bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg"
+      >
+        <h1 class="text-3xl mb-6 flex justify-between items-baseline gap-2">
+          Dashboard<span class="ml-auto text-sm font-normal">{user.email}</span>
+        </h1>
+        {
+          prevLikes?.length > 0 && (
+            <div class="flex flex-col rounded-md p-2 bg-base-200 border border-error gap-4">
+              <h2 class="mt-0 flex items-center justify-between gap-1">
+                <span>
+                  {prevLikes.length}{" "}
+                  {prevLikes?.length === 1
+                    ? "like is not saved"
+                    : "likes are not saved"}
+                </span>
+                <span class="text-error">
+                  <AlertCircle />
+                </span>
+              </h2>
+              <span class="text-sm font-semibold px-2">
+                you may lose likes made prior to sign in if they are not saved
+              </span>
+              <MergeLikes client:load />
+            </div>
+          )
+        }
+        <div class="flex-grow"></div>
+        <div class="flex flex-col gap-4">
+          <a class="btn no-underline" href="/likes">View Your Likes</a>
+          <a class="btn no-underline" href="/submit">Submit A Site</a>
+          <Logout client:load />
+        </div>
+      </div>
+    </div>
+  </div>
 </MainLayout>

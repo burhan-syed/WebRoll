@@ -1,44 +1,71 @@
 import prisma from "../utils/prisma";
-import crypto from "crypto";
-import parseCookie from "./parseCookieString";
-import jwt from "jsonwebtoken";
+import { parseCookie } from "./parseCookieString";
+import type jwt from "jsonwebtoken";
+import { getUser } from "@astro-auth/core";
+import { randomSessionID } from "./generateIDs";
+import type { AstroGlobal } from "astro";
 
-const randomSessionID = (bytes = 24) =>
-  crypto.randomBytes(bytes).toString("hex");
-
-export const checkAndReturnSessionID = async (
-  ip: string,
-  cookies: string | null
-) => {
-  const parsedCookie = parseCookie(cookies ?? "");
-  console.log("parsed", parsedCookie);
-  const sessionID = (() => {
+export const checkAndReturnSessionID = async (Astro: AstroGlobal) => {
+  const ip = Astro.clientAddress;
+  const cookies = Astro.request.headers.get("cookie");
+  const webrollSessions = parseCookie(cookies ?? "")?.webroll_session?.split(".");
+  console.log("wrSessions?",webrollSessions)
+  const prev = (() => {
+    if(webrollSessions?.[1]?.length === 48){
+      return webrollSessions[1]
+    }else if(webrollSessions?.[0]?.length === 48){
+      return webrollSessions[0]
+    }else{
+      return ""; 
+    }
+  })()
+  console.log("old??", prev);
+  let { sessionID, user, overwritten } = (() => {
     try {
-      const sessionCookie = parsedCookie?.["__astroauth__session__"] ?? "";
-      if (sessionCookie) {
-        const decoded = jwt.verify(
-          sessionCookie,
-          import.meta.env.ASTROAUTH_SECRET
-        ) as any;
-        console.log("decoded?", decoded); 
-        if(decoded?.["session"]?.length === 48){
-          return decoded?.["session"]
-        }
+      const user = getUser({ client: Astro }) as jwt.JwtPayload;
+      //console.log("USER:", user);
+      if (user && user?.session) {
+        return {
+          sessionID: user.session,
+          user,
+          overwritten: user?.session !== prev ? prev : "",
+        };
+      } else if (
+        webrollSessions?.[1]?.length === 48
+      ) {
+        return {
+          sessionID: webrollSessions?.[1] ?? "",
+          user,
+          overwritten: "",
+        };
       }
     } catch (err) {
-      console.log("jwt parse error", err); 
+      console.log("jwt parse error", err);
     }
 
-    return parsedCookie?.webroll_session?.length === 48
-      ? parsedCookie.webroll_session
-      : randomSessionID();
-  })();
-  console.log("sessionID?", sessionID, " | length?", sessionID.length);
+    return {
+      sessionID: prev?.length === 48 ? prev : randomSessionID(),
+      user: null,
+      overwritten: "",
+    };
+  })() as { sessionID: string; user: any; overwritten: string };
+  const sessionUser = await prisma.sessions.findFirst({
+    where: { id: sessionID },
+    include: { account: true },
+  });
+
+  if (
+    sessionUser?.account?.email &&
+    sessionUser.account.email !== user?.email
+  ) {
+    sessionID = randomSessionID();
+  }
   const update = await prisma.sessions.upsert({
     where: { id: sessionID },
     create: { ip, id: sessionID },
     update: { ip, lastAccessed: new Date() },
   });
-
-  return update.id;
+  console.log("SESSIONS?", update, "OVERWRITTEN?", overwritten);
+  return { session: update.id, prev_session: overwritten };
+  //return { session: sessionID, prev_session: overwritten };
 };

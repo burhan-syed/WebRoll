@@ -2,9 +2,9 @@ import prisma from "../../server/utils/prisma";
 import parseMetadata from "../../server/metaparser/parse";
 import { extractUrl, parseTags } from "../../server/metaparser/utils";
 import Filter from "bad-words";
-import { generateId } from "../../server/utils/generateSiteId";
+import { generateSiteId } from "../../server/utils/generateIDs";
 import type { APIRoute } from "astro";
-import parseCookie from "../../server/utils/parseCookieString";
+import {getWebRollSession} from "../../server/utils/parseCookieString";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
 const parseDomain = import.meta.env.PARSER_DOMAIN;
@@ -13,9 +13,8 @@ const isPROD = import.meta.env.PROD;
 
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
-  const sessionID = parseCookie(request.headers.get("cookie") ?? "")?.[
-    "webroll_session"
-  ];
+  const sessionID = getWebRollSession(request.headers.get("cookie"));
+  
   const {
     tags,
     url,
@@ -110,7 +109,7 @@ export const post: APIRoute = async function post({ request }) {
       });
     }
 
-    const siteID = generateId();
+    const siteID = generateSiteId();
 
     const { description, title } = await parseMetadata(response);
     console.log("metadata", siteID, description, title);

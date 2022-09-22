@@ -1,4 +1,4 @@
-import type { Likes, SiteStatus, Sites, Categories } from "@prisma/client";
+import type { Likes, SiteStatus, Sites, Categories, SessionRole } from "@prisma/client";
 export interface SiteResData {
   url: string;
   id: string;
@@ -32,4 +32,12 @@ export interface minSiteResData {
 }
 export interface minSiteResDataWithLikes extends minSiteResData {
   likes: Likes[];
+}
+
+export interface User {
+  session: string; 
+  role: SessionRole; 
+  email: string; 
+  provider: string; 
+  iat: number;
 }

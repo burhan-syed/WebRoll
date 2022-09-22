@@ -2,18 +2,20 @@
 const {
   pageTitle = "WebRoll",
   noScrollBar = false,
-  noFooter = false,
+  noFooter = true,
   noProse = false,
+  skipCookies = false,
 } = Astro.props;
 import NavBar from "../components/ui/NavBar.astro";
-
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
-const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get("cookie");
-const r = await checkAndReturnSessionID(userIp, cookie);
-console.log("cookie set?", r)
-Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
-
+if (!skipCookies) {
+  const { session, prev_session } = await checkAndReturnSessionID(Astro);
+  console.log("cookie set?", session, prev_session);
+  Astro.response.headers.set(
+    "Set-Cookie",
+    `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+  );
+}
 ---
 
 <html lang="en" class="">
@@ -35,7 +37,8 @@ Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Se
           <NavBar />
         </nav>
         <main
-          class={(noProse ? "" : " prose prose-headings:font-light " ) + " min-w-full bg-base-300 min-h-screen flex flex-col"}
+          class={(noProse ? "" : " prose prose-headings:font-light ") +
+            " min-w-full bg-base-300 min-h-screen flex flex-col"}
         >
           <div class="h-0 md:h-20"></div>
           <div class="flex-grow flex flex-col">
@@ -59,6 +62,9 @@ Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Se
       >
         <li><a rel="prefetch" href="/explore">Explore Sites</a></li>
         <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
+        <li><a href="/likes">Likes</a></li>
+        <li><a href="/dashboard">Account</a></li>
+
         <li><a>About</a></li>
       </ul>
     </div>

@@ -1,11 +1,9 @@
 import type { APIRoute } from "astro";
-import parseCookie from "../../server/utils/parseCookieString";
+import { getWebRollSession } from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
 export const post: APIRoute = async function post({ request }) {
-  console.log(request)
-  const sessionID = parseCookie(request.headers.get("cookie") ?? "")?.[
-    "webroll_session"
-  ];
+  console.log(request);
+  const sessionID = getWebRollSession(request.headers.get("cookie"));
   const data = await request.json();
   const { userIP } = data;
   if (!userIP || !sessionID) {
@@ -16,7 +14,7 @@ export const post: APIRoute = async function post({ request }) {
       where: { id: sessionID },
       orderBy: { expiresAt: "desc" },
     });
-    if (!(sess)) {
+    if (!sess) {
       return new Response(JSON.stringify({}), { status: 401 });
     }
 
@@ -34,8 +32,8 @@ export const post: APIRoute = async function post({ request }) {
         name: true,
         description: true,
         allowEmbed: true,
-        categories: { select: { category: true} },
-        likes: {where: {sessionId: sessionID}}
+        categories: { select: { category: true } },
+        likes: { where: { sessionId: sessionID } },
       },
     });
     return new Response(JSON.stringify({ data: sites }), { status: 200 });
@@ -44,4 +42,4 @@ export const post: APIRoute = async function post({ request }) {
       status: 500,
     });
   }
-}
+};

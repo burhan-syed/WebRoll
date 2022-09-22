@@ -1,4 +1,4 @@
-const parseCookie = (str: string) => {
+export const parseCookie = (str: string) => {
   if (!str) return {};
   return str
     .split(";")
@@ -17,4 +17,7 @@ const parseCookie = (str: string) => {
     );
 };
 
-export default parseCookie;
+export const getWebRollSession = (cookie: string | undefined | null) => {
+  return parseCookie(cookie ?? "")?.["webroll_session"]?.split(".")?.[0];
+};
+

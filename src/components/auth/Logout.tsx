@@ -3,6 +3,7 @@ export default function Logout() {
   return (
     <>
       <button
+        className="btn btn-primary"
         onClick={() => {
           signOut("/");
         }}

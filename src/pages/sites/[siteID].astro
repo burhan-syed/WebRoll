@@ -10,10 +10,12 @@ import { getImage } from "@astrojs/image";
 import ReportModal from "../../components/ui/ReportModal";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 const { siteID } = Astro.params;
-const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get("cookie");
-const r = await checkAndReturnSessionID(userIp, cookie);
-Astro.response.headers.set('Set-Cookie', `webroll_session=${r}; SameSite=Lax; Secure; HttpOnly;`);
+const { session, prev_session } = await checkAndReturnSessionID(Astro);
+console.log("cookie set?", session, prev_session);
+Astro.response.headers.set(
+  "Set-Cookie",
+  `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+);
 
 const site = await prisma.sites.findFirst({
   where: { id: siteID as string },
@@ -29,6 +31,7 @@ const site = await prisma.sites.findFirst({
     allowEmbed: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: { select: { tag: true } } } },
+    likes: { where: { sessionId: session } },
     _count: {
       select: {
         likes: true,
@@ -54,10 +57,11 @@ if (siteImgURL) {
 ---
 
 <MainLayout
+  skipCookies={true}
   noScrollBar={true}
   noFooter={true}
   pageTitle={`${site?.name ? `${site.name} | ` : ""}WebRoll`}
-  >
+>
   {
     site ? (
       <>
@@ -75,22 +79,21 @@ if (siteImgURL) {
                     backgroundSize: `5px 5px`,
                   }
             }
-          >
-            {/* {!siteImgURL && <span class="text-xs">no image</span>} */}
-          </header>
+          ></header>
           <header
             class="fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top bg-neutral md:top-20 "
             style={
               siteImgURL
-                ? { backgroundImage: `url(${siteImgURL})` }
+                ? {
+                    backgroundImage: `url(${siteImgURL})`,
+                    filter: `blur(12px)`,
+                  }
                 : {
                     backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
                     backgroundSize: `5px 5px`,
                   }
             }
-          >
-            {!siteImgURL && <span class="text-xs">no image</span>}
-          </header>
+          ></header>
           <div class="aspect-video w-full md:invisible md:w-0" />
           <div class="rounded-t-2xl md:rounded-t-none bg-base-200/80 md:bg-base-200 border-t border-base-100 -mt-10 md:mt-0 z-10 relative flex-grow  flex flex-col overflow-auto backdrop-blur-md">
             <div class="flex items-center justify-center  absolute h-4 top-0 z-20 w-full md:hidden">
@@ -105,7 +108,7 @@ if (siteImgURL) {
                   href={site.url}
                   target={"_blank"}
                   rel={"norefferer"}
-                  class="flex items-start md:flex-row-reverse justify-between gap-1 no-underline font-light"
+                  class="flex items-start flex-row-reverse justify-between gap-4 no-underline font-light"
                 >
                   <span class="">{site.name.replace(/\/+$/, "")}</span>
                   <img
@@ -239,6 +242,12 @@ if (siteImgURL) {
                     <Button
                       client:load
                       styles={"btn-ghost btn-active w-full gap-2 btn-sm "}
+                      type={"like"}
+                      site={site}
+                    />
+                    <Button
+                      client:load
+                      styles={"btn-ghost btn-active w-full gap-2 btn-sm "}
                       type={"share"}
                       site={site}
                     />
@@ -266,7 +275,6 @@ if (siteImgURL) {
           </div>
         </div>
         <ReportModal client:load siteID={site.id} />
-
       </>
     ) : (
       <div class="w-full h-screen flex items-center justify-center pb-20 ">

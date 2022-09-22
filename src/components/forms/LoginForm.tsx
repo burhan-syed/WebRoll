@@ -50,7 +50,9 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
           password: data.password,
         },
       });
-      console.log("s?", s);
+      if(!s.redirect){
+        setError("email", {message: "invalid credentials"})
+      }
     }
 
     setLoading(false);
@@ -105,7 +107,7 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
       {accountCreated && (
         <div className="flex flex-col gap-4">
           <h2>Account Created</h2>
-          <a href="/login">Click Here to Log In</a>
+          <a className="" href="/signin">Log In Here</a>
         </div>
       )}
     </>
