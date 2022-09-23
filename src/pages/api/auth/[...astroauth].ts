@@ -23,6 +23,10 @@ export const all = AstroAuth({
           return null;
         }
 
+        if(account.status === "PENDING"){
+          return null; 
+        }
+
         return {
           session: account.sessions[0].id,
           role: account.sessions[0].role,
@@ -32,9 +36,9 @@ export const all = AstroAuth({
     }),
   ],
   hooks: {
-    signIn: async (user) => {
-      return true;
-    },
+    // signIn: async (user) => {
+    //   return true;
+    // },
     jwt: async (user) => {
       console.log("JWT?", user); 
       return {

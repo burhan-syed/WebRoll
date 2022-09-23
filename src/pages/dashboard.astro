@@ -10,7 +10,7 @@ import type { User } from "../types";
 
 const user = getUser({ client: Astro }) as User | null;
 if (!user) {
-  return redirectUser("/signin");
+  return redirectUser("/signup");
 }
 
 const { session, prev_session } = await checkAndReturnSessionID(Astro);

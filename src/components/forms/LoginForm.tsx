@@ -1,5 +1,6 @@
 import { signIn } from "@astro-auth/client";
 import { useState } from "react";
+import { Eye, EyeOff } from "react-feather";
 import { useForm } from "react-hook-form";
 
 interface LoginData {
@@ -18,6 +19,7 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
     reset,
   } = useForm<LoginData>();
   const [loading, setLoading] = useState(false);
+  const [showP1, setShowP1] = useState(false);
   const [accountCreated, setAccountCreated] = useState(false);
   const onFormSubmit = async (data: LoginData) => {
     clearErrors();
@@ -50,8 +52,8 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
           password: data.password,
         },
       });
-      if(!s.redirect){
-        setError("email", {message: "invalid credentials"})
+      if (!s.redirect) {
+        setError("email", { message: "invalid credentials" });
       }
     }
 
@@ -78,19 +80,26 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
           />
         </div>
         <div className="flex flex-col">
-          <input
-            className="input"
-            placeholder="password"
-            type="password"
-            {...register("password", {
-              required: true,
-              minLength: signUp ? 12 : 0,
-            })}
-          />
+          <label className="input-group">
+            <input
+              className="input w-full"
+              placeholder="password"
+              type={showP1 ? "text" : "password"}
+              {...register("password", {
+                required: true,
+                minLength: signUp ? 9 : 0,
+              })}
+            />
+            <span className="text-neutral">
+              <button type="button" onClick={() => setShowP1((s) => !s)}>
+                {showP1 ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </span>
+          </label>
           <label>
             <span className="label-text-alt text-error">
               {errors.password?.type === "minLength"
-                ? "password must be at least 12 characters"
+                ? "password must be at least 9 characters"
                 : ""}
             </span>
           </label>
@@ -104,10 +113,20 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
           {signUp ? "Sign Up" : "Log In"}
         </button>
       </form>
+      {!signUp && errors.email?.message === "invalid credentials" && (
+        <div className="flex flex-col">
+          <label>
+            <span className="label label-text">Forgot password?</span>
+          </label>
+          <a className="btn" href="/auth/reset">
+            Reset Password
+          </a>
+        </div>
+      )}
       {accountCreated && (
         <div className="flex flex-col gap-4">
           <h2>Account Created</h2>
-          <a className="" href="/signin">Log In Here</a>
+          <span>Check your email to verify your account prior to logging in.</span>
         </div>
       )}
     </>

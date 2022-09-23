@@ -44,6 +44,17 @@ enum SessionRole {
   BANNED
 }
 
+enum AccountStatus {
+  PENDING
+  VERIFIED
+  BANNED
+}
+
+enum VerifType {
+  NEW
+  RESET
+}
+
 model Sites {
   id          String     @id @unique @map("id") @db.VarChar(21)
   name        String
@@ -138,8 +149,8 @@ model Sessions {
   ip           String      @db.VarChar(45)
   role         SessionRole @default(USER)
   accountID    String?     @db.VarChar(254)
-  account Accounts?  @relation(fields: [accountID], references: [email])
-  
+  account      Accounts?   @relation(fields: [accountID], references: [email])
+
   sites   Sites[]
   tags    SiteTags[]
   likes   Likes[]
@@ -147,8 +158,19 @@ model Sessions {
 }
 
 model Accounts {
-  email    String @id @unique @db.VarChar(254)
-  password String @db.VarChar(254)
-
+  email    String        @id @unique @db.VarChar(254)
+  password String        @db.VarChar(254)
+  status   AccountStatus @default(PENDING)
   sessions Sessions[]
+  verifications AccountVerifications[]
+}
+
+model AccountVerifications {
+  id String @id @unique @db.VarChar(128)
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+  verificationType VerifType @default(NEW) @map("verification_type")
+  accountID String @db.VarChar(254) @map("account_id")
+
+  account Accounts @relation(fields: [accountID], references: [email])
 }

@@ -1,0 +1,78 @@
+---
+import ResendVerifEmail from "../../components/auth/ResendVerifEmail";
+import MainLayout from "../../layouts/MainLayout.astro";
+import prisma from "../../server/utils/prisma";
+
+const verifyKey = Astro.url.searchParams.get("v");
+let expired = false;
+let invalid = false;
+let verified = false;
+
+if (verifyKey) {
+  const verif = await prisma.accountVerifications.findFirst({
+    where: { id: verifyKey, verificationType: "NEW" },
+    include: { account: true },
+    orderBy: { createdAt: "desc" },
+  });
+  if (!verif || verif?.account?.status === "BANNED") {
+    invalid = true;
+  } else if (verif.expiresAt < new Date()) {
+    expired = true;
+  } else {
+    await prisma.$transaction([
+      prisma.accounts.update({
+        where: { email: verif.account.email },
+        data: { status: "VERIFIED" },
+      }),
+      prisma.accountVerifications.deleteMany({
+        where: { account: { email: verif.account.email } },
+      }),
+    ]);
+    verified = true;
+  }
+} else {
+  invalid = true;
+}
+---
+
+<MainLayout noCookies={true}>
+  <div
+    class="flex flex-col items-center justify-center flex-grow bg-neutral px-2"
+    style={{
+      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+      backgroundSize: `5px 5px`,
+    }}
+  >
+    <div
+      class="flex flex-col gap-10 bg-base-200 rounded-md p-4 w-full max-w-xl"
+    >
+      <h1>Verification</h1>
+      <>
+        {
+          expired ? (
+            <div class="flex flex-col items-center">
+              <label>
+                <span class="label label-text">This link has expired</span>
+              </label>
+              <ResendVerifEmail key={verifyKey ?? ""} client:load />
+            </div>
+          ) : verified ? (
+            <div class="flex flex-col items-center">
+              <label>
+                <span class="label label-text">Your account was verified</span>
+              </label>
+              <a class="btn btn-primary w-full" href="/signin">
+                Login Here
+              </a>
+            </div>
+          ) : (
+            <p>invalid link</p>
+          )
+        }
+      </>
+      <a rel="preload" class="btn no-underline" href="/signup"
+        >Create an Account</a
+      >
+    </div>
+  </div>
+</MainLayout>
