@@ -10,29 +10,53 @@ export const post: APIRoute = async function post({ request }) {
     return new Response("invalid request", { status: 400 });
   }
   try {
-    const pVerification = await prisma.accountVerifications.findUnique({
-      where: { id: key },
-      include: { account: true },
-    });
-    if (!pVerification || pVerification?.account?.status !== "PENDING") return new Response("invalid key", { status: 400 });
-    const emailVerifId = randomSessionID(64);
-    const expires = new Date(Date.now() + 1000 * 60 * 24); 
-    const createVerif = await prisma.accountVerifications.create({
-      data: {
-        id: emailVerifId,
-        expiresAt: expires,
-        account: { connect: { email: pVerification.account.email } },
-      },
-    });
-    try{
-      await generateAndSendAuthVerificationMail({recipient: pVerification.account.email, verificationKey: emailVerifId})
-    }catch(err){
-      await prisma.$transaction([
-        prisma.accountVerifications.delete({where: {id: emailVerifId}})
-      ])
-      return new Response(null, {status:500}) 
+    if(key){
+      const pVerification = await prisma.accountVerifications.findUnique({
+        where: { id: key },
+        include: { account: true },
+      });
+      if (!pVerification || pVerification?.account?.status !== "PENDING") return new Response("invalid key", { status: 401, statusText: "invalid attempt" });
+      const emailVerifId = randomSessionID(64);
+      const expires = new Date(Date.now() + 1000 * 60 * 24); 
+      const createVerif = await prisma.accountVerifications.create({
+        data: {
+          id: emailVerifId,
+          expiresAt: expires,
+          account: { connect: { email: pVerification.account.email } },
+        },
+      });
+      try{
+        await generateAndSendAuthVerificationMail({recipient: pVerification.account.email, verificationKey: emailVerifId})
+      }catch(err){
+        await prisma.$transaction([
+          prisma.accountVerifications.delete({where: {id: emailVerifId}})
+        ])
+        return new Response(null, {status:500}) 
+      }
+      return new Response(null, { status: 200 });
+    }else{
+      const account = await prisma.accounts.findFirst({where: {email: email}, include: {verifications: true}});
+      if(!account || account.status !== "PENDING") return new Response("invalid email", {status: 401, statusText: "invalid attempt"}); 
+      const emailVerifId = randomSessionID(64);
+      const expires = new Date(Date.now() + 1000 * 60 * 24); 
+      const createVerif = await prisma.accountVerifications.create({
+        data: {
+          id: emailVerifId,
+          expiresAt: expires,
+          account: { connect: { email: account.email } },
+        },
+      });
+      try{
+        await generateAndSendAuthVerificationMail({recipient: account.email, verificationKey: emailVerifId})
+      }catch(err){
+        await prisma.$transaction([
+          prisma.accountVerifications.delete({where: {id: emailVerifId}})
+        ])
+        return new Response(null, {status:500}) 
+      }
+      return new Response(null, { status: 200 });
     }
-    return new Response(null, { status: 200 });
+   
   } catch (err) {
     console.log("verif error", err);
     return new Response(null, { status: 500 });

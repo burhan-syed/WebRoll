@@ -116,10 +116,16 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
       {!signUp && errors.email?.message === "invalid credentials" && (
         <div className="flex flex-col">
           <label>
-            <span className="label label-text">Forgot password?</span>
+            <span className="label label-text">Forgot your password?</span>
           </label>
           <a className="btn" href="/auth/reset">
             Reset Password
+          </a>
+          <label>
+            <span className="label label-text">Is your account verified?</span>
+          </label>
+          <a className="btn" href="/auth/verify">
+            Resend Verification
           </a>
         </div>
       )}

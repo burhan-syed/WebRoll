@@ -9,7 +9,7 @@ interface ResetData {
   key?: string;
 }
 
-export default function ResetPassword({ resetKey }: { resetKey?: string }) {
+export default function ResetPassword({ resetKey, email }: { resetKey?: string, email?:string }) {
   const {
     register,
     control,
@@ -18,7 +18,7 @@ export default function ResetPassword({ resetKey }: { resetKey?: string }) {
     clearErrors,
     setError,
     reset,
-  } = useForm<ResetData>({ defaultValues: { key: resetKey } });
+  } = useForm<ResetData>({ defaultValues: { key: resetKey, email: email } });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState("");
   const [submitError, setSubmitError] = useState("");
@@ -119,10 +119,12 @@ export default function ResetPassword({ resetKey }: { resetKey?: string }) {
           </div>
         ) : (
           <div className="flex flex-col">
-            <label>
+            {!email && <label>
               <span className="label-text">Enter you account email</span>
-            </label>
+            </label>}
+            
             <input
+            disabled={!!email}
               className="input"
               placeholder="email"
               type="email"

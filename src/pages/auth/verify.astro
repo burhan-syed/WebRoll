@@ -1,8 +1,14 @@
 ---
 import ResendVerifEmail from "../../components/auth/ResendVerifEmail";
+import ResendVerificationForm from "../../components/forms/ResendVerificationForm";
 import MainLayout from "../../layouts/MainLayout.astro";
 import prisma from "../../server/utils/prisma";
 
+import { getUser, redirectUser } from "@astro-auth/core";
+const user = getUser({ client: Astro });
+if (user) {
+  return redirectUser("/dashboard");
+}
 const verifyKey = Astro.url.searchParams.get("v");
 let expired = false;
 let invalid = false;
@@ -61,18 +67,20 @@ if (verifyKey) {
               <label>
                 <span class="label label-text">Your account was verified</span>
               </label>
-              <a class="btn btn-primary w-full" href="/signin">
-                Login Here
-              </a>
             </div>
           ) : (
-            <p>invalid link</p>
+            <div class="flex flex-col items-center">
+              <ResendVerificationForm client:load />
+            </div>
           )
         }
       </>
-      <a rel="preload" class="btn no-underline" href="/signup"
-        >Create an Account</a
-      >
+      <div class="w-full flex flex-col gap-2">
+        <a class="btn w-full" href="/signin"> Login</a>
+        <a rel="preload" class="btn no-underline" href="/signup"
+          >Create an Account</a
+        >
+      </div>
     </div>
   </div>
 </MainLayout>

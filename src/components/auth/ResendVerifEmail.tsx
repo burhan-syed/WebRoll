@@ -3,9 +3,11 @@ import { useState } from "react";
 export default function ResendVerifEmail({
   key,
   email,
+  disabled = false
 }: {
   key?: string;
   email?: string;
+  disabled?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -21,7 +23,7 @@ export default function ResendVerifEmail({
       if (res.ok) {
         setSent(true);
       } else {
-        setErr("something went wrong");
+        setErr(res?.status === 401 ? email ? "This account does not exist or is already verified. Is this the correct email?" : "something went wrong" : "something went wrong");
       }
     } catch (err) {
       setErr("something went wrong");
@@ -32,7 +34,7 @@ export default function ResendVerifEmail({
   return (
     <>
       <button
-        disabled={sent}
+        disabled={sent || disabled}
         onClick={resendVerification}
         className={"btn btn-primary w-full " + (loading ? "loading" : "")}
       >

@@ -3,6 +3,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import ResetPassword from "../../components/forms/ResetPassword";
 import prisma from "../../server/utils/prisma";
 import { getUser } from "@astro-auth/core";
+import type { User } from "../../types";
 
 const verifyKey = Astro.url.searchParams.get("v");
 let expired = false;
@@ -26,7 +27,8 @@ if (verifyKey) {
   invalid = true;
 }
 
-const user = getUser({ client: Astro });
+const user = getUser({ client: Astro }) as User;
+const email = user?.email ?? ""; 
 ---
 
 <MainLayout noCookies={true}>
@@ -41,7 +43,7 @@ const user = getUser({ client: Astro });
       class="flex flex-col gap-10 bg-base-200 rounded-md p-4 w-full max-w-xl"
     >
       <h1>Password Reset</h1>
-      <ResetPassword resetKey={verifiedKey} client:load />
+      <ResetPassword resetKey={verifiedKey} email={email} client:load />
     </div>
   </div>
 </MainLayout>
