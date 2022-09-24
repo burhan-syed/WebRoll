@@ -1,0 +1,14 @@
+---
+import { getUser } from "@astro-auth/core";
+import SitesPage from "../../../components/admin/SitesPage";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import type { User } from "../../../types";
+const user = getUser({ client: Astro }) as User;
+if (!user || user.role !== "ADMIN") {
+  return redirectUser("/signup");
+}
+---
+
+<MainLayout noProse={true} noScrollBar={true}>
+  <SitesPage client:only="react" />
+</MainLayout>

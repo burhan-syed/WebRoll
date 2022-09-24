@@ -1,0 +1,18 @@
+---
+import { getUser, redirectUser } from "@astro-auth/core";
+import MainLayout from "../../../layouts/MainLayout.astro";
+import type { User } from "../../../types";
+
+const user = getUser({client: Astro}) as User; 
+console.log("USER?", user)
+if(!user || user.role !== "ADMIN"){
+  return redirectUser("/signup"); 
+}
+
+
+---
+
+<MainLayout>
+  admin index
+  <a href="/dashboard/admin/sites">sites</a>
+</MainLayout>

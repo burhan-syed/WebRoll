@@ -60,7 +60,7 @@ if (verifyKey) {
               <label>
                 <span class="label label-text">This link has expired</span>
               </label>
-              <ResendVerifEmail key={verifyKey ?? ""} client:load />
+              <ResendVerifEmail vKey={verifyKey ?? ""} client:load />
             </div>
           ) : verified ? (
             <div class="flex flex-col items-center">

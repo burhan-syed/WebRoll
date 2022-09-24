@@ -1,9 +1,10 @@
+import type { Categories } from "@prisma/client";
 import { useState } from "react";
 import type { SiteResData } from "../types";
 import SiteSubmit from "./forms/SiteSubmit";
 import SiteCard from "./ui/SiteCard";
 
-export default function SubmissionPage({ userIp }: { userIp: string }) {
+export default function SubmissionPage({ userIp, categories }: { userIp: string, categories: Categories[] }) {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
     console.log("submit:", submission);
@@ -18,7 +19,7 @@ export default function SubmissionPage({ userIp }: { userIp: string }) {
             <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
               <div className="my-5"></div>
 
-              <SiteCard {...submission} />
+              <SiteCard site={submission} />
               <div className="my-5"></div>
               <span className="w-full flex items-center justify-center">
                 You should be redirected soon. If nothing is happening click
@@ -38,7 +39,7 @@ export default function SubmissionPage({ userIp }: { userIp: string }) {
         </>
       ) : (
         <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
-          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} />
+          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} categories={categories} />
         </div>
       )}
     </>

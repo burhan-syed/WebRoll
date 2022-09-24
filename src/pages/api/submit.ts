@@ -1,15 +1,12 @@
 import prisma from "../../server/utils/prisma";
 import parseMetadata from "../../server/metaparser/parse";
 import { extractUrl, parseTags } from "../../server/metaparser/utils";
-import Filter from "bad-words";
 import { generateSiteId } from "../../server/utils/generateIDs";
 import type { APIRoute } from "astro";
 import {getWebRollSession} from "../../server/utils/parseCookieString";
+import postParseRequest from "../../server/metaparser/parseRequest";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
-const parseDomain = import.meta.env.PARSER_DOMAIN;
-const key = import.meta.env.MY_SECRET_KEY;
-const isPROD = import.meta.env.PROD;
 
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
@@ -155,22 +152,17 @@ export const post: APIRoute = async function post({ request }) {
       });
       console.log("Create:", create);
       try {
-        // console.log("send to", parseDomain,{
-        //   url: resURL,
-        //   key: key,
-        //   siteID: siteID,
-        //   assigner: sessionID,
-        // }); 
-        const res = fetch(parseDomain, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: resURL,
-            key: key,
-            siteID: siteID,
-            assigner: sessionID,
-          }),
-        });
+        const res = postParseRequest({siteURL: resURL, siteID: siteID, assignerID: sessionID})
+        // const res = fetch(parseDomain, {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({
+        //     url: resURL,
+        //     key: key,
+        //     siteID: siteID,
+        //     assigner: sessionID,
+        //   }),
+        // });
       } catch (err) {
         console.error("parse post error", err);
       }

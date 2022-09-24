@@ -9,6 +9,8 @@ export interface SiteResData {
   imgKey: string | null;
   sourceLink: string | null;
   allowEmbed: boolean;
+  submittedAt: Date;
+  updatedAt: Date;
   categories: {
     description: string | null;
     category: string;
@@ -40,4 +42,18 @@ export interface User {
   email: string; 
   provider: string; 
   iat: number;
+}
+
+enum Sorts {
+  DATE,
+  LIKES,
+  VIEWS
+}
+export interface SitesQuery {
+  sort?: "DATE" | "LIKES" | "VIEWS";
+  status?:SiteStatus[];
+  categories?:number[]; 
+  select?:number,
+  cursor?:string;
+
 }

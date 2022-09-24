@@ -2,15 +2,8 @@ import { Share, ExternalLink, Search } from "react-feather";
 import type { SiteResData } from "../../types";
 import SecureImg from "..//ui/SecureImg";
 
-export default function SiteCard ({
-  id,
-  url,
-  name,
-  description,
-  categories,
-  imgKey,
-  status,
-}: SiteResData) {
+export default function SiteCard({ site }: { site: SiteResData }) {
+  const { id, url, name, description, categories, imgKey, status } = site;
   return (
     <div className="card bg-base-100 ">
       <div className="card-body p-4  ">
@@ -91,5 +84,4 @@ export default function SiteCard ({
       </div>
     </div>
   );
-};
-
+}

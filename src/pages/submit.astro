@@ -2,7 +2,10 @@
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
+import prisma from "../server/utils/prisma";
 const userIp = Astro.clientAddress; 
+
+const categories = await prisma.categories.findMany(); 
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
@@ -30,7 +33,7 @@ const userIp = Astro.clientAddress;
           url will be trimmed.
         </p>
       </div>
-      <SubmissionPage client:load userIp={userIp} />
+      <SubmissionPage client:load userIp={userIp} categories={categories} />
     </div>
   </div>
 </MainLayout>

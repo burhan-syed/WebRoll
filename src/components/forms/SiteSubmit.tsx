@@ -5,6 +5,7 @@ import { DevTool } from "@hookform/devtools";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import type { SiteResData } from "../../types";
 import SiteCard from "../ui/SiteCard";
+import type { Categories } from "@prisma/client";
 
 interface SiteFormData {
   url: string;
@@ -19,98 +20,100 @@ interface SiteFormData {
 const urlPattern =
   /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
 
-const categories = [
-  {
-    category: "Arts & Design",
-    description: "Painting, Illustration, Photography, Sculpting",
-  },
-  // {
-  //   category: "Autos & Vehicles",
-  //   description: "Cars, Motorcycles, Boats, Bikes, Aircraft",
-  // },
-  {
-    category: "Beauty & Fashion",
-    description: "Cosmetics, Hygiene, Makeup, Fashion",
-  },
-  {
-    category: "Books & Literature",
-    description: "Poetry, E-Books, Writer Resources, Publishing",
-  },
-  {
-    category: "Business & Economics",
-    description: "Entrepreneurship, Money, Stocks, Finance, Investing",
-  },
-  {
-    category: "Food & Cooking",
-    description: "Food, Cooking, Baking, Nutrition, World Cuisines",
-  },
-  {
-    category: "Games",
-    description: "Video Games, Consoles, Toys, Board Games",
-  },
-  {
-    category: "Health & Fitness",
-    description: "Fitness, Mental health, Psychology, Medicine",
-  },
-  {
-    category: "Hobbies & Leisure",
-    description: "Ceramics, Knitting, Outdoors, Hiking, Travel",
-  },
-  {
-    category: "Home & Garden",
-    description: "Interior Decor, Gardening, Construction, personal Farming",
-  },
-  {
-    category: "Jobs & Education",
-    description:
-      "Online Courses and Certifications, Internships, Jobs, Career Resources",
-  },
-  {
-    category: "Music & Audio",
-    description: "Radios, Music Stations, Sounds, Music History",
-  },
-  {
-    category: "Nature & Animals",
-    description: "Earth, Ecology, Farming, Pets, and wild Animals",
-  },
-  {
-    category: "Other",
-    description: "Anything else",
-  },
-  {
-    category: "People & Society",
-    description: "Anthropology, Social networks, News, History",
-  },
-  {
-    category: "Philosophy & Life",
-    description: "Philosophy, Beliefs, Religion, Self-Improvement",
-  },
-  {
-    category: "Science & Math",
-    description: "Research, Biology, Chemistry, Physics, Astronomy",
-  },
-  {
-    category: "Sports",
-    description:
-      "Soccer, Baseball, Curling, Darts, Tennis, and any other Sport",
-  },
-  {
-    category: "Technology",
-    description:
-      "Computer Science, Hardware, Engineering, Internet, Programming",
-  },
-  {
-    category: "TV, Movies, Videos",
-    description: "TV Series, Cable TV, Videos, Streaming",
-  },
-];
+// const categories = [
+//   {
+//     category: "Arts & Design",
+//     description: "Painting, Illustration, Photography, Sculpting",
+//   },
+//   // {
+//   //   category: "Autos & Vehicles",
+//   //   description: "Cars, Motorcycles, Boats, Bikes, Aircraft",
+//   // },
+//   {
+//     category: "Beauty & Fashion",
+//     description: "Cosmetics, Hygiene, Makeup, Fashion",
+//   },
+//   {
+//     category: "Books & Literature",
+//     description: "Poetry, E-Books, Writer Resources, Publishing",
+//   },
+//   {
+//     category: "Business & Economics",
+//     description: "Entrepreneurship, Money, Stocks, Finance, Investing",
+//   },
+//   {
+//     category: "Food & Cooking",
+//     description: "Food, Cooking, Baking, Nutrition, World Cuisines",
+//   },
+//   {
+//     category: "Games",
+//     description: "Video Games, Consoles, Toys, Board Games",
+//   },
+//   {
+//     category: "Health & Fitness",
+//     description: "Fitness, Mental health, Psychology, Medicine",
+//   },
+//   {
+//     category: "Hobbies & Leisure",
+//     description: "Ceramics, Knitting, Outdoors, Hiking, Travel",
+//   },
+//   {
+//     category: "Home & Garden",
+//     description: "Interior Decor, Gardening, Construction, personal Farming",
+//   },
+//   {
+//     category: "Jobs & Education",
+//     description:
+//       "Online Courses and Certifications, Internships, Jobs, Career Resources",
+//   },
+//   {
+//     category: "Music & Audio",
+//     description: "Radios, Music Stations, Sounds, Music History",
+//   },
+//   {
+//     category: "Nature & Animals",
+//     description: "Earth, Ecology, Farming, Pets, and wild Animals",
+//   },
+//   {
+//     category: "Other",
+//     description: "Anything else",
+//   },
+//   {
+//     category: "People & Society",
+//     description: "Anthropology, Social networks, News, History",
+//   },
+//   {
+//     category: "Philosophy & Life",
+//     description: "Philosophy, Beliefs, Religion, Self-Improvement",
+//   },
+//   {
+//     category: "Science & Math",
+//     description: "Research, Biology, Chemistry, Physics, Astronomy",
+//   },
+//   {
+//     category: "Sports",
+//     description:
+//       "Soccer, Baseball, Curling, Darts, Tennis, and any other Sport",
+//   },
+//   {
+//     category: "Technology",
+//     description:
+//       "Computer Science, Hardware, Engineering, Internet, Programming",
+//   },
+//   {
+//     category: "TV, Movies, Videos",
+//     description: "TV Series, Cable TV, Videos, Streaming",
+//   },
+// ];
 
 export default function SiteSubmit({
   userIP,
   returnSubmissions = (a: SiteResData) => {},
+  categories
 }: {
   userIP: string;
   returnSubmissions: Function;
+  categories: Categories[]
 }) {
   const submitButton = useRef<HTMLButtonElement>(null);
   const {
@@ -599,7 +602,7 @@ export default function SiteSubmit({
       {prevSubmission && (
         <>
           <div className="my-10">
-            <SiteCard {...prevSubmission} />
+            <SiteCard site={prevSubmission} />
             <div className="p-4">
               <button
                 onClick={() => {

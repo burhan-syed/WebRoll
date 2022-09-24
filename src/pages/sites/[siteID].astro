@@ -1,7 +1,9 @@
 ---
 import Button from "../../components/ui/buttons/Button";
 import BgImage from "../../components/ui/BgImage";
-import { ExternalLink } from "react-feather";
+import UpdateSite from "../../components/admin/UpdateSite";
+import UpdateSiteModal from "../../components/admin/UpdateSiteModal";
+import { Divide, ExternalLink } from "react-feather";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { getSignedImageUrl } from "../../server/aws/bucket";
 import prisma from "../../server/utils/prisma";
@@ -9,6 +11,8 @@ import prisma from "../../server/utils/prisma";
 import { getImage } from "@astrojs/image";
 import ReportModal from "../../components/ui/ReportModal";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
+import { getUser } from "@astro-auth/core";
+import type { User } from "../../types";
 const { siteID } = Astro.params;
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
 console.log("cookie set?", session, prev_session);
@@ -29,6 +33,8 @@ const site = await prisma.sites.findFirst({
     views: true,
     sourceLink: true,
     allowEmbed: true,
+    submittedAt: true,
+    updatedAt: true,
     categories: { select: { category: true, description: true } },
     tags: { select: { tag: { select: { tag: true } } } },
     likes: { where: { sessionId: session } },
@@ -54,6 +60,9 @@ if (siteImgURL) {
   });
   if (src) siteImgURL = src;
 }
+
+const user = getUser({ client: Astro }) as User;
+const isAdmin = user?.role === "ADMIN";
 ---
 
 <MainLayout
@@ -79,7 +88,7 @@ if (siteImgURL) {
                     backgroundSize: `5px 5px`,
                   }
             }
-          ></header>
+          />
           <header
             class="fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top bg-neutral md:top-20 "
             style={
@@ -93,7 +102,7 @@ if (siteImgURL) {
                     backgroundSize: `5px 5px`,
                   }
             }
-          ></header>
+          />
           <div class="aspect-video w-full md:invisible md:w-0" />
           <div class="rounded-t-2xl md:rounded-t-none bg-base-200/80 md:bg-base-200 border-t border-base-100 -mt-10 md:mt-0 z-10 relative flex-grow  flex flex-col overflow-auto backdrop-blur-md">
             <div class="flex items-center justify-center  absolute h-4 top-0 z-20 w-full md:hidden">
@@ -165,7 +174,7 @@ if (siteImgURL) {
                     {site.description}
                   </p>
                   <div class="flex-grow lg:order-3" />
-
+             
                   <div class="w-full lg:order-4 order-5 ">
                     <p class=" mb-0 flex flex-col gap-1 bg-base-100 p-4  font-light text-sm shadow w-full">
                       <span class="flex justify-between">
@@ -197,6 +206,12 @@ if (siteImgURL) {
                         <span>status</span>
                         {site.status}
                       </span>
+                      {isAdmin && (
+                      <div class=" bg-base-100 p-2 w-full">
+                        <UpdateSite site={site} client:load/>
+
+                        </div>
+                    )}
                     </p>
                     {(site.status === "REVIEW" ||
                       site.status === "PARSING") && (
@@ -208,6 +223,7 @@ if (siteImgURL) {
                         )}
                       </div>
                     )}
+
                     <div class="my-4" />
                     <div class="bg-base-100 text-sm border p-4 pt-2 shadow w-full ">
                       <span class="">tags</span>
@@ -239,6 +255,7 @@ if (siteImgURL) {
                         <ExternalLink size={15} />
                       </a>
                     </span>
+            
                     <Button
                       client:load
                       styles={"btn-ghost btn-active w-full gap-2 btn-sm "}
@@ -275,6 +292,11 @@ if (siteImgURL) {
           </div>
         </div>
         <ReportModal client:load siteID={site.id} />
+        {isAdmin && (
+          <>
+            <UpdateSiteModal client:load siteID={site.id} />
+          </>
+        )}
       </>
     ) : (
       <div class="w-full h-screen flex items-center justify-center pb-20 ">

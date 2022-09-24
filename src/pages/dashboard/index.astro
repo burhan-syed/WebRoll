@@ -1,12 +1,12 @@
 ---
 import { getUser, redirectUser } from "@astro-auth/core";
 import { AlertCircle } from "react-feather";
-import Logout from "../components/auth/Logout";
-import MergeLikes from "../components/ui/buttons/MergeLikes";
-import MainLayout from "../layouts/MainLayout.astro";
-import { checkAndReturnSessionID } from "../server/utils/handleSession";
-import prisma from "../server/utils/prisma";
-import type { User } from "../types";
+import Logout from "../../components/auth/Logout";
+import MergeLikes from "../../components/ui/buttons/MergeLikes";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { checkAndReturnSessionID } from "../../server/utils/handleSession";
+import prisma from "../../server/utils/prisma";
+import type { User } from "../../types";
 
 const user = getUser({ client: Astro }) as User | null;
 if (!user) {
@@ -93,6 +93,7 @@ if (prevLikes && prevLikes.length > 0) {
         }
         <div class="flex-grow"></div>
         <div class="flex flex-col gap-4">
+          {user?.role === "ADMIN" && <a class="btn no-underline btn-warning" href="/dashboard/admin">Admin</a>}
           <a class="btn no-underline" href="/likes">View Your Likes</a>
           <a class="btn no-underline" href="/submit">Submit A Site</a>
           <Logout client:load />
