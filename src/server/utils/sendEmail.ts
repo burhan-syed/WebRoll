@@ -41,6 +41,9 @@ export const generateAndSendAuthVerificationMail = async ({
     });
   });
 
+  const link = `${DOMAIN}/auth/${
+    type === "NEW" ? "verify" : "reset"
+  }?v=${verificationKey}`;
   const mailData = {
     from: {
       name: `WebRoll`,
@@ -58,9 +61,7 @@ export const generateAndSendAuthVerificationMail = async ({
       type === "NEW"
         ? "Thank you for joining WebRoll! To verify your account please follow "
         : "To reset your password please follow "
-    }<a href="${DOMAIN}/auth/${
-      type === "NEW" ? "verify" : "reset"
-    }?v=${verificationKey}">this link</a>.<br/>If you do not recognize this request please ignore this email.</p><p><br/><a href="${DOMAIN}">webroll.io</a></p></div>`,
+    }<a href="${link}">this link</a>.<br/>If you do not recognize this request please ignore this email.</p><p><br/>Link not working? Copy this into your browser's address bar: <a href="${link}">${link}</a><br/><br/><a href="${DOMAIN}">webroll.io</a></p></div>`,
   };
 
   console.log("MAIL DATA?", mailData);

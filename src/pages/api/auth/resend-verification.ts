@@ -35,7 +35,7 @@ export const post: APIRoute = async function post({ request }) {
       }
       return new Response(null, { status: 200 });
     }else{
-      const account = await prisma.accounts.findFirst({where: {email: email}, include: {verifications: true}});
+      const account = await prisma.accounts.findFirst({where: {email: email}});
       if(!account || account.status !== "PENDING") return new Response("invalid email", {status: 401, statusText: "invalid attempt"}); 
       const emailVerifId = randomSessionID(64);
       const expires = new Date(Date.now() + 1000 * 60 * 24); 

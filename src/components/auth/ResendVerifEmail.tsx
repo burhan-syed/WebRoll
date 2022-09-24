@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 export default function ResendVerifEmail({
-  key,
+  vKey,
   email,
   disabled = false
 }: {
-  key?: string;
+  vKey?: string;
   email?: string;
   disabled?: boolean;
 }) {
@@ -18,7 +18,7 @@ export default function ResendVerifEmail({
     try {
       const res = await fetch("/api/auth/resend-verification", {
         method: "post",
-        body: JSON.stringify({ key: key, email: email }),
+        body: JSON.stringify({ key: vKey, email: email }),
       });
       if (res.ok) {
         setSent(true);
