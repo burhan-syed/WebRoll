@@ -1,7 +1,7 @@
 import QuerySites from "./QuerySites";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SiteStatus } from "@prisma/client";
 const queryClient = new QueryClient();
 const statuses = [

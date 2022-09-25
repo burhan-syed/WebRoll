@@ -2,9 +2,7 @@ import { QueryFunctionContext, useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useRef, useState } from "react";
 import type { SitesQuery, SiteResData } from "../../../types";
-import Paginator from "../../ui/buttons/Paginator";
 import SiteCardHorizontal from "../../ui/SiteCardHorizontal";
-import SmallSiteCard from "../../ui/SmallSiteCard";
 
 interface SitesQueryResponseData {
   data?: SiteResData[];
