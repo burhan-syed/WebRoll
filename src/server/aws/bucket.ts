@@ -13,7 +13,7 @@ const cloudfrontPrivateKey = Buffer.from(import.meta.env.CLOUDFRONT_PRIVATE_KEY_
 const cloudfrontKeyPairID = import.meta.env.CLOUDFRONT_KEYPAIR_ID; 
 const s3 = new S3Client({
   credentials: { accessKeyId, secretAccessKey },
-  region: 'us-east-2',
+  region: region,
 });
 
 const randomImageName = (bytes=32) => crypto.randomBytes(bytes).toString('hex');
@@ -32,7 +32,7 @@ export const putImageObject = async ({
     Bucket: bucket,
     Key: imgKey,
     Metadata: { siteURL: siteURL },
-    ContentType: "image/webp"
+    ContentType: "image/jpeg"
   };
   const command = new PutObjectCommand(params); 
   const res = await s3.send(command); 

@@ -55,7 +55,8 @@ export const post: APIRoute = async function post({ request }) {
         update = await prisma.sites.update({
           where: { id: siteData.id },
           data: {
-            ...siteData,          
+            ...siteData,
+            updatedAt: new Date(),          
             categories: {
               connect: siteData.categories?.map((category) => ({
                 category: category,
@@ -82,7 +83,8 @@ export const post: APIRoute = async function post({ request }) {
         update = await prisma.sites.update({
           where: { id: siteData.id },
           data: {
-            ...siteData,          
+            ...siteData,      
+            updatedAt: new Date(),     
             categories: {
               connect: siteData.categories?.map((category) => ({
                 category: category,

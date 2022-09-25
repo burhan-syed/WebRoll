@@ -49,17 +49,17 @@ const likesCount = site?._count?.likes ?? 0;
 let siteImgURL = site?.imgKey
   ? (await getSignedImageUrl(site.imgKey as string)) ?? ""
   : "";
-if (siteImgURL) {
-  const { src } = await getImage({
-    format: "webp",
-    quality: 80,
-    width: 1080,
-    height: 1920,
-    src: siteImgURL,
-    fit: "outside",
-  });
-  if (src) siteImgURL = src;
-}
+// if (siteImgURL) {
+//   const { src } = await getImage({
+//     format: "webp",
+//     quality: 80,
+//     width: 1080,
+//     height: 1920,
+//     src: siteImgURL,
+//     fit: "outside",
+//   });
+//   if (src) siteImgURL = src;
+// }
 
 const user = getUser({ client: Astro }) as User;
 const isAdmin = user?.role === "ADMIN";

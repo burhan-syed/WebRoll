@@ -5,7 +5,7 @@ import { getSignedImageUrl } from '../../../server/aws/bucket';
 
 export const get: APIRoute = async function get({params}){
 
-  const {id , hd} = params; 
+  const {id , hd=true} = params; 
   if(!id)return new Response(null, {status: 400}); 
  
   try{

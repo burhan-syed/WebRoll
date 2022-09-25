@@ -19,12 +19,16 @@ export const post: APIRoute = async function post({ request }) {
     if (!site) {
       return new Response(null, { status: 400 });
     }
-    const res = postParseRequest({
+    const res = await postParseRequest({
       siteURL: site.url,
       siteID: site.id,
       assignerID: site.submitterID,
     });
-    return new Response(null, { status: 200 });
+    if(!res.ok){
+      return new Response("parse error", {status: 500});
+    }
+    const data = await res.json(); 
+    return new Response(data, { status: 200 });
   } catch {
     return new Response(null, { status: 500 });
   }

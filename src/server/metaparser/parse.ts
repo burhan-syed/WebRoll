@@ -18,7 +18,9 @@ const parseMetadata = async (response: Response) => {
         /(property|name)="(.*?)".+content="(.*?)".*\/>/gim,
         (match: any, p0: any, p1: any, p2: any) => {
           //console.log("replace", match, "P0", p0, "P1", p1, "P2", p2);
-          metadata[p1] = p2;
+          if (!metadata?.[p1] || p2?.length > metadata[p1]?.length) {
+            metadata[p1] = p2;
+          }
           return "";
         }
       );
@@ -27,12 +29,9 @@ const parseMetadata = async (response: Response) => {
     metadata["title"] = siteTitle;
   };
 
-  
-
-    metadata["resURL"] = response.url;
-    const html = await response.text();
-    checkMetas(html);
-  
+  metadata["resURL"] = response.url;
+  const html = await response.text();
+  checkMetas(html);
 
   return metadata;
 };
