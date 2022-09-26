@@ -38,6 +38,13 @@ export const extractUrl = (url: string) => {
   let host = pathArray[2];
   return `${protocol}//${host}`;
 };
+export const splitUrl = (url:string) => {
+  let pathArray = url.split("/"); 
+  let protocol = pathArray[0];
+  let host = pathArray[2];
+  let path = pathArray?.length > 3 ? pathArray.slice(2,-1)?.join("/") : "";
+  return {host: `${protocol}//${host}`, path: path}
+}
 
 import Filter from "bad-words";
 

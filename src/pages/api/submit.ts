@@ -1,29 +1,31 @@
 import prisma from "../../server/utils/prisma";
 import parseMetadata from "../../server/metaparser/parse";
-import { extractUrl, parseTags } from "../../server/metaparser/utils";
+import { extractUrl, parseTags, splitUrl } from "../../server/metaparser/utils";
 import { generateSiteId } from "../../server/utils/generateIDs";
 import type { APIRoute } from "astro";
-import {getWebRollSession} from "../../server/utils/parseCookieString";
+import { getWebRollSession } from "../../server/utils/parseCookieString";
 import postParseRequest from "../../server/metaparser/parseRequest";
+import type { Categories } from "@prisma/client";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
 
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
   const sessionID = getWebRollSession(request.headers.get("cookie"));
-  
-  const {
-    tags,
-    url,
-    category,
-    privacy,
-    sourceLink,
-    captchaToken,
-    userIP,
-  } = data;
-  // console.log(userIP, tags, url, category, privacy, sourceLink, captchaToken);
+  const userIP = (request as any)?.[
+    Symbol.for("astro.clientAddress")
+  ] as string;
 
-  if (!url || !category || !(tags.length > 3) || !captchaToken || !sessionID) {
+  const { tags, url, categories, privacy, sourceLink, captchaToken } = data;
+  console.log(userIP, tags, url, categories, privacy, sourceLink, captchaToken);
+
+  if (
+    !url ||
+    !categories ||
+    !(tags.length > 3) ||
+    !captchaToken ||
+    !sessionID
+  ) {
     return new Response(
       JSON.stringify({ ERROR: "required data not provided" }),
       { status: 400 }
@@ -67,7 +69,7 @@ export const post: APIRoute = async function post({ request }) {
   }
   try {
     const response = await fetch(baseUrl);
-    const resURL = response.url;
+    const resURL = splitUrl(response.url)?.host ?? baseUrl;
     const xFrameOptions = response.headers?.get("X-Frame-Options");
     const allowEmbed = !(
       xFrameOptions === "DENY" ||
@@ -91,7 +93,12 @@ export const post: APIRoute = async function post({ request }) {
       });
       if (pData) {
         console.log("SITE EXISTS");
-
+        if (pData?.status === "BANNED") {
+          return new Response(
+            JSON.stringify({ ERROR: "we can't index this url" }),
+            { status: 400 }
+          );
+        }
         return new Response(
           JSON.stringify({ ERROR: "site previously submitted", data: pData }),
           {
@@ -109,9 +116,8 @@ export const post: APIRoute = async function post({ request }) {
     const siteID = generateSiteId();
 
     const { description, title } = await parseMetadata(response);
-    console.log("metadata", siteID, description, title);
+    console.log("metadata", siteID, description, title, resURL);
     try {
-      //await prisma.$transaction(cleanedTags.map((tag:string) => prisma.tags.upsert({where: {tag: tag}, create: {tag: tag, sites: {connectOrCreate: {where: {siteID_tagID}}}}})))
       const create = await prisma.sites.create({
         data: {
           id: siteID,
@@ -123,7 +129,13 @@ export const post: APIRoute = async function post({ request }) {
           description: description,
           //imgKey,
           sourceLink,
-          categories: { connect: { category: category } },
+          categories: {
+            connect: [
+              ...categories
+                .filter((c: string) => c)
+                .map((c: string) => ({ category: c })),
+            ],
+          },
           tags: {
             connectOrCreate: cleanedTags.map((tag: string) => ({
               where: { siteID_tagID: { siteID: siteID, tagID: tag } },
@@ -152,7 +164,11 @@ export const post: APIRoute = async function post({ request }) {
       });
       console.log("Create:", create);
       try {
-        const res = postParseRequest({siteURL: resURL, siteID: siteID, assignerID: sessionID})
+        const res = postParseRequest({
+          siteURL: resURL,
+          siteID: siteID,
+          assignerID: sessionID,
+        });
         // const res = fetch(parseDomain, {
         //   method: "POST",
         //   headers: { "Content-Type": "application/json" },

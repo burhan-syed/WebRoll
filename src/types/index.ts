@@ -57,3 +57,13 @@ export interface SitesQuery {
   cursor?:string;
 
 }
+
+export interface SiteFormData {
+  url: string;
+  sourceLink?: string;
+  description?: string;
+  categories: string[];
+  tags: { name: string }[];
+  privacy: boolean;
+  captchaToken: string;
+}

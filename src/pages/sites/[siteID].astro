@@ -15,14 +15,15 @@ import { getUser } from "@astro-auth/core";
 import type { User } from "../../types";
 const { siteID } = Astro.params;
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
-console.log("cookie set?", session, prev_session);
 Astro.response.headers.set(
   "Set-Cookie",
   `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
 );
+const user = getUser({ client: Astro }) as User;
+const isAdmin = user?.role === "ADMIN";
 
 const site = await prisma.sites.findFirst({
-  where: { id: siteID as string },
+  where: { id: siteID as string, status: {notIn: isAdmin ? [] : ["BANNED"]} },
   select: {
     id: true,
     url: true,
@@ -61,8 +62,7 @@ let siteImgURL = site?.imgKey
 //   if (src) siteImgURL = src;
 // }
 
-const user = getUser({ client: Astro }) as User;
-const isAdmin = user?.role === "ADMIN";
+
 ---
 
 <MainLayout
@@ -199,8 +199,8 @@ const isAdmin = user?.role === "ADMIN";
                         </span>
                       )}
                       <span class="flex justify-between">
-                        <span>category</span>
-                        {site.categories[0].category}
+                        <span>categor{site.categories.length === 1 ? "y":"ies"}</span>
+                        {site.categories.map(c => c.category).join(",")}
                       </span>
                       <span class="flex justify-between">
                         <span>status</span>
@@ -300,7 +300,7 @@ const isAdmin = user?.role === "ADMIN";
       </>
     ) : (
       <div class="w-full h-screen flex items-center justify-center pb-20 ">
-        site not found
+        <p class="text-center">page not found<br/>this site ID is invalid or the site was blacklisted</p>
       </div>
     )
   }
