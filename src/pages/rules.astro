@@ -2,6 +2,20 @@
 import MainLayout from "../layouts/MainLayout.astro";
 
 const Rules = {
+  General: [
+    {
+      heading: "We look for quality websites fitting the criteria below",
+      span: `See the "Allowed" and "Not Allowed" sections for details`,
+    },
+    {
+      heading: "Select the appropriate categories",
+      span: "When submitting a site select at least one category for sorting",
+    },
+    {
+      heading: "Enter relevant tags",
+      span: "Enter at least three tags to accurate describe the primary themes or content of the site",
+    },
+  ],
   Allowed: [
     {
       heading: "Something you made",
@@ -9,23 +23,23 @@ const Rules = {
     },
     {
       heading: "Something Interesting",
-      span: "Sites that make you think, offer great material to browse and read, or are great educational references.",
+      span: "Sites that make you think or contain great material",
     },
     {
       heading: "Something Beautiful",
-      span: "Sites that are well designed or are otherwise appealing.",
+      span: "Sites that are well designed or are otherwise appealing",
     },
     {
       heading: "Something Unique",
-      span: "Sites that are one of a kind.",
+      span: "Sites that are one of a kind",
     },
     {
       heading: "Something Useful",
-      span: "Sites that are great resources and are worthwhile to share with others.",
+      span: "Sites that are excellent resources or contain helpful tools",
     },
     {
       heading: "Something Fun",
-      span: "Sites that can pass the time. For example, exceptional collections, browser games, or demos.",
+      span: "Sites that can pass the time. For example, exceptional collections, browser games, or demos",
     },
   ],
   NotAllowed: [
@@ -35,7 +49,7 @@ const Rules = {
     },
     {
       heading: "Low quality",
-      span: "Sites that are uninspired, lacking material, unfinished, have excessive advertising, or are otherwise low quality.",
+      span: "Sites that are uninspired, lacking material, unfinished, have excessive advertising, or are otherwise low in quality.",
     },
     {
       heading: "Misleading or Malicious",
@@ -46,7 +60,8 @@ const Rules = {
       span: "Sites that require payment or registration to access content will generally not be accepted. Exceptions may be made for exceptional landing pages.",
     },
     {
-      heading: "Anything illegal or containing, hatespeech, pornography, or graphic content",
+      heading:
+        "Anything illegal or containing, hatespeech, pornography, or graphic content",
       span: "",
     },
   ],
@@ -66,12 +81,29 @@ const Rules = {
         class="bg-base-100/90 backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
       >
         <h1 class="text-3xl">Submission Rules</h1>
-        <p class="text-sm font-light ">
-          We review all submitted sites before they can be discovered on
-          WebRoll. <br/>No account is necessary but repeated submissions breaking the
-          following rules will get your access restricted.<br />
+        <p class="text-sm font-light">
+          We review all submitted sites prior to displaying them on our
+          discovery pagesÏ. <br />No account is necessary but repeated
+          submissions breaking the following rules will get your access
+          restricted.<br />
           You can submit a new site <a href="/submit">here</a> for us to review.
         </p>
+      </div>
+      <div
+        class="bg-base-100/90 backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
+      >
+        <h1 class="text-2xl">In General</h1>
+        <ul class="">
+          {
+            Rules.General.map((rule) => (
+              <li>
+                {rule.heading}
+                <br />
+                <span class="text-xs leading-tight">{rule.span}</span>
+              </li>
+            ))
+          }
+        </ul>
       </div>
       <div
         class="bg-base-100/90 backdrop-blur-md border border-success rounded-lg w-full p-4 shadow-lg"
