@@ -131,7 +131,7 @@ export default function ExplorePage({
             ></iframe>
           ) : (
             siteImgURL.url === sites[index].url && (
-              <div className="flex  overflow-hidden items-center justify-center flex-grow relative shadow-inner">
+              <div className="flex  overflow-hidden items-start md:items-center justify-center flex-grow relative shadow-inner">
                 <div className="fixed z-20 top-1/2 left-1/2 card -translate-y-1/2 -translate-x-1/2 bg-base-100/80 backdrop-blur-md shadow-xl   max-w-sm md:max-w-2xl border border-base-200 w-full">
                   <div className="card-body ">
                     <p>

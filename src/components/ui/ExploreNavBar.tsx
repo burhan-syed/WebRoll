@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Info,
-  ExternalLink,
-  Search,
-} from "react-feather";
+import { Info, ExternalLink, Search } from "react-feather";
 import type { minSiteResDataWithLikes } from "../../types";
 import Button from "./buttons/Button";
 
@@ -64,8 +60,13 @@ export default function ExploreNavBar({
               <DiceButton action={advance} advanced={advanced} />
             </div>
             <div className="order-3 md:order-2">
-            <Button type="like" site={site} iconSize={20} label={""} styles="btn btn-ghost"/>
-
+              <Button
+                type="like"
+                site={site}
+                iconSize={20}
+                label={""}
+                styles="btn btn-ghost"
+              />
             </div>
             <button
               onClick={(e) => {
@@ -110,39 +111,44 @@ export default function ExploreNavBar({
       {showInfo && (
         <div className="card fixed bottom-[4.9rem] md:top-[4.9rem] md:bottom-auto left-1/2 -translate-x-1/2 bg-base-100 border shadow-2xl border-base-300 ">
           <div className="card-body p-4 w-[80vw] max-w-3xl ">
-            <div className=" ">
-              <h1 className="card-title text-xl font-light">{site.name}</h1>
-              <h2 className="text-md font-light pb-2  py-0.5 flex items-center justify-between gap-2 flex-wrap">
-                <span>{site.categories[0].category} </span>{" "}
-                <a
-                  href={site.url}
-                  target={"_blank"}
-                  className="link link-primary flex items-center gap-2 max-w-lg truncate"
-                >
-                  <span className="truncate">{site.url}</span>
-                  <ExternalLink size={15} className="flex-none" />
-                </a>
-              </h2>
-              {(site.description || true) && (
-                <p className="pb-4 font-light text-sm">{site.description}</p>
-              )}
+            <div className="flex justify-between sm:flex-col gap-1 ">
+              <div className="w-2/3 sm:w-auto">
+                <h1 className="card-title text-lg sm:text-xl font-light">{site.name}</h1>
+                <h2 className="text-md font-light pb-2  py-0.5 flex items-center justify-between gap-2 flex-wrap">
+                  <span>{site.categories.map(c => c.category).join(",")} </span>{" "}
+                  <a
+                    href={site.url}
+                    target={"_blank"}
+                    className="link link-primary flex items-center gap-2 max-w-lg truncate"
+                  >
+                    <span className="truncate">{site.url}</span>
+                    <ExternalLink size={15} className="flex-none" />
+                  </a>
+                </h2>
+                {(site.description || true) && (
+                  <p className="pb-4 font-light text-sm">{site.description}</p>
+                )}
+              </div>
 
-              <div className="flex items-center w-full justify-between gap-1">
+              <div className="flex flex-col sm:flex-row items-center sm:w-full justify-evenly gap-1 w-1/3">
                 <Button
-                  styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm  "}
+                  styles={"btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm  "}
                   type={"share"}
                   site={site}
                   tooltipLocation={"top"}
                 />
                 <a
                   href={`/sites/${site.id}`}
-                  target={"_blank"}
-                  className="btn btn-ghost btn-active w-1/3 gap-2 btn-sm "
+                  className="btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm "
                 >
                   <Search size={15} />
-                  Page
+                  Details
                 </a>
-                <Button styles={"btn btn-ghost btn-active w-1/3 gap-2 btn-sm "} type={"report"} site={site}/>
+                <Button
+                  styles={"btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm "}
+                  type={"report"}
+                  site={site}
+                />
               </div>
             </div>
           </div>
