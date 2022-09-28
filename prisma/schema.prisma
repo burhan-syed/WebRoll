@@ -57,7 +57,7 @@ enum VerifType {
 
 model Sites {
   id          String     @id @unique @map("id") @db.VarChar(21)
-  name        String
+  name        String      @db.Text
   url         String     @unique
   sourceLink  String?    @map("source_link")
   views       Int        @default(0)

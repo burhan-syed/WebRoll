@@ -24,3 +24,4 @@ scripts/scrapers/*
 images/*
 *.pem
 .vercel
+*.csv
