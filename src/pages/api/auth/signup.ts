@@ -4,14 +4,17 @@ import { getWebRollSession } from "../../../server/utils/parseCookieString";
 import { hashPassword } from "../../../server/utils/passwordHasher";
 import prisma from "../../../server/utils/prisma";
 import { generateAndSendAuthVerificationMail } from "../../../server/utils/sendEmail";
+
+const isProd = import.meta.env.PROD;
 export const post: APIRoute = async function post({ request }) {
   const sessionID = getWebRollSession(request.headers.get("cookie"));
   const data = await request.json();
   const { email, password } = data;
   console.log("session?", sessionID, "email?", email, "password?", password);
-  const ip = (request as any)?.[Symbol.for("astro.clientAddress")] as string;
+  const ip =
+    request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null;
 
-  if (!email || !password || !sessionID || !ip || !(password.length >=9)) {
+  if (!email || !password || !sessionID || !ip || !(password.length >= 9)) {
     return new Response(JSON.stringify({ ERROR: "invalid" }), { status: 400 });
   }
   try {
@@ -49,25 +52,26 @@ export const post: APIRoute = async function post({ request }) {
         },
       },
       include: {
-        account: true
-      }
+        account: true,
+      },
     });
-    try{
-      await generateAndSendAuthVerificationMail({recipient: email, verificationKey: emailVerifId})
-
-    }catch(err){
+    try {
+      await generateAndSendAuthVerificationMail({
+        recipient: email,
+        verificationKey: emailVerifId,
+      });
+    } catch (err) {
       console.log("something went wrong with email verif", err);
       await prisma.$transaction([
-        prisma.accountVerifications.delete({where: {id: emailVerifId}}),
-        prisma.sessions.delete({where: {id: newSession}}),
-        prisma.accounts.delete({where: {email: email}})
-      ])
-      return new Response(null, {status:500}) 
+        prisma.accountVerifications.delete({ where: { id: emailVerifId } }),
+        prisma.sessions.delete({ where: { id: newSession } }),
+        prisma.accounts.delete({ where: { email: email } }),
+      ]);
+      return new Response(null, { status: 500 });
     }
     return new Response(JSON.stringify({ email: account.account.email }), {
       status: 200,
     });
-   
   } catch (err) {
     console.log("signup error", err);
     return new Response(null, { status: 500 });

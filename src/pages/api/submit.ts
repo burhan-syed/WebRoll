@@ -2,24 +2,25 @@ import prisma from "../../server/utils/prisma";
 import parseMetadata from "../../server/metaparser/parse";
 import { extractUrl, parseTags, splitUrl } from "../../server/metaparser/utils";
 import { generateSiteId } from "../../server/utils/generateIDs";
-import type { APIRoute } from "astro";
 import { getWebRollSession } from "../../server/utils/parseCookieString";
 import postParseRequest from "../../server/metaparser/parseRequest";
+import type { APIRoute } from "astro";
 import type { Categories } from "@prisma/client";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
+const isProd = import.meta.env.PROD;
 
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
   const sessionID = getWebRollSession(request.headers.get("cookie"));
-  const userIP = (request as any)?.[
-    Symbol.for("astro.clientAddress")
-  ] as string;
+  const userIP =
+    request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null;
 
   const { tags, url, categories, privacy, sourceLink, captchaToken } = data;
-  console.log(userIP, tags, url, categories, privacy, sourceLink, captchaToken);
+  //console.log(userIP, tags, url, categories, privacy, sourceLink, captchaToken);
 
   if (
+    !userIP ||
     !url ||
     !categories ||
     !(tags.length > 3) ||
@@ -27,7 +28,7 @@ export const post: APIRoute = async function post({ request }) {
     !sessionID
   ) {
     return new Response(
-      JSON.stringify({ ERROR: "required data not provided" }),
+      JSON.stringify({ ERROR: "missing required information" }),
       { status: 400 }
     );
   }
@@ -47,13 +48,35 @@ export const post: APIRoute = async function post({ request }) {
       );
     }
   } catch (err) {
-    console.log("CAPTCHA ERR:", err);
+    console.error("CAPTCHA ERR:", err);
     return new Response(JSON.stringify({ ERROR: "unable to verify captcha" }), {
       status: 401,
     });
   }
 
   const baseUrl = extractUrl(url);
+
+  const parsedCategories = categories.filter((c: string) => c);
+  if (
+    !parsedCategories ||
+    parsedCategories.length < 1 ||
+    parsedCategories.length > 2 ||
+    (parsedCategories.includes("Fun") && parsedCategories.length < 2)
+  ) {
+    return new Response(
+      JSON.stringify({
+        ERROR:
+          !parsedCategories || parsedCategories.length < 1
+            ? "must select a category"
+            : parsedCategories.length > 2
+            ? "2 categories maximum"
+            : parsedCategories.includes("Fun") && parsedCategories.length < 2
+            ? "must select two categories with 'Fun' selected"
+            : "invalid categories",
+      }),
+      { status: 400 }
+    );
+  }
 
   const { cleanedTags, invalidTags } = parseTags(tags);
 
@@ -92,7 +115,6 @@ export const post: APIRoute = async function post({ request }) {
         },
       });
       if (pData) {
-        console.log("SITE EXISTS");
         if (pData?.status === "BANNED") {
           return new Response(
             JSON.stringify({ ERROR: "we can't index this url" }),
@@ -107,7 +129,7 @@ export const post: APIRoute = async function post({ request }) {
         );
       }
     } catch (err) {
-      console.log("FIND ERR:", err);
+      console.error("FIND ERR:", err);
       return new Response(JSON.stringify({ ERROR: "problem validating" }), {
         status: 500,
       });
@@ -115,8 +137,8 @@ export const post: APIRoute = async function post({ request }) {
 
     const siteID = generateSiteId();
 
-    const { description, title } = await parseMetadata(response);
-    console.log("metadata", siteID, description, title, resURL);
+    const { description, title } = await parseMetadata(await response.text());
+    //console.log("metadata", siteID, description, title, resURL);
     try {
       const create = await prisma.sites.create({
         data: {
@@ -162,38 +184,28 @@ export const post: APIRoute = async function post({ request }) {
           categories: { select: { category: true } },
         },
       });
-      console.log("Create:", create);
-      try {
-        const res = postParseRequest({
-          siteURL: resURL,
-          siteID: siteID,
-          assignerID: sessionID,
-        });
-        // const res = fetch(parseDomain, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({
-        //     url: resURL,
-        //     key: key,
-        //     siteID: siteID,
-        //     assigner: sessionID,
-        //   }),
-        // });
-      } catch (err) {
-        console.error("parse post error", err);
-      }
+      //we'll initiate this manually from admin page
+      // try {
+      //   const res = postParseRequest({
+      //     siteURL: resURL,
+      //     siteID: siteID,
+      //     assignerID: sessionID,
+      //   });
+      // } catch (err) {
+      //   console.error("parse post error", err);
+      // }
 
       return new Response(JSON.stringify({ data: { ...create } }), {
         status: 200,
       });
     } catch (err) {
-      console.log("CREATE ERR:", err);
+      console.error("CREATE ERR:", err);
       return new Response(JSON.stringify({ ERROR: "Server Error" }), {
         status: 500,
       });
     }
   } catch (err) {
-    console.log("FETCH ERR:", err);
+    console.error("FETCH ERR:", err);
     return new Response(JSON.stringify({ ERROR: "Unable to fetch url" }), {
       status: 400,
     });

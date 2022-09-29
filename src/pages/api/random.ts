@@ -1,11 +1,14 @@
 import type { APIRoute } from "astro";
 import { getWebRollSession } from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
+
+const isProd = import.meta.env.PROD
+
 export const post: APIRoute = async function post({ request }) {
   console.log(request);
   const sessionID = getWebRollSession(request.headers.get("cookie"));
   const data = await request.json();
-  const { userIP } = data;
+  const userIP = request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null; 
   if (!userIP || !sessionID) {
     return new Response(JSON.stringify({}), { status: 401 });
   }

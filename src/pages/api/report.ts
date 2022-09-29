@@ -1,12 +1,14 @@
 import type { APIRoute } from "astro";
-import {getWebRollSession} from "../../server/utils/parseCookieString";
+import { getWebRollSession } from "../../server/utils/parseCookieString";
 import prisma from "../../server/utils/prisma";
+const isProd = import.meta.env.PROD;
 export const post: APIRoute = async function post({ request }) {
-  const sessionID = getWebRollSession(request.headers.get("cookie"))
+  const sessionID = getWebRollSession(request.headers.get("cookie"));
   const data = await request.json();
-  const ip = "";
+  const ip =
+    request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null;
   const { siteID, reportType } = data;
-  if (!siteID || !sessionID || !reportType) {
+  if (!siteID || !sessionID || !reportType || !ip) {
     return new Response("invalid request", { status: 400 });
   }
   try {
@@ -25,10 +27,10 @@ export const post: APIRoute = async function post({ request }) {
         sessionId: sessionID,
       },
       update: {
-        type: reportType, 
-        date: new Date(), 
+        type: reportType,
+        date: new Date(),
         ip: ip,
-      }
+      },
     });
     return new Response(null, { status: 200 });
   } catch (err) {

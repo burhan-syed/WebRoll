@@ -10,14 +10,8 @@ export const post: APIRoute = async function post({ request }) {
   if (wrSessions?.[0]?.length !== 48 || wrSessions?.[1]?.length !== 48) {
     return new Response("invalid request", { status: 400 });
   }
-  // if(!user?.session || user?.session !== wrSessions?.[0]){
-  //   return new Response(null,{status: 401 })
-  // }
 
   try {
-    // const sessData = await prisma.sessions.findFirst({
-    //   where: { id: wrSessions?.[0], },
-    // });
     const oldSessData = await prisma.sessions.findFirst({
       where: { id: wrSessions?.[1] },
       include: { account: true, likes: { where: { direction: true } } },
