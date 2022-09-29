@@ -7,8 +7,7 @@ import { Divide, ExternalLink } from "react-feather";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { getSignedImageUrl } from "../../server/aws/bucket";
 import prisma from "../../server/utils/prisma";
-
-import { getImage } from "@astrojs/image";
+//import { getImage } from "@astrojs/image";
 import ReportModal from "../../components/ui/ReportModal";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import { getUser } from "@astro-auth/core";
@@ -23,7 +22,7 @@ const user = getUser({ client: Astro }) as User;
 const isAdmin = user?.role === "ADMIN";
 
 const site = await prisma.sites.findFirst({
-  where: { id: siteID as string, status: {notIn: isAdmin ? [] : ["BANNED"]} },
+  where: { id: siteID as string, status: { notIn: isAdmin ? [] : ["BANNED"] } },
   select: {
     id: true,
     url: true,
@@ -61,8 +60,6 @@ let siteImgURL = site?.imgKey
 //   });
 //   if (src) siteImgURL = src;
 // }
-
-
 ---
 
 <MainLayout
@@ -174,7 +171,7 @@ let siteImgURL = site?.imgKey
                     {site.description}
                   </p>
                   <div class="flex-grow lg:order-3" />
-             
+
                   <div class="w-full lg:order-4 order-5 ">
                     <p class=" mb-0 flex flex-col gap-1 bg-base-100 p-4  font-light text-sm shadow w-full">
                       <span class="flex justify-between">
@@ -199,19 +196,20 @@ let siteImgURL = site?.imgKey
                         </span>
                       )}
                       <span class="flex justify-between">
-                        <span>categor{site.categories.length === 1 ? "y":"ies"}</span>
-                        {site.categories.map(c => c.category).join(",")}
+                        <span>
+                          categor{site.categories.length === 1 ? "y" : "ies"}
+                        </span>
+                        {site.categories.map((c) => c.category).join(",")}
                       </span>
                       <span class="flex justify-between">
                         <span>status</span>
                         {site.status}
                       </span>
                       {isAdmin && (
-                      <div class=" bg-base-100 p-2 w-full">
-                        <UpdateSite site={site} client:load/>
-
+                        <div class=" bg-base-100 p-2 w-full">
+                          <UpdateSite site={site} client:load />
                         </div>
-                    )}
+                      )}
                     </p>
                     {(site.status === "REVIEW" ||
                       site.status === "PARSING") && (
@@ -255,7 +253,7 @@ let siteImgURL = site?.imgKey
                         <ExternalLink size={15} />
                       </a>
                     </span>
-            
+
                     <Button
                       client:load
                       styles={"btn-ghost btn-active w-full gap-2 btn-sm "}
@@ -285,7 +283,11 @@ let siteImgURL = site?.imgKey
                     </a>
                   </div>
 
-                  <p class="text-xs font-light text-center px-4 max-w-lg mx-auto order-8">{`Please use the Report button if you think this site is categorized incorrectly, has invalid tags, is broken, or breaks `}<a href="/rules">WebRoll submission rules</a>{`. `}</p>
+                  <p class="text-xs font-light text-center px-4 max-w-lg mx-auto order-8">
+                    {`Please use the Report button if you think this site is categorized incorrectly, has invalid tags, is broken, or breaks `}
+                    <a href="/rules">WebRoll submission rules</a>
+                    {`. `}
+                  </p>
                 </div>
               </div>
             </div>
@@ -300,7 +302,11 @@ let siteImgURL = site?.imgKey
       </>
     ) : (
       <div class="w-full h-screen flex items-center justify-center pb-20 ">
-        <p class="text-center">page not found<br/>this site ID is invalid or the site was blacklisted</p>
+        <p class="text-center">
+          page not found
+          <br />
+          this site ID is invalid or the site was blacklisted
+        </p>
       </div>
     )
   }

@@ -60,18 +60,18 @@ export default function SiteSubmit({
   const onFormSubmit = async (data: SiteFormData) => {
     clearErrors();
     let catgCount = data?.categories?.filter(c => c)?.length; 
-    console.log("count?", catgCount);
     if(!catgCount || catgCount < 1 || catgCount > 2 || (data?.categories?.includes("Fun") && catgCount < 2)){
-      setError("categories", {message: (catgCount < 1 || !catgCount ? "select at least one" :  catgCount > 2 ? "no more than two" : (data?.categories?.includes("Fun") && catgCount < 2) ? "select two" : "invalid") }); 
+      const errMessage = (catgCount < 1 || !catgCount ? "select at least one" :  catgCount > 2 ? "no more than two" : (data?.categories?.includes("Fun") && catgCount < 2) ? "select two" : "invalid")
+      setError("categories", {message:errMessage  }); 
+      setFormError(errMessage); 
       return; 
     }
     setFormError("");
     setPrevSubmission(undefined);
-    console.log("f?", data);
     setFormSubmitLoading(true);
     if (captchaValue) {
       clearErrors("captchaToken");
-      console.log("captcha:", captchaValue);
+      //console.log("captcha:", captchaValue);
       try {
         const res = await fetch("/api/submit", {
           body: JSON.stringify({
@@ -80,7 +80,7 @@ export default function SiteSubmit({
           method: "post",
         });
         const resData = await res.json();
-        console.log("return?", resData);
+        //console.log("return?", resData);
         if (resData?.data?.["url"]) {
           if (res.ok) {
             setPrevSubmission(undefined);
@@ -96,7 +96,7 @@ export default function SiteSubmit({
           setFormError(resData["ERROR"]);
         }
       } catch (err) {
-        console.log("form error?", err);
+        //console.log("form error?", err);
         setFormError("Something went wrong");
       }
 

@@ -53,13 +53,13 @@ const checkTag = (tag: string) => {
 
   let checkedTag = filter
     .clean(tag)
-    ?.replaceAll("*", "")
+    ?.replace(/\*/g, "")
     ?.trim()
     ?.toUpperCase();
   if (
     checkedTag.match(/[A-Z ]/)?.[0]?.length === checkTag.length &&
     checkedTag.length <= 48 &&
-    checkedTag?.replaceAll(" ", "").length >= 2
+    checkedTag?.replace(/ /g, "").length >= 2
   ) {
     return checkedTag;
   }

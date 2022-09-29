@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getImage } from "@astrojs/image";
+//import { getImage } from "@astrojs/image";
 
 import { getSignedImageUrl } from "../../../server/aws/bucket";
 
@@ -9,17 +9,17 @@ export const get: APIRoute = async function get({ params }) {
 
   try {
     let signedURL = await getSignedImageUrl(id as string);
-    if (!hd) {
-      const { src } = await getImage({
-        format: "webp",
-        quality: 80,
-        width: 1080,
-        height: 1920,
-        src: signedURL,
-        fit: "outside",
-      });
-      if (src) signedURL = src;
-    }
+    // if (!hd) {
+    //   const { src } = await getImage({
+    //     format: "webp",
+    //     quality: 80,
+    //     width: 1080,
+    //     height: 1920,
+    //     src: signedURL,
+    //     fit: "outside",
+    //   });
+    //   if (src) signedURL = src;
+    // }
 
     return new Response(JSON.stringify({ url: signedURL }), { status: 200 });
   } catch (err) {

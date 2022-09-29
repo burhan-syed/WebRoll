@@ -1,12 +1,10 @@
 import he from "he";
-// import chrome from "chrome-aws-lambda";
-// import puppeteer from "puppeteer-core";
-import { putImageObject } from "../aws/bucket";
+
 const decode = (str: string) => {
   const text = he.decode(str);
   return text;
 };
-const parseMetadata = async (response: Response) => {
+const parseMetadata = async (rawHTML:string) => {
   let metadata = {} as any;
 
   const checkMetas = (html: string) => {
@@ -29,9 +27,9 @@ const parseMetadata = async (response: Response) => {
     metadata["title"] = siteTitle;
   };
 
-  metadata["resURL"] = response.url;
-  const html = await response.text();
-  checkMetas(html);
+  //metadata["resURL"] = response.url;
+  //const html = await response.text();
+  checkMetas(rawHTML);
 
   return metadata;
 };

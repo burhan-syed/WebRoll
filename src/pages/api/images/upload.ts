@@ -34,7 +34,7 @@ export const post: APIRoute = async function post({ request, params }) {
         where: { id: id },
         data: { imgKey: uploadKey },
       });
-      //console.log("UPDATE?", update); 
+      //console.log("UPDATE?", update);
     } else {
       return new Response("missing image", { status: 400 });
     }

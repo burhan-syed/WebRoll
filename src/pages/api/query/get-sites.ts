@@ -13,23 +13,32 @@ export const get: APIRoute = async function get({ request }) {
 
   const queryParams = {
     sort: JSON.parse(params?.get("sort") ?? ""),
-    status: JSON.parse(params?.get("status") ?? `["REVIEW", "PARSING"]`) as SiteStatus[],
-    categories: JSON.parse(params?.get("categories") ?? ''),
-    select: JSON.parse(params?.get("select") ?? '1'),
-    cursor: JSON.parse(params?.get("cursor") ?? 'undefined'),
+    status: JSON.parse(
+      params?.get("status") ?? `["REVIEW", "PARSING"]`
+    ) as SiteStatus[],
+    categories: JSON.parse(params?.get("categories") ?? ""),
+    select: JSON.parse(params?.get("select") ?? "1"),
+    cursor: JSON.parse(params?.get("cursor") ?? "undefined"),
   } as SitesQuery;
 
-  const { sort="DATE", status=["REVIEW", "PARSING"], categories, select = 2, cursor } = queryParams;
+  const {
+    sort = "DATE",
+    status = ["REVIEW", "PARSING"],
+    categories,
+    select = 20,
+    cursor,
+  } = queryParams;
   //console.log("sort?", sort, "status", status, "categories?",categories, "select?", select, "cursor?", cursor)
   try {
     //TODO: filter categories, sort by other fields
-    const selectedCategories = categories !== undefined
-      ? { categories: { some: { id: { in: [...categories] } } } }
-      : {};
+    const selectedCategories =
+      categories !== undefined
+        ? { categories: { some: { id: { in: [...categories] } } } }
+        : {};
     const filter = { status: { in: status } };
     const total = await prisma.sites.count({ where: { ...filter } });
     const sites = await prisma.sites.findMany({
-      where: {...filter },
+      where: { ...filter },
       orderBy: { submittedAt: "desc" },
       take: select + 1,
       cursor: cursor ? { id: cursor } : undefined,
@@ -46,7 +55,7 @@ export const get: APIRoute = async function get({ request }) {
       }
     );
   } catch (err) {
-    console.log("query err", err); 
+    console.log("query err", err);
     return new Response(JSON.stringify({ ERROR: "" }), { status: 500 });
   }
 
