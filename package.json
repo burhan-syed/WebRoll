@@ -53,6 +53,8 @@
     "@tanstack/react-query-devtools": "^4.3.9",
     "@tanstack/react-virtual": "^3.0.0-beta.18",
     "@types/nodemailer": "^6.4.6",
+    "@upstash/ratelimit": "^0.1.5",
+    "@upstash/redis": "^1.13.1",
     "axios": "^0.27.2",
     "chrome-aws-lambda": "^10.1.0",
     "csvtojson": "^2.0.10",
@@ -66,7 +68,7 @@
     "react-dom": "^18.2.0",
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.34.2",
-    "sharp": "^0.31.0",
+    "sharp": "^0.31.1",
     "theme-change": "^2.2.0"
   }
 }

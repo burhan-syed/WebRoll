@@ -19,6 +19,8 @@ export default function ExplorePage({
     img: initialSiteImgURL,
   }));
   const [index, setIndex] = useState(0);
+
+  
   useEffect(() => {
     const fetchSecureImage = async (url: string, imgId: string | null) => {
       const img = (await (await fetch(`/api/images/${imgId}`)).json())?.url;
@@ -38,34 +40,43 @@ export default function ExplorePage({
 
   //prevent hydration mismatch
   useEffect(() => {
-    setIndex(0); 
-    setSites(initialSites); 
-    setSiteImgURL({url: initialSites[0].url, img: initialSiteImgURL})
-  }, [initialSiteImgURL, initialSiteImgURL])
+    setIndex(0);
+    setSites(initialSites);
+    setSiteImgURL({ url: initialSites[0].url, img: initialSiteImgURL });
+  }, [initialSiteImgURL, initialSiteImgURL]);
+
+  const [ratelimitMessage, setRateLimitMessage] = useState(""); 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout; 
+    if(ratelimitMessage){
+      timeout = setTimeout(() => {setRateLimitMessage("")}, 5000)
+    }
+    return () => {
+      timeout && clearTimeout(timeout); 
+    }
+  }, [ratelimitMessage])
 
   const advance = async () => {
     console.log("advance", sites, index);
     if (index >= 10 && sites.length > index) {
-      //console.log('reset')
       setIndex(0);
       setSites((s) => s.splice(index));
     } else if (sites.length > index + 1) {
       setIndex((i) => (i += 1));
     }
     if (sites.length - index < 3) {
-      let more = (
-        await (
-          await fetch("/api/random", {
-            body: JSON.stringify({ userIP: ip}),
-            method: "post",
-          })
-        ).json()
-      ).data as minSiteResDataWithLikes[];
-      console.log("more?", more);
-      if (more?.length > 0) {
-        setSites((p) => [...p, ...more]);
-      } else if (!(sites.length > index + 1) && location) {
-        location.reload();
+      const res = await fetch("/api/random", { method: "get" });
+      if (res.ok) {
+        let more = (await res.json()).data as minSiteResDataWithLikes[];
+        if (more?.length > 0) {
+          setRateLimitMessage("");
+          setSites((p) => [...p, ...more]);
+        } else if (!(sites.length > index + 1) && location) {
+          location.reload();
+        }
+      } else if (res.status === 429) {
+        setRateLimitMessage("Woah, chill on that button!")
+      } else {
       }
     }
   };
@@ -116,6 +127,7 @@ export default function ExplorePage({
             backgroundSize: `5px 5px`,
           }}
         >
+          <div className={"fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60  " + "transition-all duration-200  " + (ratelimitMessage ? " opacity-100 translate-y-1/3 md:-translate-y-1/3 ease-in " : " opacity-100 -translate-y-full md:translate-y-full ease-out ")}><div className="alert alert-warning shadow-md border border-error">{ratelimitMessage}</div></div>
           {sites[index].allowEmbed === true ? (
             <iframe
               className="flex-1 h-full w-full bg-transparent"
@@ -151,8 +163,11 @@ export default function ExplorePage({
                     </div>
                   </div>
                 </div>
-                <BgImage src={siteImgURL.img} loadEvent={handleSiteLoad} loadEventParams={sites[index]}/>
-             
+                <BgImage
+                  src={siteImgURL.img}
+                  loadEvent={handleSiteLoad}
+                  loadEventParams={sites[index]}
+                />
               </div>
             )
           )}
@@ -160,7 +175,7 @@ export default function ExplorePage({
 
         <div className="md:h-0 h-20"></div>
       </main>
-      <ReportModal siteID={sites[index].id}/>
+      <ReportModal siteID={sites[index].id} />
     </>
   );
 }
