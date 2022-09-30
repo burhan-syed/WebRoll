@@ -30,20 +30,24 @@ export const get: APIRoute = async function get({ request }) {
     const sess = await prisma.sessions.findFirst({
       where: { id: sessionID },
       orderBy: { expiresAt: "desc" },
+      include: {categories: {select: {category: true}}}
     });
     if (!sess) {
       return new Response(JSON.stringify({}), { status: 401 });
     }
+    const selected_categories = sess.categories.map(c => c.category);
+    const categorySelect = selected_categories?.length > 0 ? {categories: {some: {category: {in: selected_categories}}}} : {};
+
 
     const allSitesCount = await prisma.sites.count({
-      where: { status: "APPROVED" },
+      where: { status: "APPROVED", ...categorySelect },
     });
     const randOrderBys = ["description", "name", "imgKey", "url","id"];
     const randOrderBy = randOrderBys[Math.floor(Math.random()*randOrderBys.length)]
     const randSorts = ["asc", "desc"];
     const randSort = randSorts[Math.floor(Math.random()*randSorts.length)]
     const sites = await prisma.sites.findMany({
-      where: { status: "APPROVED" },
+      where: { status: "APPROVED", ...categorySelect },
       take: 3,
       skip: Math.floor(Math.random() * allSitesCount),
       orderBy: {[randOrderBy]: randSort},

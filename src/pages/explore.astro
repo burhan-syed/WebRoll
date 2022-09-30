@@ -2,23 +2,30 @@
 // Component Imports
 //import { getImage } from "@astrojs/image";
 import ExplorePage from "../components/ExplorePage";
+import CategoriesSelectForm from "../components/forms/CategoriesSelectForm";
 import NavBar from "../components/ui/NavBar.astro";
 import { getSignedImageUrl } from "../server/aws/bucket";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
 import prisma from "../server/utils/prisma";
-const userIp = Astro.clientAddress;
-const cookie = Astro.request.headers.get("cookie");
-const { session, prev_session } = await checkAndReturnSessionID(Astro);
+const { session, prev_session, selected_categories } =
+  await checkAndReturnSessionID(Astro);
 Astro.response.headers.set(
   "Set-Cookie",
   `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
 );
-const categories = await prisma.categories.findMany({orderBy: {category: "asc"}}); 
+const categories = await prisma.categories.findMany({
+  orderBy: { category: "asc" },
+});
+const categorySelect =
+  selected_categories?.length > 0
+    ? { categories: { some: { category: { in: selected_categories } } } }
+    : {};
+
 const allSitesCount = await prisma.sites.count({
-  where: { status: "APPROVED" },
+  where: { status: "APPROVED", ...categorySelect },
 });
 const sites = await prisma.sites.findMany({
-  where: { status: "APPROVED" },
+  where: { status: "APPROVED", ...categorySelect },
   take: 3,
   skip: Math.floor(Math.random() * allSitesCount),
   select: {
@@ -31,7 +38,7 @@ const sites = await prisma.sites.findMany({
     status: true,
     categories: { select: { category: true } },
     likes: { where: { sessionId: session } },
-    tags: {select: {tag: {select: {tag: true}}}}
+    tags: { select: { tag: { select: { tag: true } } } },
   },
 });
 let siteImgURL = "";
@@ -51,49 +58,82 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Explore | WebRoll</title>
-  </head>
+<script>
+  let box = document.getElementById("my-drawer-4") as HTMLInputElement;
+  let button = document.getElementById(
+    "category-select-button"
+  ) as HTMLButtonElement;
+  button.onclick = (e) => {
+    box.checked = false;
+  };
+</script>
 
-  <div class="drawer drawer-end">
-    <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
-      <main class="min-h-screen min-w-full flex flex-col">
-        {
-          sites.length > 0 ? (
-            <ExplorePage
-              initialSiteImgURL={siteImgURL}
-              initialSites={sites}
-              categories={categories}
-              client:load
-            />
-          ) : (
-            <>
-              <NavBar />
-              <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4">
-                <span>{`No sites Found :(`}</span>
-                <a href="/submit" class="btn btn-primary">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+<title>Explore | WebRoll</title>
+
+<div class="drawer drawer-end">
+  <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <main class="min-h-screen min-w-full flex flex-col">
+      {
+        sites.length > 0 ? (
+          <ExplorePage
+            initialSiteImgURL={siteImgURL}
+            initialSites={sites}
+            categories={categories}
+            userCategories={selected_categories}
+            client:load
+          />
+        ) : (
+          <>
+            <NavBar />
+            <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4 ">
+              <div class="flex flex-col items-center justify-center flex-grow mx-2 max-w-xl">
+                <p class="text-center py-2">
+                  {`No sites found for` +
+                    (selected_categories.length === 1
+                      ? " this category"
+                      : " these categories")}{" "}
+                  <br />
+                  {`Select some other categories or submit a site`}
+                </p>
+                <CategoriesSelectForm
+                  label={""}
+                  styles={"justify-between"}
+                  reload={true}
+                  categories={categories}
+                  userCategories={selected_categories}
+                  client:load
+                />
+                <a href="/submit" class="btn btn-primary w-full my-4">
                   Submit a Site
                 </a>
               </div>
-            </>
-          )
-        }
-      </main>
-    </div>
-    <div class="drawer-side">
-      <label for="my-drawer-4" class="drawer-overlay"></label>
-      <ul class="menu flex-col-reverse md:flex-col  p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
-        <!-- Sidebar content here -->
-        <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
-        <li><a href="/likes">Likes</a></li>
-        <li><a href="/dashboard">Account</a></li>
-      </ul>
-    </div>
+            </div>
+          </>
+        )
+      }
+    </main>
   </div>
-</html>
+  <div class="drawer-side">
+    <label for="my-drawer-4" class="drawer-overlay"></label>
+    <ul
+      class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
+    >
+      <!-- Sidebar content here -->
+      <li>
+        <button id="category-select-button" class="p-0 w-full text-left">
+          <label for="category-modal" class="w-full cursor-pointer p-3">
+            Category Select
+          </label>
+        </button>
+      </li>
+      <li><a href="/likes">Likes</a></li>
+      <li><a href="/dashboard">Account</a></li>
+      <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
+    </ul>
+  </div>
+</div>

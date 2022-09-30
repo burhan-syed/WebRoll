@@ -108,7 +108,7 @@ import url from "url";
     const resURL = `https://${url.parse(response.config.url ?? "")?.host}`;
     //const resURL = splitUrl(response.url)?.host ?? baseUrl;
     //const xFrameOptions = response.headers?.get("X-Frame-Options");
-    const xFrameOptions = response.headers?.["X-Frame-Options"];
+    const xFrameOptions = response.headers?.["x-frame-options"];
 
     const allowEmbed = !(
       xFrameOptions === "DENY" ||

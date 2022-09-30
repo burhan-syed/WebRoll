@@ -9,11 +9,13 @@ export default function CategorySelect({
   maxCount,
   minCount,
   showDescriptions = true,
+  styles=""
 }: {
   categories: Categories[];
   maxCount?: number;
   minCount?: number;
   showDescriptions?: boolean;
+  styles?:string
 }) {
   const {
     register,
@@ -60,7 +62,7 @@ export default function CategorySelect({
       {categories.map((category, i) => (
         <label
           key={category.category}
-          className={"flex items-start gap-2 px-4 cursor-pointer select-none "}
+          className={"flex items-start gap-2 px-4 cursor-pointer select-none " + (styles)}
         >
           <input
             className={

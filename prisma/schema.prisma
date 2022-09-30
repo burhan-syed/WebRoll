@@ -139,6 +139,7 @@ model Categories {
   createdAt DateTime @default(now()) @map("created_at")
 
   description String?
+  sessions    Sessions[]
   sites       Sites[]
   reports     Reports[]
 }
@@ -153,6 +154,7 @@ model Sessions {
   accountID    String?     @db.VarChar(254)
   account      Accounts?   @relation(fields: [accountID], references: [email])
 
+  categories Categories[]
   sites   Sites[]
   tags    SiteTags[]
   likes   Likes[]

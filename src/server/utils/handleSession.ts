@@ -5,7 +5,7 @@ import { getUser } from "@astro-auth/core";
 import { randomSessionID } from "./generateIDs";
 import type { AstroGlobal } from "astro";
 
-export const checkAndReturnSessionID = async (Astro: AstroGlobal) => {
+export const checkAndReturnSessionID = async (Astro: AstroGlobal): Promise<{session: string; prev_session:string|undefined; selected_categories: string[] }>  => {
   const ip = Astro.clientAddress;
   const cookies = Astro.request.headers.get("cookie");
   const webrollSessions = parseCookie(cookies ?? "")?.webroll_session?.split(".");
@@ -64,8 +64,9 @@ export const checkAndReturnSessionID = async (Astro: AstroGlobal) => {
     where: { id: sessionID },
     create: { ip, id: sessionID },
     update: { ip, lastAccessed: new Date() },
+    include: {categories: {select: {category: true}}}
   });
   console.log("SESSIONS?", update, "OVERWRITTEN?", overwritten);
-  return { session: update.id, prev_session: overwritten };
+  return { session: update.id, prev_session: overwritten, selected_categories: update.categories.map(c => c.category)};
   //return { session: sessionID, prev_session: overwritten };
 };

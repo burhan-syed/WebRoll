@@ -4,15 +4,18 @@ import type { minSiteResDataWithLikes } from "../types";
 import BgImage from "./ui/BgImage";
 import ReportModal from "./ui/ReportModal";
 import type { Categories } from "@prisma/client";
+import CategorySelectModal from "./ui/CategorySelectModal";
 
 export default function ExplorePage({
   initialSites,
   initialSiteImgURL,
   categories,
+  userCategories,
 }: {
   initialSites: minSiteResDataWithLikes[];
   categories: Categories[];
   initialSiteImgURL: string;
+  userCategories: string[];
 }) {
   const [sites, setSites] = useState(() => initialSites);
   const [siteImgURL, setSiteImgURL] = useState(() => ({
@@ -57,28 +60,37 @@ export default function ExplorePage({
       timeout && clearTimeout(timeout);
     };
   }, [ratelimitMessage]);
+  const [disableAdvance, setDisableAdvance] = useState(false);
+
+  const fetchMoreSites = async () => {
+    const res = await fetch("/api/random", { method: "get" });
+    if (res.ok) {
+      let more = (await res.json()).data as minSiteResDataWithLikes[];
+      if (more?.length > 0) {
+        setRateLimitMessage("");
+       return more; 
+      } else if (!(sites.length > index + 1) && location) {
+        location.reload();
+      }
+    } else if (res.status === 429) {
+      setRateLimitMessage("Woah, chill on that button!");
+    } else {
+    }
+  };
 
   const advance = async () => {
-    console.log("advance", sites, index);
-    if (index >= 10 && sites.length > index) {
-      setIndex(0);
-      setSites((s) => s.splice(index));
-    } else if (sites.length > index + 1) {
-      setIndex((i) => (i += 1));
-    }
-    if (sites.length - index < 3) {
-      const res = await fetch("/api/random", { method: "get" });
-      if (res.ok) {
-        let more = (await res.json()).data as minSiteResDataWithLikes[];
-        if (more?.length > 0) {
-          setRateLimitMessage("");
+    if (!disableAdvance) {
+      if (index >= 10 && sites.length > index) {
+        setIndex(0);
+        setSites((s) => s.splice(index));
+      } else if (sites.length > index + 1) {
+        setIndex((i) => (i += 1));
+      }
+      if (sites.length - index < 3) {
+        const more = await fetchMoreSites();
+        if(more){
           setSites((p) => [...p, ...more]);
-        } else if (!(sites.length > index + 1) && location) {
-          location.reload();
         }
-      } else if (res.status === 429) {
-        setRateLimitMessage("Woah, chill on that button!");
-      } else {
       }
     }
   };
@@ -107,6 +119,30 @@ export default function ExplorePage({
     );
   };
 
+  const onCategorySelectUpdate = async (selectedCategories: string[]) => {
+    console.log("selected?", selectedCategories);
+    if (!(selectedCategories.length > 0)) {
+      return;
+    }
+    let filtered = sites.filter((s, i) => {
+      return (
+        i <= (index) ||
+        s.categories.some((r) => {
+          selectedCategories.includes(r.category);
+        })
+      );
+    });
+    if (filtered.length - index < 3) {
+      setDisableAdvance(true);
+      const more = await fetchMoreSites();
+      if(more){
+        filtered = [...filtered, ...more]
+      }
+      setDisableAdvance(false);
+    }
+    setSites(filtered);
+  };
+
   return (
     <>
       <nav className="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
@@ -116,9 +152,9 @@ export default function ExplorePage({
           advanced={advanced}
         />
       </nav>
-      {/* <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
-        {index},{sites[index].allowEmbed ? "allowed" : "nope"}
-      </div> */}
+      <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
+        {index},{disableAdvance ? "nope" : "allowed"}
+      </div>
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
         <div
@@ -194,6 +230,11 @@ export default function ExplorePage({
         categories={categories}
         siteCategories={sites[index].categories}
         siteTags={sites[index].tags}
+      />
+      <CategorySelectModal
+        categories={categories}
+        userCategories={userCategories}
+        onCategorySelectUpdate={onCategorySelectUpdate}
       />
     </>
   );
