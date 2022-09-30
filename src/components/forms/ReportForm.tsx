@@ -89,6 +89,7 @@ export default function ReportForm({
         .sort()
         .join(",") ===
         data.tags
+          .slice(0, -1)
           .map((t) => t.name.toUpperCase())
           .filter((t) => t)
           .sort()
@@ -119,7 +120,7 @@ export default function ReportForm({
         body: JSON.stringify({
           ...data,
           categories: reportType === "CATEGORY" ? data.categories : undefined,
-          tags: reportType === "TAGS" ? data.tags : undefined,
+          tags: reportType === "TAGS" ? data.tags.slice(0,-1) : undefined,
           siteID,
         }),
         method: "post",

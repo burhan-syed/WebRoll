@@ -11,63 +11,86 @@ export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
   console.log("RESPONSE RECEIVED", data);
   const user = getUser({ server: request }) as User;
-  const { siteData, secret, assigner, removedTags, newTagStatus, updatedTags } =
-    data as {
-      siteData: {
-        id: string;
-        description?: string;
-        status: SiteStatus;
-        name?: string;
-        imgKey?: string;
-        allowEmbed?: boolean;
-        sourceLink?: string;
-        categories?: string[];
-        tags?: string[];
-      };
-      secret?: string;
-      assigner?: string;
-      removedTags?: string[];
-      updatedTags?: string[];
-      newTagStatus?: TagStatus;
+  const { siteData, secret, assigner } = data as {
+    siteData: {
+      id: string;
+      description?: string;
+      status: SiteStatus;
+      name?: string;
+      imgKey?: string;
+      allowEmbed?: boolean;
+      sourceLink?: string;
+      categories?: string[];
+      tags?: string[];
+      url?: string;
     };
+    secret?: string;
+    assigner?: string;
+  };
   if (secret !== key && user?.role !== "ADMIN") {
     return new Response(null, { status: 401 });
   }
-  if (updatedTags && !assigner) {
+  const useAssigner = assigner ?? user.session;
+  if (siteData.tags && !useAssigner) {
     return new Response("missing tag assigner", { status: 400 });
   }
+  const useCategories = siteData.categories?.filter((c) => c);
   if (siteData?.id) {
     try {
+      if (useCategories) {
+        //disconnect all to update later
+        await prisma.sites.update({
+          where: { id: siteData.id },
+          data: { categories: { set: [] } },
+        });
+      }
+
       let update;
-      if (assigner) {
-        const { cleanedTags } = parseTags(
-          siteData?.tags?.map((tag) => ({ name: tag })) ?? [{ name: "" }]
-        );
+      if (useAssigner && siteData.tags) {
+        const siteTags = await prisma.sites.findFirst({
+          where: { id: siteData.id },
+          select: { tags: { select: { tag: true } } },
+        });
+        const prevTags = siteTags?.tags.map((t) => t.tag.tag);
+        const { cleanedTags } = parseTags(siteData.tags);
+
+        const { removedTags, newTags } = (() => {
+          let removedTags = [] as string[];
+          let newTags = [] as string[];
+          if (!prevTags) {
+            return { newTags: cleanedTags, removedTags: undefined };
+          }
+          cleanedTags.forEach((t) => {
+            if (!prevTags.includes(t)) {
+              newTags.push(t);
+            }
+          });
+          prevTags.forEach((t) => {
+            if (!cleanedTags.includes(t)) {
+              removedTags.push(t);
+            }
+          });
+
+          return { removedTags, newTags };
+        })();
 
         if (removedTags) {
           await prisma.siteTags.deleteMany({
             where: { siteID: siteData.id, tagID: { in: removedTags } },
           });
         }
-        if (updatedTags) {
-          await prisma.siteTags.updateMany({
-            where: { siteID: siteData.id, tagID: { in: updatedTags } },
-            data: { status: newTagStatus },
-          });
-        }
-
         update = await prisma.sites.update({
           where: { id: siteData.id },
           data: {
             ...siteData,
             updatedAt: new Date(),
             categories: {
-              connect: siteData.categories?.map((category) => ({
+              connect: useCategories?.map((category) => ({
                 category: category,
               })),
             },
             tags: {
-              connectOrCreate: cleanedTags.map((tag: string) => ({
+              connectOrCreate: newTags.map((tag: string) => ({
                 where: { siteID_tagID: { siteID: siteData.id, tagID: tag } },
                 create: {
                   tag: {
@@ -76,7 +99,7 @@ export const post: APIRoute = async function post({ request }) {
                       create: { tag: tag },
                     },
                   },
-                  assigner: { connect: { id: assigner } },
+                  assigner: { connect: { id: useAssigner } },
                 },
               })),
             },
@@ -89,7 +112,7 @@ export const post: APIRoute = async function post({ request }) {
             ...siteData,
             updatedAt: new Date(),
             categories: {
-              connect: siteData.categories?.map((category) => ({
+              connect: useCategories?.map((category) => ({
                 category: category,
               })),
             },

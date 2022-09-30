@@ -1,12 +1,14 @@
+import type { Categories } from "@prisma/client";
 import { X } from "react-feather";
-import UpdateSiteForm from "./UpdateSiteForm";
-export default function ReportModal({ siteID }: { siteID: string }) {
+import type { SiteResData } from "../../types";
+import SiteUpdateForm from "../forms/SiteUpdateForm";
+export default function ReportModal({ site,categories }: { site:SiteResData, categories:Categories[] }) {
   return (
     <>
       <input type="checkbox" id="update-modal" className="modal-toggle" />
       <label htmlFor="update-modal" className="modal cursor-pointer">
         <label
-          className="modal-box relative bg-base-100/80 backdrop-blur-md"
+          className="modal-box max-w-3xl relative bg-base-100/80 backdrop-blur-md"
           htmlFor=""
         >
           <label
@@ -17,7 +19,7 @@ export default function ReportModal({ siteID }: { siteID: string }) {
           </label>
           <div className="my-0.5">
             update
-            <UpdateSiteForm/>
+            <SiteUpdateForm site={site} categories={categories}/>
           </div>
         </label>
       </label>

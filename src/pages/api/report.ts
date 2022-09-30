@@ -26,7 +26,7 @@ export const post: APIRoute = async function post({ request }) {
       return new Response(null, { status: 401 });
     }
     let cCatgs = categories?.filter((c) => c);
-    let { cleanedTags } = parseTags(tags);
+    let { cleanedTags } = parseTags(tags?.map(t => t.name));
     console.log("catgs?", cCatgs, "tags?", cleanedTags);
 
     const r = await prisma.reports.upsert({

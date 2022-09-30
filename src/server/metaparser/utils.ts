@@ -66,17 +66,17 @@ const checkTag = (tag: string) => {
   return "";
 };
 
-export const parseTags = (tags: { name: string }[] | undefined) => {
+export const parseTags = (tags: string[] | undefined) => {
   let cleanedTags = [] as string[];
   let invalidTags = [] as string[];
   if(!tags){return { cleanedTags, invalidTags }}
-  tags.forEach((tag: { name: string }, i: number) => {
-    if (i === tags.length - 1) return;
-    let checked = checkTag(tag.name);
+  tags.forEach((tag: string, i: number) => {
+    if (!tag) return;
+    let checked = checkTag(tag);
     if (checked) {
       cleanedTags.push(checked);
     } else {
-      invalidTags.push(tag.name);
+      invalidTags.push(tag);
     }
   });
 

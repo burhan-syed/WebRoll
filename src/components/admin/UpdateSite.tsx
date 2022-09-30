@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import type { SiteResData } from "../../types";
 import SecureImg from "../ui/SecureImg";
 import UpdateStatuses from "./UpdateStatuses";
+import UpdateUseEmbed from "./UpdateUseEmbed";
 
 export default function UpdateSite({ site }: { site: SiteResData }) {
   const [status, setStatus] = useState(() => site.status);
@@ -46,6 +47,7 @@ export default function UpdateSite({ site }: { site: SiteResData }) {
           onUpdateStatus={onUpdateStatus}
         />
       </div>
+      <UpdateUseEmbed siteID={site.id} allowEmbed={site.allowEmbed}/>
       <button
         onClick={(e) => {
           e.preventDefault();

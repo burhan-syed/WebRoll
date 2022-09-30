@@ -120,14 +120,16 @@ import url from "url";
       console.log("KEYWORDS>>", keywords);
     }
 
-    const tags = [...(row.tags?.split(";") ?? [""]), ...(keywords ? keywords.split(",") : [""])].filter(t => t.length > 0);
+    const tags = [
+      ...(row.tags?.split(";") ?? [""]),
+      ...(keywords ? keywords.split(",") : [""]),
+    ].filter((t) => t.length > 0);
     //console.log("tags?", tags);
-    const { cleanedTags, invalidTags } = tags.length > 0 ? parseTags(
-      tags.map((t) => ({ name: t }))
-    ) : (()=>({cleanedTags:[], invalidTags:[]}))();
+    const { cleanedTags, invalidTags } =
+      tags.length > 0
+        ? parseTags(tags)
+        : (() => ({ cleanedTags: [], invalidTags: [] }))();
     const categories = mapCategories(row.category, row.my_category);
-
- 
 
     return {
       name: title,
@@ -159,7 +161,7 @@ import url from "url";
 
   (async () => {
     const parsedRows = [] as any;
-    const failedRows = [] as any; 
+    const failedRows = [] as any;
     //test
     // const row = {
     //   url: "troddit.com",
@@ -197,7 +199,7 @@ import url from "url";
             const parsed = await parseRow(row);
             parsed && parsedRows.push(parsed);
           } catch (err) {
-            failedRows.push(row); 
+            failedRows.push(row);
             console.log("parse error", row?.url);
           }
         })
@@ -205,10 +207,10 @@ import url from "url";
     }
 
     const csv = new ObjectsToCsv(parsedRows);
-    const failCSV = new ObjectsToCsv(failedRows); 
+    const failCSV = new ObjectsToCsv(failedRows);
     // Save to file:
     await csv.toDisk("./parsedRows.csv");
-    await failCSV.toDisk("./failedParseRows.csv")
+    await failCSV.toDisk("./failedParseRows.csv");
     // Return the CSV file as string:
     console.log(await failedRows.toString());
   })();

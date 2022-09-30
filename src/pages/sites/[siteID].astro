@@ -232,7 +232,7 @@ let siteImgURL = site?.imgKey
                         {site.tags.length > 0 ? (
                           <>
                             {site.tags.map((tag) => (
-                              <div class="lowercase btn btn-xs text-xs font-light text-base-100 flex items-center px-2 rounded-full bg-primary-focus">
+                              <div class="uppercase btn btn-xs text-xs font-light text-base-100 flex items-center px-2 rounded-full bg-primary-focus">
                                 {tag.tag.tag}
                               </div>
                             ))}
@@ -298,7 +298,7 @@ let siteImgURL = site?.imgKey
         <ReportModal client:load siteID={site.id} categories={categories} siteTags={site.tags} siteCategories={site.categories} />
         {isAdmin && (
           <>
-            <UpdateSiteModal client:load siteID={site.id} />
+            <UpdateSiteModal client:load site={site} categories={categories} />
           </>
         )}
       </>

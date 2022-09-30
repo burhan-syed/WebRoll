@@ -43,7 +43,7 @@ export default function SiteSubmit({
   const [showSourceHelp, setShowSourceHelp] = useState(false);
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
 
-  const cTags = watch("tags");
+  // const cTags = watch("tags");
   const isPrivate = watch("privacy");
   const captchaValue = watch("captchaToken");
   useEffect(() => {
@@ -76,6 +76,7 @@ export default function SiteSubmit({
         const res = await fetch("/api/submit", {
           body: JSON.stringify({
             ...data,
+            tags: data.tags.slice(0,-1),
           }),
           method: "post",
         });
@@ -107,56 +108,56 @@ export default function SiteSubmit({
       captchaRef.current?.execute();
     }
   };
-  const [tagError, setTagError] = useState("");
-  const checkNewTag = () => {
-    //console.log(cTags);
-    if (cTags.length > 20) {
-      setTagError("maximumNumber");
-      return 1;
-    }
-    const last = cTags[cTags.length - 1];
-    const lastName = last.name.trim();
-    console.log(lastName.match(/[A-Za-z0-9 ]+/), lastName);
-    if (last.name === "") {
-      setTagError("");
-      return 1;
-    }
-    if (lastName.match(/[A-Za-z0-9 ]+/)?.[0]?.length !== lastName.length) {
-      setTagError("pattern");
-      return 1;
-    }
-    if (lastName?.length > 0 && lastName?.replaceAll(" ", "")?.length < 2) {
-      setTagError("minLength");
-      return 1;
-    }
-    if (lastName?.length > 0 && lastName?.length > 48) {
-      setTagError("maxLength");
-      return 1;
-    }
-    setTagError("");
-    //clearErrors("tags");
-    const dups = cTags.filter((t, i) => {
-      if (i === cTags.length - 1) {
-        return false;
-      }
-      if (t.name.trim().toUpperCase() === lastName.toUpperCase()) {
-        return true;
-      }
-      return false;
-    });
-    if (dups.length > 0) {
-      setTagError("duplicate");
-    }
-    return dups.length > 0;
-  };
+  // const [tagError, setTagError] = useState("");
+  // const checkNewTag = () => {
+  //   //console.log(cTags);
+  //   if (cTags.length > 20) {
+  //     setTagError("maximumNumber");
+  //     return 1;
+  //   }
+  //   const last = cTags[cTags.length - 1];
+  //   const lastName = last.name.trim();
+  //   console.log(lastName.match(/[A-Za-z0-9 ]+/), lastName);
+  //   if (last.name === "") {
+  //     setTagError("");
+  //     return 1;
+  //   }
+  //   if (lastName.match(/[A-Za-z0-9 ]+/)?.[0]?.length !== lastName.length) {
+  //     setTagError("pattern");
+  //     return 1;
+  //   }
+  //   if (lastName?.length > 0 && lastName?.replaceAll(" ", "")?.length < 2) {
+  //     setTagError("minLength");
+  //     return 1;
+  //   }
+  //   if (lastName?.length > 0 && lastName?.length > 48) {
+  //     setTagError("maxLength");
+  //     return 1;
+  //   }
+  //   setTagError("");
+  //   //clearErrors("tags");
+  //   const dups = cTags.filter((t, i) => {
+  //     if (i === cTags.length - 1) {
+  //       return false;
+  //     }
+  //     if (t.name.trim().toUpperCase() === lastName.toUpperCase()) {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   if (dups.length > 0) {
+  //     setTagError("duplicate");
+  //   }
+  //   return dups.length > 0;
+  // };
 
-  useEffect(() => {
-    if (cTags.length < 4) {
-      setError("tags", { type: "minAmount" });
-    } else {
-      clearErrors("tags");
-    }
-  }, [cTags.length < 4]);
+  // useEffect(() => {
+  //   if (cTags.length < 4) {
+  //     setError("tags", { type: "minAmount" });
+  //   } else {
+  //     clearErrors("tags");
+  //   }
+  // }, [cTags.length < 4]);
 
   return (
     <>
