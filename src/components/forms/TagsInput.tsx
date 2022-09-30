@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CornerDownLeft } from "react-feather";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import type { SiteFormData } from "../../types";
@@ -63,6 +63,12 @@ export default function TagsInput({}) {
     }
     return dups.length > 0;
   };
+
+  useEffect(() => {
+    if (cTags.length < 20 && tagError === "maximumNumber") {
+      setTagError("");
+    }
+  }, [cTags.length, tagError]);
 
   return (
     <>

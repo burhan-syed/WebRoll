@@ -34,10 +34,10 @@ export default function SiteSubmit({
     watch,
     setValue,
   } = formMethods;
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "tags",
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: "tags",
+  // });
 
   const [showPrivacyHelp, setShowPrivacyHelp] = useState(false);
   const [showSourceHelp, setShowSourceHelp] = useState(false);
@@ -210,7 +210,7 @@ export default function SiteSubmit({
             </span>
           </h2>
 
-          <div className="grid gap-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1">
+          <div className="grid gap-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 text-lg">
             <CategorySelect maxCount={2} minCount={1} categories={categories} />
           </div>
 

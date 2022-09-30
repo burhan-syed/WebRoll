@@ -45,6 +45,8 @@ const site = await prisma.sites.findFirst({
     },
   },
 });
+const categories = await prisma.categories.findMany({orderBy: {category: "asc"}}); 
+await prisma.categories.findMany(); 
 const likesCount = site?._count?.likes ?? 0;
 let siteImgURL = site?.imgKey
   ? (await getSignedImageUrl(site.imgKey as string)) ?? ""
@@ -293,7 +295,7 @@ let siteImgURL = site?.imgKey
             </div>
           </div>
         </div>
-        <ReportModal client:load siteID={site.id} />
+        <ReportModal client:load siteID={site.id} categories={categories} siteTags={site.tags} siteCategories={site.categories} />
         {isAdmin && (
           <>
             <UpdateSiteModal client:load siteID={site.id} />

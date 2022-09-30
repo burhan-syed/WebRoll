@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ExploreNavBar from "./ui/ExploreNavBar";
 import type { minSiteResDataWithLikes } from "../types";
 import BgImage from "./ui/BgImage";
 import ReportModal from "./ui/ReportModal";
+import type { Categories } from "@prisma/client";
 
 export default function ExplorePage({
   initialSites,
   initialSiteImgURL,
-  ip,
+  categories,
 }: {
   initialSites: minSiteResDataWithLikes[];
-  ip: string;
+  categories: Categories[];
   initialSiteImgURL: string;
 }) {
   const [sites, setSites] = useState(() => initialSites);
@@ -20,7 +21,6 @@ export default function ExplorePage({
   }));
   const [index, setIndex] = useState(0);
 
-  
   useEffect(() => {
     const fetchSecureImage = async (url: string, imgId: string | null) => {
       const img = (await (await fetch(`/api/images/${imgId}`)).json())?.url;
@@ -45,16 +45,18 @@ export default function ExplorePage({
     setSiteImgURL({ url: initialSites[0].url, img: initialSiteImgURL });
   }, [initialSiteImgURL, initialSiteImgURL]);
 
-  const [ratelimitMessage, setRateLimitMessage] = useState(""); 
+  const [ratelimitMessage, setRateLimitMessage] = useState("");
   useEffect(() => {
-    let timeout: NodeJS.Timeout; 
-    if(ratelimitMessage){
-      timeout = setTimeout(() => {setRateLimitMessage("")}, 5000)
+    let timeout: NodeJS.Timeout;
+    if (ratelimitMessage) {
+      timeout = setTimeout(() => {
+        setRateLimitMessage("");
+      }, 5000);
     }
     return () => {
-      timeout && clearTimeout(timeout); 
-    }
-  }, [ratelimitMessage])
+      timeout && clearTimeout(timeout);
+    };
+  }, [ratelimitMessage]);
 
   const advance = async () => {
     console.log("advance", sites, index);
@@ -75,7 +77,7 @@ export default function ExplorePage({
           location.reload();
         }
       } else if (res.status === 429) {
-        setRateLimitMessage("Woah, chill on that button!")
+        setRateLimitMessage("Woah, chill on that button!");
       } else {
       }
     }
@@ -112,7 +114,6 @@ export default function ExplorePage({
           site={sites[index]}
           advance={advance}
           advanced={advanced}
-          ip={ip}
         />
       </nav>
       {/* <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
@@ -127,9 +128,22 @@ export default function ExplorePage({
             backgroundSize: `5px 5px`,
           }}
         >
-          <div className={"fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60  " + "transition-all duration-200  " + (ratelimitMessage ? " opacity-100 translate-y-1/3 md:-translate-y-1/3 ease-in " : " opacity-100 -translate-y-full md:translate-y-full ease-out ")}><div className="alert alert-warning shadow-md border border-error">{ratelimitMessage}</div></div>
+          <div
+            className={
+              "fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60  " +
+              "transition-all duration-200  " +
+              (ratelimitMessage
+                ? " opacity-100 translate-y-1/3 md:-translate-y-1/3 ease-in "
+                : " opacity-100 -translate-y-full md:translate-y-full ease-out ")
+            }
+          >
+            <div className="alert alert-warning shadow-md border border-error">
+              {ratelimitMessage}
+            </div>
+          </div>
           {sites[index].allowEmbed === true ? (
             <iframe
+              key={sites[index].url}
               className="flex-1 h-full w-full bg-transparent"
               src={sites[index].url}
               onLoad={() => {
@@ -175,7 +189,12 @@ export default function ExplorePage({
 
         <div className="md:h-0 h-20"></div>
       </main>
-      <ReportModal siteID={sites[index].id} />
+      <ReportModal
+        siteID={sites[index].id}
+        categories={categories}
+        siteCategories={sites[index].categories}
+        siteTags={sites[index].tags}
+      />
     </>
   );
 }

@@ -1,12 +1,25 @@
 import ReportForm from "../forms/ReportForm";
 import { X } from "react-feather";
-export default function ReportModal({ siteID }: { siteID: string }) {
+import type { Categories, Tags } from "@prisma/client";
+export default function ReportModal({
+  siteID,
+  siteTags,
+  categories,
+  siteCategories
+}: {
+  siteID: string;
+  siteTags?: { tag: { tag: string; }; }[];
+  categories: Categories[];
+  siteCategories?: {
+    category: string;
+  }[];
+}) {
   return (
     <>
       <input type="checkbox" id="report-modal" className="modal-toggle" />
-      <label htmlFor="report-modal" className="modal cursor-pointer">
+      <label htmlFor="report-modal" className="modal cursor-pointer ">
         <label
-          className="modal-box relative bg-base-100/80 backdrop-blur-md"
+          className="modal-box relative bg-base-100/80 backdrop-blur-md "
           htmlFor=""
         >
           <label
@@ -16,7 +29,7 @@ export default function ReportModal({ siteID }: { siteID: string }) {
             <X />
           </label>
           <div className="my-0.5">
-            <ReportForm siteID={siteID} />
+            <ReportForm key={siteID} siteID={siteID} siteTags={siteTags} categories={categories} siteCategories={siteCategories} />
           </div>
         </label>
       </label>

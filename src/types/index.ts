@@ -30,6 +30,7 @@ export interface minSiteResData {
     allowEmbed: boolean,
     status: SiteStatus;
     categories: { category: string; }[],
+    tags: {tag: {tag: string}}[],
   
 }
 export interface minSiteResDataWithLikes extends minSiteResData {

@@ -30,6 +30,7 @@ enum TagStatus {
 enum ReportType {
   CATEGORY
   BROKEN
+  DISPLAY
   TAGS
   TOS
   OTHER
@@ -57,7 +58,7 @@ enum VerifType {
 
 model Sites {
   id          String     @id @unique @map("id") @db.VarChar(21)
-  name        String      @db.Text
+  name        String     @db.Text
   url         String     @unique
   sourceLink  String?    @map("source_link")
   views       Int        @default(0)
@@ -96,19 +97,20 @@ model Likes {
 }
 
 model Reports {
-  id         Int        @id @unique @default(autoincrement())
-  siteId     String     @map("site_id") @db.VarChar(21)
-  sessionId  String     @db.VarChar(48)
-  ip         String     @db.VarChar(45)
-  date       DateTime   @default(now())
-  type       ReportType
-  categoryID Int?
+  id        Int        @id @unique @default(autoincrement())
+  siteId    String     @map("site_id") @db.VarChar(21)
+  sessionId String     @db.VarChar(48)
+  ip        String     @db.VarChar(45)
+  date      DateTime   @default(now())
+  type      ReportType
+  categories Categories[]
+  tags Tags[]
 
-  category Categories? @relation(fields: [categoryID], references: [id])
-  user     Sessions    @relation(fields: [sessionId], references: [id])
-  site     Sites       @relation(fields: [siteId], references: [id])
+  user          Sessions        @relation(fields: [sessionId], references: [id])
+  site          Sites           @relation(fields: [siteId], references: [id])
+  categoriesId  Int?
 
-  @@unique([siteId, sessionId])
+  @@unique([siteId, sessionId, type])
 }
 
 model Tags {
@@ -116,6 +118,7 @@ model Tags {
   createdAt DateTime @default(now()) @map("created_at")
 
   sites SiteTags[]
+  reports Reports[]
 }
 
 model SiteTags {
@@ -132,8 +135,7 @@ model SiteTags {
 }
 
 model Categories {
-  id        Int      @id @unique @default(autoincrement()) @map("id")
-  category  String   @unique @db.VarChar(24)
+  category  String   @id @unique @db.VarChar(24)
   createdAt DateTime @default(now()) @map("created_at")
 
   description String?
@@ -158,19 +160,19 @@ model Sessions {
 }
 
 model Accounts {
-  email    String        @id @unique @db.VarChar(254)
-  password String        @db.VarChar(254)
-  status   AccountStatus @default(PENDING)
-  sessions Sessions[]
+  email         String                 @id @unique @db.VarChar(254)
+  password      String                 @db.VarChar(254)
+  status        AccountStatus          @default(PENDING)
+  sessions      Sessions[]
   verifications AccountVerifications[]
 }
 
 model AccountVerifications {
-  id String @id @unique @db.VarChar(128)
-  createdAt DateTime @default(now()) @map("created_at")
-  expiresAt DateTime @map("expires_at")
+  id               String    @id @unique @db.VarChar(128)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  expiresAt        DateTime  @map("expires_at")
   verificationType VerifType @default(NEW) @map("verification_type")
-  accountID String @db.VarChar(254) @map("account_id")
+  accountID        String    @map("account_id") @db.VarChar(254)
 
   account Accounts @relation(fields: [accountID], references: [email])
 }

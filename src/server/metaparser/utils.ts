@@ -66,9 +66,10 @@ const checkTag = (tag: string) => {
   return "";
 };
 
-export const parseTags = (tags: { name: string }[]) => {
+export const parseTags = (tags: { name: string }[] | undefined) => {
   let cleanedTags = [] as string[];
   let invalidTags = [] as string[];
+  if(!tags){return { cleanedTags, invalidTags }}
   tags.forEach((tag: { name: string }, i: number) => {
     if (i === tags.length - 1) return;
     let checked = checkTag(tag.name);

@@ -9,14 +9,12 @@ interface NavBarProps {
   site: minSiteResDataWithLikes;
   advance: Function;
   advanced: number;
-  ip: string;
 }
 
 export default function ExploreNavBar({
   site,
   advance,
   advanced,
-  ip,
 }: NavBarProps) {
   const [showInfo, setShowInfo] = useState(false);
   const [liked, setLiked] = useState<boolean>(() =>
@@ -32,7 +30,6 @@ export default function ExploreNavBar({
       fetch("/api/update-likes", {
         body: JSON.stringify({
           siteID: site.id,
-          ip,
           direction: !l,
         }),
         method: "post",

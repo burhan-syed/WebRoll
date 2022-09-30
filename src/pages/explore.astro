@@ -13,6 +13,7 @@ Astro.response.headers.set(
   "Set-Cookie",
   `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
 );
+const categories = await prisma.categories.findMany({orderBy: {category: "asc"}}); 
 const allSitesCount = await prisma.sites.count({
   where: { status: "APPROVED" },
 });
@@ -30,6 +31,7 @@ const sites = await prisma.sites.findMany({
     status: true,
     categories: { select: { category: true } },
     likes: { where: { sessionId: session } },
+    tags: {select: {tag: {select: {tag: true}}}}
   },
 });
 let siteImgURL = "";
@@ -67,7 +69,7 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
             <ExplorePage
               initialSiteImgURL={siteImgURL}
               initialSites={sites}
-              ip={userIp}
+              categories={categories}
               client:load
             />
           ) : (

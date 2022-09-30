@@ -56,6 +56,7 @@ export const get: APIRoute = async function get({ request }) {
         allowEmbed: true,
         categories: { select: { category: true } },
         likes: { where: { sessionId: sessionID } },
+        tags: {select: {tag: {select: {tag: true}}}}
       },
     });
     return new Response(JSON.stringify({ data: sites }), { status: 200 });
