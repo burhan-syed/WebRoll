@@ -1,0 +1,8 @@
+.bg-dotted {
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--nf)) 2px,
+    rgba(0, 0, 0, 0) 0px
+  );
+  background-size: 30px 30px;
+}

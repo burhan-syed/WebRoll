@@ -1,7 +1,7 @@
 import { Share, ExternalLink, Search } from "react-feather";
 import type { SiteResData } from "../../types";
 import SecureImg from "..//ui/SecureImg";
-
+import "../../styles/globals.css"
 export default function SiteCard({ site }: { site: SiteResData }) {
   const { id, url, name, description, categories, imgKey, status } = site;
   return (
@@ -49,11 +49,7 @@ export default function SiteCard({ site }: { site: SiteResData }) {
           </span>
           {imgKey && (
             <div
-              style={{
-                backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-                backgroundSize: `5px 5px`,
-              }}
-              className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh]"
+              className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh] bg-dotted"
             >
               <SecureImg
                 imgKey={imgKey}

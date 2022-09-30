@@ -5,7 +5,7 @@ import BgImage from "./ui/BgImage";
 import ReportModal from "./ui/ReportModal";
 import type { Categories } from "@prisma/client";
 import CategorySelectModal from "./ui/CategorySelectModal";
-
+import "../styles/globals.css"
 export default function ExplorePage({
   initialSites,
   initialSiteImgURL,
@@ -152,21 +152,17 @@ export default function ExplorePage({
           advanced={advanced}
         />
       </nav>
-      <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
+      {/* <div className="fixed bottom-1/2 left-0 z-20 text-xl bg-black text-white">
         {index},{disableAdvance ? "nope" : "allowed"}
-      </div>
+      </div> */}
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
         <div
-          className="flex-grow flex flex-col bg-neutral"
-          style={{
-            backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-            backgroundSize: `5px 5px`,
-          }}
+          className="flex-grow flex flex-col bg-neutral bg-dotted "
         >
           <div
             className={
-              "fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60  " +
+              "fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60 " +
               "transition-all duration-200  " +
               (ratelimitMessage
                 ? " opacity-100 translate-y-1/3 md:-translate-y-1/3 ease-in "

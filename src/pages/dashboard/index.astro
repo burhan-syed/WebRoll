@@ -6,6 +6,7 @@ import MergeLikes from "../../components/ui/buttons/MergeLikes";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import prisma from "../../server/utils/prisma";
+import "../../styles/globals.css";
 import type { User } from "../../types";
 
 const user = getUser({ client: Astro }) as User | null;
@@ -42,10 +43,12 @@ if (prevLikes && prevLikes.length > 0) {
   });
   const userLikesMap = userLikes.reduce((m, o) => {
     m.set(o.siteId, 1);
-    return m; 
+    return m;
   }, new Map());
 
-  prevLikes = prevLikes.filter(({siteId}) => userLikesMap.get(siteId) ? false : true);
+  prevLikes = prevLikes.filter(({ siteId }) =>
+    userLikesMap.get(siteId) ? false : true
+  );
 }
 ---
 
@@ -55,11 +58,7 @@ if (prevLikes && prevLikes.length > 0) {
   pageTitle={"Dashboard | WebRoll"}
 >
   <div
-    class="flex flex-col flex-grow bg-neutral items-center"
-    style={{
-      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-      backgroundSize: `5px 5px`,
-    }}
+    class="flex flex-col flex-grow bg-neutral items-center bg-dotted"
   >
     <div
       class="flex flex-col flex-grow gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4"
@@ -93,7 +92,13 @@ if (prevLikes && prevLikes.length > 0) {
         }
         <div class="flex-grow"></div>
         <div class="flex flex-col gap-4">
-          {user?.role === "ADMIN" && <a class="btn no-underline btn-warning" href="/dashboard/admin">Admin</a>}
+          {
+            user?.role === "ADMIN" && (
+              <a class="btn no-underline btn-warning" href="/dashboard/admin">
+                Admin
+              </a>
+            )
+          }
           <a class="btn no-underline" href="/likes">View Your Likes</a>
           <a class="btn no-underline" href="/submit">Submit A Site</a>
           <Logout client:load />

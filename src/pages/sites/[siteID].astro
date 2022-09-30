@@ -12,6 +12,8 @@ import ReportModal from "../../components/ui/ReportModal";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import { getUser } from "@astro-auth/core";
 import type { User } from "../../types";
+import "../../styles/globals.css"
+
 const { siteID } = Astro.params;
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
 Astro.response.headers.set(
@@ -75,7 +77,7 @@ let siteImgURL = site?.imgKey
       <>
         <div class="flex flex-col flex-grow ">
           <header
-            class="fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-top z-10  md:invisible bg-neutral"
+            class={"fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-top z-10  md:invisible bg-neutral " + (siteImgURL ? " " : " bg-dotted ")}
             style={
               siteImgURL
                 ? {
@@ -83,13 +85,13 @@ let siteImgURL = site?.imgKey
                     backgroundRepeat: `no-repeat`,
                   }
                 : {
-                    backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-                    backgroundSize: `5px 5px`,
+                    // backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+                    // backgroundSize: `5px 5px`,
                   }
             }
           />
           <header
-            class="fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top bg-neutral md:top-20 "
+            class={"fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top bg-neutral md:top-20 bg-dotted " + (siteImgURL ? " " : " bg-dotted ")}
             style={
               siteImgURL
                 ? {
@@ -97,8 +99,8 @@ let siteImgURL = site?.imgKey
                     filter: `blur(12px)`,
                   }
                 : {
-                    backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-                    backgroundSize: `5px 5px`,
+                    // backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
+                    // backgroundSize: `5px 5px`,
                   }
             }
           />
@@ -133,13 +135,11 @@ let siteImgURL = site?.imgKey
                 )}
                 <div
                   class={
-                    " rounded-none shadow-inner h-[50vh] lg:h-auto lg:flex-grow bg-neutral w-full lg:w-2/3 xl:w-3/4 relative " +
+                    " rounded-none shadow-inner h-[50vh] lg:h-auto lg:flex-grow bg-neutral w-full lg:w-2/3 xl:w-3/4 relative bg-dotted  " +
                     (site.allowEmbed ? "  " : " hidden md:block my-4 lg:my-0 ")
                   }
-                  style={{
-                    backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-                    backgroundSize: `5px 5px`,
-                  }}
+               
+                
                 >
                   {site.allowEmbed ? (
                     <iframe class="w-full h-full " src={site.url} />

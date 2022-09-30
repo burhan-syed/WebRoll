@@ -3,6 +3,7 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
 import prisma from "../server/utils/prisma";
+import "../styles/globals.css"
 const userIp = Astro.clientAddress; 
 
 const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}); 
@@ -13,11 +14,7 @@ const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}
 
 <MainLayout siteTile={"Submit | WebRoll"}>
   <div
-    class="bg-neutral flex-grow"
-    style={{
-      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-      backgroundSize: `5px 5px`,
-    }}
+    class="bg-neutral flex-grow bg-dotted"
   >
     <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
       <div

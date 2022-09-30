@@ -5,8 +5,9 @@ import Refresh from "../../components/ui/buttons/Refresh";
 import Paginator from "../../components/ui/buttons/Paginator";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import prisma from "../../server/utils/prisma";
+import "../../styles/globals.css"
+import type { minSiteResData } from "../../types";
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
-console.log("cookie set?", session, prev_session);
 Astro.response.headers.set(
   "Set-Cookie",
   `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
@@ -67,11 +68,7 @@ const pages = Array.from(Array(totalPages), (e, i) => {
   pageTitle={"Likes | WebRoll"}
 >
   <div
-    class="flex flex-col flex-grow bg-neutral items-center"
-    style={{
-      backgroundImage: `radial-gradient(circle, hsl(var(--sc)) 1px, rgba(0, 0, 0, 0) 1px)`,
-      backgroundSize: `5px 5px`,
-    }}
+    class="flex flex-col flex-grow bg-neutral items-center bg-dotted"
   >
     <div
       class="flex flex-col flex-grow gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4"
@@ -95,7 +92,7 @@ const pages = Array.from(Array(totalPages), (e, i) => {
                 {likes.map(({ site }) => (
                   <li>
                     <a rel="preload" href={`/sites/${site.id}`}>
-                      <SmallSiteCard site={site} />
+                      <SmallSiteCard site={site as minSiteResData} />
                     </a>
                   </li>
                 ))}
