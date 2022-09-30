@@ -48,14 +48,14 @@ let nanoid = (size = 21) => {
         if (rURL.includes("http://")) {
           return rURL.replace("http://", "https://");
         }
-        return `https://${rURL}`
+        return `https://${rURL}`;
       })();
       // if(tags.length > 19){
       //   console.log("tags?", tags);
       // }
       return {
         id: siteID,
-        name: row?.name ?? url.replace("https://",""),
+        name: row?.name ?? url.replace("https://", ""),
         url: url,
         sourceLink: row?.sourceLink,
         description: row?.description,
@@ -82,8 +82,21 @@ let nanoid = (size = 21) => {
       };
     }
   );
-
   console.log("Formatted?", formatted.length);
+
+  // const remove = await prisma.$transaction([
+  //   ...formatted.map((row) =>
+  //     prisma.reports.deleteMany({ where: { site: { url: row.url } } })
+  //   ),
+  //   ...formatted.map((row) =>
+  //     prisma.siteTags.deleteMany({ where: { site: { url: row.url } } })
+  //   ),
+  //   ...formatted.map((row) =>
+  //     prisma.sites.deleteMany({ where: { url: row.url } })
+  //   ),
+  // ]);
+  // console.log("remove?", remove.length);
+
   const create = await prisma.$transaction(
     formatted.map((row) =>
       prisma.sites.upsert({
@@ -93,13 +106,6 @@ let nanoid = (size = 21) => {
       })
     )
   );
-  // const remove = await prisma.$transaction([
-  //   ...formatted.map((row) =>
-  //     prisma.siteTags.deleteMany({ where: { site: { url: row.url } } })
-  //   ),
-  //   ...formatted.map((row) =>
-  //     prisma.sites.deleteMany({ where: { url: row.url } })
-  //   ),
-  // ]);
+
   console.log("created", create);
 })();
