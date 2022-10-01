@@ -23,7 +23,6 @@ export default function QueryList({
   sort,
 }: QueryList) {
   const fetchSites = async (fetchParams: QueryFunctionContext) => {
-
     const params = new URLSearchParams({
       categories: JSON.stringify(categories ?? ""),
       status: JSON.stringify(status),
@@ -39,7 +38,9 @@ export default function QueryList({
         method: "get",
       }
     );
-    const data = (await res.json()) as SitesQueryResponseData | SiteReportsQueryResponseData ;
+    const data = (await res.json()) as
+      | SitesQueryResponseData
+      | SiteReportsQueryResponseData;
     console.log("data?", data);
     return {
       sites: data?.data,
@@ -142,7 +143,11 @@ export default function QueryList({
                   : site && (
                       <>
                         {mode === "SITES" ? (
-                          <a href={`/sites/${site.id}`} className="w-full">
+                          <a
+                            href={`/sites/${site.id}`}
+                            target="_blank"
+                            className="w-full"
+                          >
                             <SiteCardHorizontal
                               site={site}
                               key={site.id}
@@ -152,6 +157,7 @@ export default function QueryList({
                         ) : (
                           <a
                             href={`/dashboard/admin/reports/${site.id}`}
+                            target="_blank"
                             className="w-full"
                           >
                             <ReportSiteCard

@@ -49,7 +49,7 @@ export default function SiteCard({ site }: { site: SiteResData }) {
           </span>
           {imgKey && (
             <div
-              className="bg-neutral rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh] bg-dotted"
+              className="rounded-sm overflow-hidden p-2 aspect-video flex items-center justify-center max-h-[80vh] bg-dotted"
             >
               <SecureImg
                 imgKey={imgKey}

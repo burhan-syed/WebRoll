@@ -19,6 +19,7 @@ const categories = await prisma.categories.findMany();
 const reports = await prisma.reports.findMany({
   where: { siteId: siteID },
   orderBy: { type: "asc" },
+  include: { categories: true, tags: true },
 });
 ---
 
@@ -32,9 +33,26 @@ const reports = await prisma.reports.findMany({
           </a>
         </h1>
         <UpdateSite site={site} client:load />
+        <span>
+          Categories: <>{site.categories.map((c) => c.category).join(",")}</>
+        </span>
+        <span>
+          Tags: <>{site.tags.map((t) => t.tag.tag).join(",")}</>
+        </span>
         <li>
           {reports.map((r) => (
-            <ul>{r.type} ({r.date})</ul>
+            <ul>
+              ({r.id}){r.type}
+              <>
+                {r.type === "TAGS" ? (
+                  <>tags:{r.tags.map((t) => t.tag)?.join(",")}</>
+                ) : (
+                  r.type === "CATEGORY" && (
+                    <>catgs:{r.categories.map((c) => c.category).join(",")}</>
+                  )
+                )}
+              </>
+            </ul>
           ))}
         </li>
       </div>

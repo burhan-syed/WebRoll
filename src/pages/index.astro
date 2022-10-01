@@ -1,11 +1,18 @@
 ---
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
-import Counter from "../components/counter/Counter";
 import Dice from "../components/ui/icons/Dice";
-const someProps = {
-  count: 0,
-};
+import "../styles/globals.css";
+// import prisma from "../server/utils/prisma";
+// import { checkAndReturnSessionID } from "../server/utils/handleSession";
+
+// const { session, prev_session, selected_categories } = await checkAndReturnSessionID(Astro);
+//   Astro.response.headers.set(
+//     "Set-Cookie",
+//     `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+//   )
+// const sitesCount = await prisma.sites.count(); 
+// const categories = await prisma.categories.findMany(); 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
@@ -16,82 +23,85 @@ const someProps = {
     line-height: 1;
   }
   .shadow-text {
-    text-shadow: 0px 2px 20px hsl(var(--sc) / 0.5);
+    text-shadow: 0px 0px 0px hsl(var(--nc) / 0.5);
   }
 </style>
 
-<MainLayout noProse={true} noFooter={true}>
-  <div
-    class="from-primary to-secondary text-primary-content -mt-20 grid place-items-center items-center bg-gradient-to-br pt-20 min-h-screen"
-  >
+<MainLayout noProse={true} noFooter={true} skipCookies={false}>
+  <div class="bg-dotted-light bg-base-100 flex flex-col">
     <div
-      class="hero-content col-start-1 row-start-1 w-full max-w-7xl flex-col justify-between gap-10 pb-40 lg:flex-row lg:items-end lg:gap-0 xl:gap-20"
+      class="from-primary/90 via-primary/50 to-primary/30 text-base-100 grid place-items-center items-center bg-gradient-to-b sm:bg-gradient-to-br min-h-screen -mt-20 pt-20"
     >
-      <div class="lg:pl-10 lg:pb-32">
-        <div
-          class="mb-2 py-4 text-center lg:py-10 lg:text-left flex flex-col gap-20 md:gap-4"
-        >
-          <h1
-            class="mb-2 text-7xl font-extrabold sm:text-5xl md:text-7xl lg:text-7xl shadow-text"
+      <div
+        class="hero-content col-start-1 row-start-1 w-full max-w-7xl flex-col justify-between gap-10 lg:flex-row md:pb-40 lg:items-end lg:gap-0 xl:gap-20"
+      >
+        <div class="lg:pl-10 lg:pb-32">
+          <div
+            class="py-2 lg:py-10 text-center  lg:text-left flex flex-col gap-10 md:gap-6"
           >
-            <span class="">Rediscover the Web</span>
-          </h1>
-          <h2>
-            <span class="text-xl font-normal"
-              >Curating beautiful, interesting, and unique sites from across the
-              internet</span>
-          </h2>
-          <p>Roll the dice & see where you land.</p>
-        </div>
-        <div
-          class="mt-4 flex flex-col lg:flex-row flex-1 justify-center gap-4 lg:mt-6 lg:justify-start"
-        >
-          <a
-            rel="preload"
-            href="/explore"
-            class="btn btn-primary btn-active lg:btn-lg normal-case hover:scale-105 hover:md:scale-110 transition-transform gap-2 group"
+            <h1
+              class="mb-2 font-extrabold text-4xl sm:text-5xl md:text-7xl shadow-text"
+            >
+              <span class="">Rediscover the Web</span>
+            </h1>
+            <p>
+              <span class="text-base sm:text-xl font-normal"
+                >WebRoll is curating beautiful, unique, and interesting sites from across
+                the internet</span
+              >
+            </p>
+          </div>
+          <p class="py-4 w-full text-center sm:text-left">Roll the dice & see where you land.</p>
+
+          <div
+            class="flex flex-col lg:flex-row flex-1 justify-center gap-10 sm:gap-4 lg:justify-start"
           >
-            <span
-              class="group-hover:rotate-180 transition-transform ease-out duration-300"
-              ><Dice strokeWidth={20} />
-            </span>
-            <span class="inline">Start Rolling</span>
-          </a>
-          <a
-            rel="preload"
-            href="/submit"
-            class="btn btn-ghost lg:btn-lg normal-case">Submit a Site</a
-          >
+            <a
+              rel="preload"
+              href="/explore"
+              class="btn btn-primary btn-active btn-md md:btn-lg normal-case hover:scale-105 hover:md:scale-110 transition-transform gap-2 group"
+            >
+              <span
+                class="group-hover:rotate-180 transition-transform ease-out duration-300"
+                ><Dice strokeWidth={20} />
+              </span>
+              <span class="inline">Start Rolling</span>
+            </a>
+            <a
+              rel="preload"
+              href="/submit"
+              class="btn btn-ghost lg:btn-lg normal-case hidden sm:flex">Submit a Site</a
+            >
+          </div>
         </div>
       </div>
-      <div>
-        <div class="w-full min-w-[330px] max-w-[350px] h-[100px]"></div>
-      </div>
+      <svg
+        width="1600"
+        height="595"
+        xmlns="http://www.w3.org/2000/svg"
+        class="col-start-1 row-start-1 h-auto w-full mt-auto"
+        viewBox="0 0 1600 595"
+        ><defs
+          ><linearGradient id="a" gradientTransform="rotate(90)"
+            ><stop
+              offset="1%"
+              style={{ stopColor: "hsl(var(--b2))" }}
+              stop-color=""></stop><stop
+              offset="99%"
+              style={{ stopColor: "hsl(var(--sf))" }}></stop>
+          </linearGradient><linearGradient id="b" gradientTransform="rotate(90)"
+            ><stop offset="1%" style={{ stopColor: "hsl(var(--))" }}
+            ></stop><stop offset="99%" style={{ stopColor: "hsl(var(--b1))" }}
+            ></stop>
+          </linearGradient>
+        </defs><path fill="none" d="M0 0h1600v595H0z"></path><path
+          d="M0 198c98.721 33.372 197.443 66.744 287 48 89.557-18.744 169.95-89.603 250-100 80.05-10.397 159.756 39.667 253 70s200.027 40.936 288 25c87.973-15.936 157.135-58.41 241-70 83.865-11.59 182.432 7.705 321 27l-40 397H0Z"
+          class="transition-transform -translate-y-36 sm:-translate-y-20 md:translate-y-10"
+          style={{ fill:  "hsl(var(--b1) / 0.3)" }}></path><path
+          d="M0 396c88.173 2.303 176.345 4.605 253-6s141.791-34.118 244-20c102.209 14.118 241.489 65.867 338 78 96.511 12.133 150.253-15.349 228-38 77.747-22.651 179.5-40.472 273-42 93.5-1.528 178.75 13.236 304 28l-40 199H0Z"
+          style={{ fill: "hsl(var(--b1))" }}></path>
+      </svg>
     </div>
-    <svg
-      width="1600"
-      height="595"
-      xmlns="http://www.w3.org/2000/svg"
-      class="fill-secondary col-start-1 row-start-1 h-auto w-full mt-auto"
-      viewBox="0 0 1600 595"
-      ><defs
-        ><linearGradient id="a" gradientTransform="rotate(90)"
-          ><stop
-            offset="5%"
-            style={{ stopColor: "hsl(var(--b1))" }}
-            stop-color=""></stop><stop
-            offset="95%"
-            style={{ stopColor: "hsl(var(--p))" }}></stop>
-        </linearGradient><linearGradient id="b" gradientTransform="rotate(90)"
-          ><stop offset="5%" style={{ stopColor: "hsl(var(--p))" }}></stop><stop
-            offset="95%"
-            style={{ stopColor: "hsl(var(--b1))" }}></stop>
-        </linearGradient>
-      </defs><path fill="none" d="M0 0h1600v595H0z"></path><path
-        d="M0 198c98.721 33.372 197.443 66.744 287 48 89.557-18.744 169.95-89.603 250-100 80.05-10.397 159.756 39.667 253 70s200.027 40.936 288 25c87.973-15.936 157.135-58.41 241-70 83.865-11.59 182.432 7.705 321 27l-40 397H0Z"
-        fill="url(#a)"></path><path
-        d="M0 396c88.173 2.303 176.345 4.605 253-6s141.791-34.118 244-20c102.209 14.118 241.489 65.867 338 78 96.511 12.133 150.253-15.349 228-38 77.747-22.651 179.5-40.472 273-42 93.5-1.528 178.75 13.236 304 28l-40 199H0Z"
-        style={{ fill: "hsl(var(--b2))" }}></path>
-    </svg>
+    <!-- <div class="grid bg-base-100">content</div> -->
   </div>
 </MainLayout>

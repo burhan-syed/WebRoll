@@ -158,7 +158,7 @@ export default function ExplorePage({
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
         <div
-          className="flex-grow flex flex-col bg-neutral bg-dotted "
+          className="flex-grow flex flex-col bg-dotted "
         >
           <div
             className={
