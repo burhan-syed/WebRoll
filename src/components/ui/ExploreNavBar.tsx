@@ -76,6 +76,11 @@ export default function ExploreNavBar({
             </button>
           </div>
           <a
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowInfo((s) => !s);
+            }}
             target={"_blank"}
             href={site.url}
             className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1"

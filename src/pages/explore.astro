@@ -67,14 +67,15 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
     box.checked = false;
   };
 </script>
-
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<meta name="generator" content={Astro.generator} />
-<title>Explore | WebRoll</title>
-
-<div class="drawer drawer-end">
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+  <title>Explore | WebRoll</title>
+</head>
+<body class="drawer drawer-end">
   <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content">
     <main class="min-h-screen min-w-full flex flex-col">
@@ -118,7 +119,7 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
       }
     </main>
   </div>
-  <div class="drawer-side">
+  <nav class="drawer-side">
     <label for="my-drawer-4" class="drawer-overlay"></label>
     <ul
       class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
@@ -135,5 +136,9 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
       <li><a href="/dashboard">Account</a></li>
       <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
     </ul>
-  </div>
-</div>
+  </nav>
+</body>
+
+</html>
+
+

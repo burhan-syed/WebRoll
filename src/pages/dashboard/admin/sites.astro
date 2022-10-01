@@ -9,6 +9,6 @@ if (!user || user.role !== "ADMIN") {
 }
 ---
 
-<MainLayout noProse={true} noScrollBar={true}>
+<MainLayout SEOProps={{title: "Sites Query | Webroll", noindex: true, nofollow:true}}  noProse={true} noScrollBar={true}>
   <QueryPage mode={"SITES"} client:only="react" />
 </MainLayout>

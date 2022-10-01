@@ -4,7 +4,6 @@ import MainLayout from "../layouts/MainLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
 import prisma from "../server/utils/prisma";
 import "../styles/globals.css"
-const userIp = Astro.clientAddress; 
 
 const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}); 
 
@@ -12,7 +11,7 @@ const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<MainLayout siteTile={"Submit | WebRoll"}>
+<MainLayout SEOProps={{title: "Rules | Webroll"}}>
   <div
     class="bg-neutral flex-grow bg-dotted"
   >
@@ -30,7 +29,7 @@ const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}
           url will be trimmed.
         </p>
       </div>
-      <SubmissionPage client:load userIp={userIp} categories={categories} />
+      <SubmissionPage client:load categories={categories} />
     </div>
   </div>
 </MainLayout>

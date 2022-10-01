@@ -32,7 +32,7 @@ const user = getUser({ client: Astro }) as User;
 const email = user?.email ?? "";
 ---
 
-<MainLayout noCookies={true}>
+<MainLayout SEOProps={{title: "Password Reset | Webroll", noindex: true, nofollow:true}} noCookies={true}>
   <div
     class="flex flex-col items-center justify-center flex-grow px-2 bg-dotted"
   >

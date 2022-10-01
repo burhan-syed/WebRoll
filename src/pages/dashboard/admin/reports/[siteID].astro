@@ -23,7 +23,7 @@ const reports = await prisma.reports.findMany({
 });
 ---
 
-<MainLayout noProse={false}>
+<MainLayout SEOProps={{title: "Site Reports | Webroll", noindex: true, nofollow:true}}  noProse={false}>
   {
     site && (
       <div class="max-w-3xl mx-auto">

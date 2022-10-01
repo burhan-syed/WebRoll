@@ -12,7 +12,7 @@ import ReportModal from "../../components/ui/ReportModal";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import { getUser } from "@astro-auth/core";
 import type { User } from "../../types";
-import "../../styles/globals.css"
+import "../../styles/globals.css";
 
 const { siteID } = Astro.params;
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
@@ -47,8 +47,10 @@ const site = await prisma.sites.findFirst({
     },
   },
 });
-const categories = await prisma.categories.findMany({orderBy: {category: "asc"}}); 
-await prisma.categories.findMany(); 
+const categories = await prisma.categories.findMany({
+  orderBy: { category: "asc" },
+});
+await prisma.categories.findMany();
 const likesCount = site?._count?.likes ?? 0;
 let siteImgURL = site?.imgKey
   ? (await getSignedImageUrl(site.imgKey as string)) ?? ""
@@ -70,14 +72,36 @@ let siteImgURL = site?.imgKey
   skipCookies={true}
   noScrollBar={true}
   noFooter={true}
-  pageTitle={`${site?.name ? `${site.name} | ` : ""}WebRoll`}
+  SEOProps={{
+    title: `${site?.name ? `${site.name} | ` : ""}WebRoll`,
+    description: `View ${site?.name ?? site?.url}${
+      site?.description ? `, ${site.description}.` : "."
+    } Discovered on WebRoll.`,
+    openGraph: {
+      basic: {
+        title: `View ${site?.name ?? site?.url}${
+          site?.description ? `, ${site.description}.` : "."
+        } Discovered on WebRoll.`,
+        type: 'website',
+        image: siteImgURL,
+      },
+      image: {
+        type: 'image/jpeg',
+        height: 1080,
+        width: 1920
+      }
+    },
+  }}
 >
   {
     site ? (
       <>
         <div class="flex flex-col flex-grow ">
           <header
-            class={"fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-top z-10  md:invisible bg-neutral " + (siteImgURL ? " " : " bg-dotted ")}
+            class={
+              "fixed top-0 w-screen flex items-center justify-center  aspect-video bg-scroll bg-cover bg-top z-10  md:invisible bg-neutral " +
+              (siteImgURL ? " " : " bg-dotted ")
+            }
             style={
               siteImgURL
                 ? {
@@ -91,7 +115,10 @@ let siteImgURL = site?.imgKey
             }
           />
           <header
-            class={"fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top md:top-20 bg-dotted " + (siteImgURL ? " " : " bg-dotted ")}
+            class={
+              "fixed top-0 w-screen h-screen  flex items-center justify-center  aspect-video bg-scroll bg-cover bg-no-repeat bg-top md:top-20 bg-dotted " +
+              (siteImgURL ? " " : " bg-dotted ")
+            }
             style={
               siteImgURL
                 ? {
@@ -138,8 +165,6 @@ let siteImgURL = site?.imgKey
                     " rounded-none shadow-inner h-[50vh] lg:h-auto lg:flex-grow bg-neutral w-full lg:w-2/3 xl:w-3/4 relative bg-dotted  " +
                     (site.allowEmbed ? "  " : " hidden md:block my-4 lg:my-0 ")
                   }
-               
-                
                 >
                   {site.allowEmbed ? (
                     <iframe class="w-full h-full " src={site.url} />
@@ -295,7 +320,13 @@ let siteImgURL = site?.imgKey
             </div>
           </div>
         </div>
-        <ReportModal client:load siteID={site.id} categories={categories} siteTags={site.tags} siteCategories={site.categories} />
+        <ReportModal
+          client:load
+          siteID={site.id}
+          categories={categories}
+          siteTags={site.tags}
+          siteCategories={site.categories}
+        />
         {isAdmin && (
           <>
             <UpdateSiteModal client:load site={site} categories={categories} />
