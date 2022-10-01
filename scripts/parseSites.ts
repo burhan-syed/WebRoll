@@ -104,10 +104,9 @@ import url from "url";
   }) => {
     if (!row || !row.url || row.skip) return;
     const baseUrl = extractUrl(row.url);
-    const response = await axios.get(baseUrl); //await fetch(baseUrl);
+
+    const response = await axios.get(baseUrl); 
     const resURL = `https://${url.parse(response.config.url ?? "")?.host}`;
-    //const resURL = splitUrl(response.url)?.host ?? baseUrl;
-    //const xFrameOptions = response.headers?.get("X-Frame-Options");
     const xFrameOptions = response.headers?.["x-frame-options"];
 
     const allowEmbed = !(
@@ -144,19 +143,6 @@ import url from "url";
 
   const FILE_PATH = "./scripts/site_mapping.csv";
   const jsonArray = await csv().fromFile(FILE_PATH);
-  // .subscribe((json) => {
-  //   return new Promise(async(resolve, reject) => {
-  //     //console.log("line?", json);
-  //     try{
-  //       const parsed = await parseRow(json);
-  //       parsed && parsedRows.push(parsed);
-  //       resolve();
-  //     }catch(err){
-  //       console.log("parse error", err);
-  //       reject();
-  //     }
-  //   });
-  // });
   console.log("final json array", jsonArray.length);
 
   (async () => {
@@ -166,7 +152,7 @@ import url from "url";
     // const row = {
     //   url: "troddit.com",
     //   category: "technology",
-    //   tags: "one;two;three;fuck",
+    //   tags: "one;two;three;",
     //   skip:"", my_category:"", exceptional:"", source:""
     // };
     // try {
