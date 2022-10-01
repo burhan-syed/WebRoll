@@ -1,8 +1,8 @@
 ---
 import { getUser } from "@astro-auth/core";
-import QueryPage from "../../../components/admin/Query/QueryPage";
-import MainLayout from "../../../layouts/MainLayout.astro";
-import type { User } from "../../../types";
+import QueryPage from "../../../../components/admin/Query/QueryPage";
+import MainLayout from "../../../../layouts/MainLayout.astro";
+import type { User } from "../../../../types";
 const user = getUser({ client: Astro }) as User;
 if (!user || user.role !== "ADMIN") {
   return redirectUser("/signup");
@@ -10,5 +10,5 @@ if (!user || user.role !== "ADMIN") {
 ---
 
 <MainLayout noProse={true} noScrollBar={true}>
-  <QueryPage mode={"SITES"} client:only="react" />
+  <QueryPage mode={"REPORTS"} client:only="react" />
 </MainLayout>

@@ -1,18 +1,30 @@
-import type { SiteStatus } from "@prisma/client";
-import { useState } from "react";
+import type { Reports, SiteStatus } from "@prisma/client";
+import { useMemo, useState } from "react";
 import { ExternalLink } from "react-feather";
-import type { minSiteResData } from "../../types";
+import type { SiteResWithReportsData } from "../../types";
 import ParseSite from "../admin/ParseSite";
 import UpdateStatuses from "../admin/UpdateStatuses";
 import SecureImg from "./SecureImg";
 
-export default function SiteCardHorizontal({
+export default function ReportSiteCard({
   site,
   admin = false,
 }: {
-  site: minSiteResData;
+  site: SiteResWithReportsData;
   admin?: boolean;
 }) {
+  const groupedReports = useMemo(() => {
+    let grouped = new Map<string, number>();
+    site.Reports.forEach((r) => {
+      let v = grouped.get(r.type);
+      if (v) {
+        grouped.set(r.type, (v += 1));
+      } else {
+        grouped.set(r.type, 1);
+      }
+    });
+    return grouped;
+  }, [site.Reports]);
   const [status, setStatus] = useState(() => site.status);
   const onUpdateStatus = (newStatus: SiteStatus) => {
     setStatus(newStatus);
@@ -21,7 +33,7 @@ export default function SiteCardHorizontal({
     <div className="flex h-28 ">
       <SecureImg styles="bg-neutral aspect-video h-full" imgKey={site.imgKey} />
 
-      <div className="flex gap-2 bg-base-100/80 backdrop-blur-md shadow-md h-full p-2 rounded-md hover:shadow-xl flex-grow min-w-full">
+      <div className="flex gap-2 bg-base-100/80 backdrop-blur-md shadow-md h-full p-2 rounded-md hover:shadow-xl min-w-full">
         <figure className="flex-none aspect-square w-10 flex items-start justify-center">
           <img
             className={"aspect-square w-[32px] flex-none"}
@@ -30,39 +42,22 @@ export default function SiteCardHorizontal({
         </figure>
         <div className="flex flex-col gap-1 w-full">
           <div className="flex flex-row justify-between">
-            <h2
-              className={
-                "font-semibold line-clamp-2 " +
-                (site.description ? "" : "md:mt-2")
-              }
-            >
+            <h2 className={"font-semibold line-clamp-1 "}>
               {site.name.replace(/\/+$/, "")}
             </h2>
-            <span
-              className={
-                "badge badge-outline p-0.5 flex-none text-xs" +
-                (status === "REVIEW"
-                  ? " badge-primary "
-                  : status === "APPROVED"
-                  ? " badge-success "
-                  : status === "REPORTED" || status === "PARSING"
-                  ? " badge-warning "
-                  : status === "BANNED"
-                  ? " badge-error "
-                  : " badge-error-content ")
-              }
-            >
-              {status}
-            </span>
           </div>
 
-          <p className="overflow-auto max-h-[2rem] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-primary text-xs ">
-            {site.description}
-          </p>
+          <span className={"flex"}>
+            {Array.from(groupedReports.keys()).map((r) => (
+              <span key={r}>
+                {r}:{groupedReports.get(r)},
+              </span>
+            ))}
+          </span>
           <div className="flex items-center w-full mt-auto gap-1">
             {admin && (
               <>
-                <div className="max-w-xs mr-2">
+               <div className="max-w-xs mr-2">
                   <ParseSite siteID={site.id} />
                 </div>
                 <UpdateStatuses

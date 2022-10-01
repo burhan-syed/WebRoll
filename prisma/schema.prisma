@@ -34,7 +34,6 @@ enum ReportType {
   TAGS
   TOS
   OTHER
-  RESOLVED
 }
 
 enum SessionRole {
@@ -97,18 +96,18 @@ model Likes {
 }
 
 model Reports {
-  id        Int        @id @unique @default(autoincrement())
-  siteId    String     @map("site_id") @db.VarChar(21)
-  sessionId String     @db.VarChar(48)
-  ip        String     @db.VarChar(45)
-  date      DateTime   @default(now())
-  type      ReportType
+  id         Int          @id @unique @default(autoincrement())
+  siteId     String       @map("site_id") @db.VarChar(21)
+  sessionId  String       @db.VarChar(48)
+  ip         String       @db.VarChar(45)
+  date       DateTime     @default(now())
+  resolved   Boolean      @default(false)
+  type       ReportType
   categories Categories[]
-  tags Tags[]
+  tags       Tags[]
 
-  user          Sessions        @relation(fields: [sessionId], references: [id])
-  site          Sites           @relation(fields: [siteId], references: [id])
-  categoriesId  Int?
+  user         Sessions @relation(fields: [sessionId], references: [id])
+  site         Sites    @relation(fields: [siteId], references: [id])
 
   @@unique([siteId, sessionId, type])
 }
@@ -117,7 +116,7 @@ model Tags {
   tag       String   @id @unique @db.VarChar(48)
   createdAt DateTime @default(now()) @map("created_at")
 
-  sites SiteTags[]
+  sites   SiteTags[]
   reports Reports[]
 }
 
@@ -155,10 +154,10 @@ model Sessions {
   account      Accounts?   @relation(fields: [accountID], references: [email])
 
   categories Categories[]
-  sites   Sites[]
-  tags    SiteTags[]
-  likes   Likes[]
-  reports Reports[]
+  sites      Sites[]
+  tags       SiteTags[]
+  likes      Likes[]
+  reports    Reports[]
 }
 
 model Accounts {

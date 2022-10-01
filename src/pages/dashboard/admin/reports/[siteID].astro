@@ -1,0 +1,44 @@
+---
+import { getUser } from "@astro-auth/core";
+import UpdateSite from "../../../../components/admin/UpdateSite";
+import UpdateSiteModal from "../../../../components/admin/UpdateSiteModal";
+import MainLayout from "../../../../layouts/MainLayout.astro";
+import prisma from "../../../../server/utils/prisma";
+import type { User } from "../../../../types";
+const user = getUser({ client: Astro }) as User;
+if (!user || user.role !== "ADMIN") {
+  return redirectUser("/signup");
+}
+
+const { siteID } = Astro.params as { siteID: string };
+const site = await prisma.sites.findFirst({
+  where: { id: siteID },
+  include: { categories: true, tags: { select: { tag: true } } },
+});
+const categories = await prisma.categories.findMany();
+const reports = await prisma.reports.findMany({
+  where: { siteId: siteID },
+  orderBy: { type: "asc" },
+});
+---
+
+<MainLayout noProse={false}>
+  {
+    site && (
+      <div class="max-w-3xl mx-auto">
+        <h1>
+          <a href={`/sites/${site.id}`}>
+            {site?.name}({site?.url})
+          </a>
+        </h1>
+        <UpdateSite site={site} client:load />
+        <li>
+          {reports.map((r) => (
+            <ul>{r.type} ({r.date})</ul>
+          ))}
+        </li>
+      </div>
+    )
+  }
+  {site && <UpdateSiteModal client:load site={site} categories={categories} />}
+</MainLayout>

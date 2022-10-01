@@ -1,31 +1,46 @@
+import type { Reports } from "@prisma/client";
 import { QueryFunctionContext, useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useRef, useState } from "react";
-import type { SitesQuery, SiteResData } from "../../../types";
+import type {
+  SitesQuery,
+  SitesQueryResponseData,
+  SiteReportsQueryResponseData,
+} from "../../../types";
+import ReportSiteCard from "../../ui/ReportSiteCard";
 import SiteCardHorizontal from "../../ui/SiteCardHorizontal";
 
-interface SitesQueryResponseData {
-  data?: SiteResData[];
-  nextCursor: string | undefined;
-  total?: number;
+interface QueryList extends SitesQuery {
+  mode: "REPORTS" | "SITES";
+  reportTypes?: string[];
 }
 
-export default function QuerySites({
+export default function QueryList({
+  mode,
   categories,
   status = ["REVIEW", "PARSING", "BANNED", "APPROVED"],
+  reportTypes = ["BROKEN", "DISPLAY"],
   sort,
-}: SitesQuery) {
+}: QueryList) {
   const fetchSites = async (fetchParams: QueryFunctionContext) => {
+
     const params = new URLSearchParams({
       categories: JSON.stringify(categories ?? ""),
       status: JSON.stringify(status),
+      reportTypes: JSON.stringify(reportTypes),
       sort: JSON.stringify(sort ?? ""),
-      cursor: JSON.stringify(fetchParams.pageParam?.nextCursor  ?? "")
+      cursor: JSON.stringify(fetchParams.pageParam?.nextCursor ?? ""),
     }).toString();
-    const res = await fetch(`/api/query/get-sites?${params}`, {
-      method: "get",
-    });
-    const data = (await res.json()) as SitesQueryResponseData | undefined;
+    const res = await fetch(
+      `${
+        mode === "SITES" ? "/api/query/get-sites" : "/api/query/get-reports"
+      }?${params}`,
+      {
+        method: "get",
+      }
+    );
+    const data = (await res.json()) as SitesQueryResponseData | SiteReportsQueryResponseData ;
+    console.log("data?", data);
     return {
       sites: data?.data,
       nextCursor: data?.nextCursor,
@@ -39,10 +54,17 @@ export default function QuerySites({
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery(["sites", status, sort, categories], fetchSites, {
-    enabled: status?.length > 0,
-    getNextPageParam: (lastPage) => (lastPage?.nextCursor ? {nextCursor: lastPage.nextCursor} : undefined),
-  });
+  } = useInfiniteQuery(
+    mode === "SITES"
+      ? ["sites", status, sort, categories]
+      : ["reports", reportTypes],
+    fetchSites,
+    {
+      enabled: status?.length > 0 && !!mode,
+      getNextPageParam: (lastPage) =>
+        lastPage?.nextCursor ? { nextCursor: lastPage.nextCursor } : undefined,
+    }
+  );
 
   const allRows = data ? data.pages.flatMap((d) => d.sites?.flat()) : [];
 
@@ -76,7 +98,9 @@ export default function QuerySites({
   ]);
   return (
     <div className="flex flex-col flex-grow gap-2 ">
-      <span className="absolute z-20 bg-accent p-2 rounded-sm">total:{data?.pages?.[0]?.total}</span>
+      <span className="absolute z-20 bg-accent p-2 rounded-sm">
+        total:{data?.pages?.[0]?.total}
+      </span>
       <div
         ref={parentRef}
         className="flex justify-center flex-grow max-h-screen pt-2"
@@ -96,14 +120,12 @@ export default function QuerySites({
         >
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const isLoaderRow = virtualRow.index > allRows.length - 1;
-            const site = allRows[virtualRow.index];
+            const site = allRows[virtualRow.index] as any;
 
             return (
               <div
                 key={virtualRow.index}
-                className={
-                  virtualRow.index % 2 ? "ListItemOdd" : "ListItemEven"
-                }
+                className={"min-w-full"}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -113,17 +135,34 @@ export default function QuerySites({
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
-                {isLoaderRow ? (
-                  hasNextPage ? (
-                    "Loading more..."
-                  ) : (
-                    "Nothing more to load"
-                  )
-                ) : site && (
-                  <a href={`/sites/${site.id}`}>
-                    <SiteCardHorizontal site={site} key={site.id} admin={true}/>
-                  </a>
-                )}
+                {isLoaderRow
+                  ? hasNextPage
+                    ? "Loading more..."
+                    : "Nothing more to load"
+                  : site && (
+                      <>
+                        {mode === "SITES" ? (
+                          <a href={`/sites/${site.id}`} className="w-full">
+                            <SiteCardHorizontal
+                              site={site}
+                              key={site.id}
+                              admin={true}
+                            />
+                          </a>
+                        ) : (
+                          <a
+                            href={`/dashboard/admin/reports/${site.id}`}
+                            className="w-full"
+                          >
+                            <ReportSiteCard
+                              site={site}
+                              key={site.id}
+                              admin={true}
+                            />
+                          </a>
+                        )}
+                      </>
+                    )}
               </div>
             );
           })}
@@ -131,7 +170,6 @@ export default function QuerySites({
       </div>
 
       <div className="flex-grow"></div>
-     
     </div>
   );
 }

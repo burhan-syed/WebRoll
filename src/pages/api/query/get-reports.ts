@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { getUser } from "@astro-auth/core";
 import prisma from "../../../server/utils/prisma";
 import type { SitesQuery, User } from "../../../types";
-import type { SiteStatus } from "@prisma/client";
+import type { ReportType, SiteStatus } from "@prisma/client";
 export const get: APIRoute = async function get({ request }) {
   const user = getUser({ server: request }) as User;
   if (!user || user.role !== "ADMIN") {
@@ -12,42 +12,51 @@ export const get: APIRoute = async function get({ request }) {
   let params = new URLSearchParams(request.url?.split("?")?.[1]);
 
   const queryParams = {
-    sort: JSON.parse(params?.get("sort") ?? ""),
-    status: JSON.parse(
-      params?.get("status") ?? `["REVIEW", "PARSING"]`
-    ) as SiteStatus[],
-    categories: JSON.parse(params?.get("categories") ?? ""),
+    reportTypes: JSON.parse(
+      params?.get("reportTypes") ??
+        `["BROKEN", "CATEGORY", "DISPLAY", "OTHER", "TAGS", "TAGS", "TOS"]`
+    ) as ReportType[],
     select: JSON.parse(params?.get("select") ?? "20"),
     cursor: JSON.parse(params?.get("cursor") ?? "undefined"),
-  } as SitesQuery;
+  };
 
   const {
-    sort = "DATE",
-    status = ["REVIEW", "PARSING"],
-    categories,
+    reportTypes = [
+      "BROKEN",
+      "CATEGORY",
+      "DISPLAY",
+      "OTHER",
+      "TAGS",
+      "TAGS",
+      "TOS",
+    ],
     select = 20,
     cursor,
   } = queryParams;
-  //console.log("sort?", sort, "status", status, "categories?",categories, "select?", select, "cursor?", cursor)
   try {
-    //TODO: filter categories, sort by other fields
-    const selectedCategories =
-      categories !== undefined
-        ? { categories: { some: { id: { in: [...categories] } } } }
-        : {};
-    const filter = { status: { in: status } };
-    const total = await prisma.sites.count({ where: { ...filter } });
+    console.log("rT?", reportTypes);
+    const total = await prisma.sites.count({
+      where: {
+        Reports: { some: { type: { in: reportTypes }, resolved: false } },
+      },
+    });
     const sites = await prisma.sites.findMany({
-      where: { ...filter },
-      orderBy: { submittedAt: "desc" },
+      where: {
+        Reports: { some: { type: { in: reportTypes }, resolved: false } },
+      },
+      orderBy: { Reports: { _count: "desc" } },
       take: select + 1,
       cursor: cursor ? { id: cursor } : undefined,
+      include: { Reports: { select: { type: true } } },
     });
     let nextCursor = undefined;
     if (sites.length > select) {
       let last = sites.pop();
+      console.log("Rsites?", last?.Reports);
+
       nextCursor = last?.id;
     }
+    console.log("Rsites?", sites?.[0]?.Reports);
     return new Response(
       JSON.stringify({ data: sites, nextCursor: nextCursor, total }),
       {
