@@ -34,7 +34,6 @@ export const get: APIRoute = async function get({ request }) {
     cursor,
   } = queryParams;
   try {
-    console.log("rT?", reportTypes);
     const total = await prisma.sites.count({
       where: {
         Reports: { some: { type: { in: reportTypes }, resolved: false } },
@@ -52,11 +51,8 @@ export const get: APIRoute = async function get({ request }) {
     let nextCursor = undefined;
     if (sites.length > select) {
       let last = sites.pop();
-      console.log("Rsites?", last?.Reports);
-
       nextCursor = last?.id;
     }
-    console.log("Rsites?", sites?.[0]?.Reports);
     return new Response(
       JSON.stringify({ data: sites, nextCursor: nextCursor, total }),
       {
@@ -64,7 +60,7 @@ export const get: APIRoute = async function get({ request }) {
       }
     );
   } catch (err) {
-    console.log("query err", err);
+    console.error("reports query err", err);
     return new Response(JSON.stringify({ ERROR: "" }), { status: 500 });
   }
 

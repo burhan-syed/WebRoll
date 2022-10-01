@@ -14,10 +14,12 @@ export default function Button({
   label?: string;
   styles?: string;
   tooltipLocation?: "top" | "bottom";
-  iconSize?: number; 
+  iconSize?: number;
   site: minSiteResDataWithLikes;
 }) {
-  const [liked, setLiked] = useState(() => site.likes?.length > 0 ? site.likes[0]?.direction : false);
+  const [liked, setLiked] = useState(() =>
+    site.likes?.length > 0 ? site.likes[0]?.direction : false
+  );
   useEffect(() => {
     setLiked(site.likes?.length > 0 ? site.likes[0]?.direction : false);
   }, [site]);
@@ -38,7 +40,7 @@ export default function Button({
   const clickAction = async () => {
     switch (type) {
       case "like":
-        await handleLike(); 
+        await handleLike();
         break;
       case "report":
         break;
@@ -53,7 +55,6 @@ export default function Button({
         try {
           await navigator.share(shareData);
         } catch (err) {
-          console.log("copied");
           navigator.clipboard.writeText(shareLink);
         }
         setAlertMessage("link copied!");

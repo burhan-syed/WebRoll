@@ -27,13 +27,14 @@ export const post: APIRoute = async function post({ request }) {
           },
         },
         select: {
-          categories: {select: {category: true}}
-        }
+          categories: { select: { category: true } },
+        },
       }),
     ]);
 
-    console.log("user categories:", update[1].categories);
-    return new Response(JSON.stringify({data: update?.[1]?.categories}), { status: 200 });
+    return new Response(JSON.stringify({ data: update?.[1]?.categories }), {
+      status: 200,
+    });
   } catch (err) {
     console.error("user catgs error", err);
     return new Response(null, { status: 500 });

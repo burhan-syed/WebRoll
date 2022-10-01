@@ -21,7 +21,6 @@ export default function ExploreNavBar({
     site.likes?.length > 0 ? site.likes[0]?.direction : false
   );
   useEffect(() => {
-    console.log("likes?", site.likes, site.url);
     setLiked(site.likes?.length > 0 ? site.likes[0]?.direction : false);
   }, [site]);
 
@@ -110,9 +109,13 @@ export default function ExploreNavBar({
           <div className="card-body p-4 w-[80vw] max-w-3xl ">
             <div className="flex justify-between sm:flex-col gap-1 ">
               <div className="w-2/3 sm:w-auto">
-                <h1 className="card-title text-lg sm:text-xl font-light">{site.name}</h1>
+                <h1 className="card-title text-lg sm:text-xl font-light">
+                  {site.name}
+                </h1>
                 <h2 className="text-md font-light pb-2  py-0.5 flex items-center justify-between gap-2 flex-wrap">
-                  <span>{site.categories.map(c => c.category).join(",")} </span>{" "}
+                  <span>
+                    {site.categories.map((c) => c.category).join(",")}{" "}
+                  </span>{" "}
                   <a
                     href={site.url}
                     target={"_blank"}
@@ -129,7 +132,9 @@ export default function ExploreNavBar({
 
               <div className="flex flex-col sm:flex-row items-center sm:w-full justify-evenly gap-1 w-1/3">
                 <Button
-                  styles={"btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm  "}
+                  styles={
+                    "btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm  "
+                  }
                   type={"share"}
                   site={site}
                   tooltipLocation={"top"}
@@ -142,7 +147,9 @@ export default function ExploreNavBar({
                   Details
                 </a>
                 <Button
-                  styles={"btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm "}
+                  styles={
+                    "btn btn-ghost btn-active sm:w-1/3 h-1/3 gap-1 sm:gap-2 sm:h-auto btn-sm "
+                  }
                   type={"report"}
                   site={site}
                 />

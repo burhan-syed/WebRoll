@@ -5,7 +5,7 @@ import BgImage from "./ui/BgImage";
 import ReportModal from "./ui/ReportModal";
 import type { Categories } from "@prisma/client";
 import CategorySelectModal from "./ui/CategorySelectModal";
-import "../styles/globals.css"
+import "../styles/globals.css";
 export default function ExplorePage({
   initialSites,
   initialSiteImgURL,
@@ -27,8 +27,6 @@ export default function ExplorePage({
   useEffect(() => {
     const fetchSecureImage = async (url: string, imgId: string | null) => {
       const img = (await (await fetch(`/api/images/${imgId}`)).json())?.url;
-      console.log("fetch..", img);
-
       setSiteImgURL({ url: url, img: img });
     };
     if (sites[index].allowEmbed === false) {
@@ -36,10 +34,6 @@ export default function ExplorePage({
         fetchSecureImage(sites[index].url, sites[index].imgKey);
     }
   }, [index]);
-
-  useEffect(() => {
-    console.log("imgurl?", siteImgURL);
-  }, [siteImgURL]);
 
   //prevent hydration mismatch
   useEffect(() => {
@@ -68,7 +62,7 @@ export default function ExplorePage({
       let more = (await res.json()).data as minSiteResDataWithLikes[];
       if (more?.length > 0) {
         setRateLimitMessage("");
-       return more; 
+        return more;
       } else if (!(sites.length > index + 1) && location) {
         location.reload();
       }
@@ -88,7 +82,7 @@ export default function ExplorePage({
       }
       if (sites.length - index < 3) {
         const more = await fetchMoreSites();
-        if(more){
+        if (more) {
           setSites((p) => [...p, ...more]);
         }
       }
@@ -120,13 +114,12 @@ export default function ExplorePage({
   };
 
   const onCategorySelectUpdate = async (selectedCategories: string[]) => {
-    console.log("selected?", selectedCategories);
     if (!(selectedCategories.length > 0)) {
       return;
     }
     let filtered = sites.filter((s, i) => {
       return (
-        i <= (index) ||
+        i <= index ||
         s.categories.some((r) => {
           selectedCategories.includes(r.category);
         })
@@ -135,8 +128,8 @@ export default function ExplorePage({
     if (filtered.length - index < 3) {
       setDisableAdvance(true);
       const more = await fetchMoreSites();
-      if(more){
-        filtered = [...filtered, ...more]
+      if (more) {
+        filtered = [...filtered, ...more];
       }
       setDisableAdvance(false);
     }
@@ -157,9 +150,7 @@ export default function ExplorePage({
       </div> */}
       <main className="min-w-full bg-base-300 min-h-screen flex flex-col">
         <div className="h-0 md:h-20"></div>
-        <div
-          className="flex-grow flex flex-col bg-dotted "
-        >
+        <div className="flex-grow flex flex-col bg-dotted ">
           <div
             className={
               "fixed top-0 md:bottom-0 md:top-auto left-1/2 -translate-x-1/2 z-50  w-60 " +
@@ -179,11 +170,9 @@ export default function ExplorePage({
               className="flex-1 h-full w-full bg-transparent"
               src={sites[index].url}
               onLoad={() => {
-                console.log("iframe loaded");
                 handleSiteLoad(sites[index]);
               }}
               onError={() => {
-                console.log("iframe error");
                 setAdvanced((p) => p + 1);
               }}
             ></iframe>

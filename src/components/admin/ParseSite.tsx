@@ -10,9 +10,8 @@ export default function ParseSite({ siteID }: { siteID: string }) {
         method: "post",
         body: JSON.stringify({ siteID: siteID }),
       });
-      console.log("parse req?", res);
     } catch (err) {
-      console.log("parse request error", err);
+      //console.error("parse request error", err);
     }
     setParseLoading(false);
   };

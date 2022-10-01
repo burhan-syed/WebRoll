@@ -30,7 +30,7 @@ export default function TagsInput({}) {
     }
     const last = cTags[cTags.length - 1];
     const lastName = last.name.trim();
-    console.log(lastName.match(/[A-Za-z0-9 ]+/), lastName);
+    //console.log(lastName.match(/[A-Za-z0-9 ]+/), lastName);
     if (last.name === "") {
       setTagError("");
       return 1;

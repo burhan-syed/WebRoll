@@ -26,8 +26,8 @@ export const post: APIRoute = async function post({ request }) {
       return new Response(null, { status: 401 });
     }
     let cCatgs = categories?.filter((c) => c);
-    let { cleanedTags } = parseTags(tags?.map(t => t.name));
-    console.log("catgs?", cCatgs, "tags?", cleanedTags);
+    let { cleanedTags } = parseTags(tags?.map((t) => t.name));
+    //console.log("catgs?", cCatgs, "tags?", cleanedTags);
 
     const r = await prisma.reports.upsert({
       where: {
@@ -63,10 +63,10 @@ export const post: APIRoute = async function post({ request }) {
         },
       },
     });
-    console.log("report?", r);
+    //console.log("report?", r);
     return new Response(JSON.stringify({ data: r }), { status: 200 });
   } catch (err) {
-    console.log("like error", err);
+    console.error("reports error", err);
     return new Response(null, { status: 500 });
   }
 };

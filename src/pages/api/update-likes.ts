@@ -33,10 +33,10 @@ export const post: APIRoute = async function post({ request }) {
       },
       update: { direction, ip },
     });
-    console.log("like:", update);
+    //console.log("like:", update);
     return new Response(null, { status: 200 });
   } catch (err) {
-    console.log("like error", err);
+    console.error("like error", err);
     return new Response(null, { status: 500 });
   }
 };

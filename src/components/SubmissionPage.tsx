@@ -4,10 +4,9 @@ import type { SiteResData } from "../types";
 import SiteSubmit from "./forms/SiteSubmit";
 import SiteCard from "./ui/SiteCard";
 
-export default function SubmissionPage({ userIp, categories }: { userIp: string, categories: Categories[] }) {
+export default function SubmissionPage({ categories }: { categories: Categories[] }) {
   const [submissions, setSubmissions] = useState<SiteResData[]>([]);
   const returnSubmissions = (submission: SiteResData) => {
-    console.log("submit:", submission);
     setSubmissions((s) => [submission, ...s]);
   };
 
@@ -39,7 +38,7 @@ export default function SubmissionPage({ userIp, categories }: { userIp: string,
         </>
       ) : (
         <div className="rounded-lg border border-base-300 shadow-lg bg-base-100/90  backdrop-blur-md ">
-          <SiteSubmit userIP={userIp} returnSubmissions={returnSubmissions} categories={categories} />
+          <SiteSubmit returnSubmissions={returnSubmissions} categories={categories} />
         </div>
       )}
     </>

@@ -7,7 +7,6 @@ export const all = AstroAuth({
   authProviders: [
     CredentialProvider({
       authorize: async (properties) => {
-        console.log("auth?", properties);
         if (!properties.password || !properties.email) {
           return null;
         }
@@ -23,8 +22,8 @@ export const all = AstroAuth({
           return null;
         }
 
-        if(account.status === "PENDING"){
-          return null; 
+        if (account.status === "PENDING") {
+          return null;
         }
 
         return {
@@ -40,7 +39,6 @@ export const all = AstroAuth({
     //   return true;
     // },
     jwt: async (user) => {
-      console.log("JWT?", user); 
       return {
         ...user,
       };

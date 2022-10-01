@@ -5,21 +5,29 @@ import { getUser } from "@astro-auth/core";
 import { randomSessionID } from "./generateIDs";
 import type { AstroGlobal } from "astro";
 
-export const checkAndReturnSessionID = async (Astro: AstroGlobal): Promise<{session: string; prev_session:string|undefined; selected_categories: string[] }>  => {
+export const checkAndReturnSessionID = async (
+  Astro: AstroGlobal
+): Promise<{
+  session: string;
+  prev_session: string | undefined;
+  selected_categories: string[];
+}> => {
   const ip = Astro.clientAddress;
   const cookies = Astro.request.headers.get("cookie");
-  const webrollSessions = parseCookie(cookies ?? "")?.webroll_session?.split(".");
-  console.log("wrSessions?",webrollSessions)
+  const webrollSessions = parseCookie(cookies ?? "")?.webroll_session?.split(
+    "."
+  );
+  //console.log("wrSessions?",webrollSessions)
   const prev = (() => {
-    if(webrollSessions?.[1]?.length === 48){
-      return webrollSessions[1]
-    }else if(webrollSessions?.[0]?.length === 48){
-      return webrollSessions[0]
-    }else{
-      return ""; 
+    if (webrollSessions?.[1]?.length === 48) {
+      return webrollSessions[1];
+    } else if (webrollSessions?.[0]?.length === 48) {
+      return webrollSessions[0];
+    } else {
+      return "";
     }
-  })()
-  console.log("old??", prev);
+  })();
+  //console.log("old??", prev);
   let { sessionID, user, overwritten } = (() => {
     try {
       const user = getUser({ client: Astro }) as jwt.JwtPayload;
@@ -30,9 +38,7 @@ export const checkAndReturnSessionID = async (Astro: AstroGlobal): Promise<{sess
           user,
           overwritten: user?.session !== prev ? prev : "",
         };
-      } else if (
-        webrollSessions?.[1]?.length === 48
-      ) {
+      } else if (webrollSessions?.[1]?.length === 48) {
         return {
           sessionID: webrollSessions?.[1] ?? "",
           user,
@@ -40,7 +46,7 @@ export const checkAndReturnSessionID = async (Astro: AstroGlobal): Promise<{sess
         };
       }
     } catch (err) {
-      console.log("jwt parse error", err);
+      console.error("jwt parse error", err);
     }
 
     return {
@@ -64,9 +70,12 @@ export const checkAndReturnSessionID = async (Astro: AstroGlobal): Promise<{sess
     where: { id: sessionID },
     create: { ip, id: sessionID },
     update: { ip, lastAccessed: new Date() },
-    include: {categories: {select: {category: true}}}
+    include: { categories: { select: { category: true } } },
   });
-  console.log("SESSIONS?", update, "OVERWRITTEN?", overwritten);
-  return { session: update.id, prev_session: overwritten, selected_categories: update.categories.map(c => c.category)};
-  //return { session: sessionID, prev_session: overwritten };
+  //console.log("SESSIONS?", update, "OVERWRITTEN?", overwritten);
+  return {
+    session: update.id,
+    prev_session: overwritten,
+    selected_categories: update.categories.map((c) => c.category),
+  };
 };

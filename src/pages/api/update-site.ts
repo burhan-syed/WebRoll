@@ -9,7 +9,6 @@ const key = import.meta.env.MY_SECRET_KEY;
 
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
-  console.log("RESPONSE RECEIVED", data);
   const user = getUser({ server: request }) as User;
   const { siteData, secret, assigner } = data as {
     siteData: {
@@ -121,13 +120,11 @@ export const post: APIRoute = async function post({ request }) {
         });
       }
 
-      console.log("site update!", update);
-
       return new Response(JSON.stringify({ data: { ...update } }), {
         status: 200,
       });
     } catch (err) {
-      console.log("update error", err);
+      console.error("update error", err);
       return new Response(JSON.stringify({ ERROR: "" }), { status: 500 });
     }
   }

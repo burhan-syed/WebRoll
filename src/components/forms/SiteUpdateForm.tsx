@@ -71,11 +71,14 @@ export default function SiteUpdateForm({
   const [submitted, setSubmitted] = useState(false);
   const onFormSubmit = async (data: UpdateFormData) => {
     setFormSubmitLoading(true);
-    console.log("data?", data);
+    //console.log("data?", data);
     const updatedData = (() => {
       let updateData = {} as SubmitUpdateFormData;
       let catgs = data.categories?.filter((c) => c) as string[];
-      let tags = data.tags?.slice(0,-1).map((t) => t.name).filter((t) => t);
+      let tags = data.tags
+        ?.slice(0, -1)
+        .map((t) => t.name)
+        .filter((t) => t);
       if (
         catgs &&
         catgs?.sort().join(",") !==
@@ -112,7 +115,7 @@ export default function SiteUpdateForm({
       }
       return updateData;
     })();
-    console.log("update?", updatedData);
+    //console.log("update?", updatedData);
     if (!(Object.keys(updatedData).length > 0)) {
       return;
     }

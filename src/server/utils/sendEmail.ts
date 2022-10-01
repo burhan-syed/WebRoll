@@ -30,12 +30,12 @@ export const generateAndSendAuthVerificationMail = async ({
     //verify connection
     transporter.verify((error, success) => {
       if (error) {
-        console.log("transport error", error);
+        console.error("transport error", error);
         failed = true;
         failError = error;
         reject(error);
       } else {
-        console.log("server ready to take messages");
+        //console.log("server ready to take messages");
         resolve(success);
       }
     });
@@ -64,17 +64,17 @@ export const generateAndSendAuthVerificationMail = async ({
     }<a href="${link}">this link</a>.<br/>If you do not recognize this request please ignore this email.</p><p><br/>Link not working? Copy this into your browser's address bar: <a href="${link}">${link}</a><br/><br/><a href="${DOMAIN}">webroll.io</a></p></div>`,
   };
 
-  console.log("MAIL DATA?", mailData);
+  //console.log("MAIL DATA?", mailData);
 
   await new Promise((resolve, reject) => {
     //send mail
     transporter.sendMail(mailData, (error, info) => {
       if (error) {
-        console.log("send mail error", error);
+        console.error("send mail error", error);
         failed = true;
         failError = error;
       } else {
-        console.log("sent email", info);
+        //console.log("sent email", info);
         resolve(info);
       }
     });

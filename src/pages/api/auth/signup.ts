@@ -10,7 +10,7 @@ export const post: APIRoute = async function post({ request }) {
   const sessionID = getWebRollSession(request.headers.get("cookie"));
   const data = await request.json();
   const { email, password } = data;
-  console.log("session?", sessionID, "email?", email, "password?", password);
+  //console.log("session?", sessionID, "email?", email, "password?", password);
   const ip =
     request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null;
 
@@ -21,21 +21,21 @@ export const post: APIRoute = async function post({ request }) {
     const sessData = await prisma.sessions.findFirst({
       where: { id: sessionID },
     });
-    console.log("sess?", sessData);
+    //console.log("sess?", sessData);
     if (!sessData) {
       return new Response(JSON.stringify({ ERROR: "role" }), { status: 401 });
     }
     const pAccount = await prisma.accounts.findFirst({
       where: { email: email },
     });
-    console.log("prev Account?", pAccount);
+    //console.log("prev Account?", pAccount);
     if (pAccount) {
       return new Response(JSON.stringify({ ERROR: "email" }), {
         status: 400,
       });
     }
     const hashed = await hashPassword(password);
-    console.log("hashed?", hashed);
+    //console.log("hashed?", hashed);
     const newSession = randomSessionID();
     const emailVerifId = randomSessionID(64);
 
@@ -61,7 +61,7 @@ export const post: APIRoute = async function post({ request }) {
         verificationKey: emailVerifId,
       });
     } catch (err) {
-      console.log("something went wrong with email verif", err);
+      //console.log("something went wrong with email verif", err);
       await prisma.$transaction([
         prisma.accountVerifications.delete({ where: { id: emailVerifId } }),
         prisma.sessions.delete({ where: { id: newSession } }),
@@ -73,7 +73,7 @@ export const post: APIRoute = async function post({ request }) {
       status: 200,
     });
   } catch (err) {
-    console.log("signup error", err);
+    console.error("signup error", err);
     return new Response(null, { status: 500 });
   }
 };

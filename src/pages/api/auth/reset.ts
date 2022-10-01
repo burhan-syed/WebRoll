@@ -6,7 +6,13 @@ import { generateAndSendAuthVerificationMail } from "../../../server/utils/sendE
 export const post: APIRoute = async function post({ request }) {
   const data = await request.json();
   const { key, password1, password2 } = data;
-  if (!key || !password1 || !password2 || password1 !== password2 || !(password1.length >=9)) {
+  if (
+    !key ||
+    !password1 ||
+    !password2 ||
+    password1 !== password2 ||
+    !(password1.length >= 9)
+  ) {
     return new Response("invalid request", { status: 400 });
   }
   try {
@@ -30,7 +36,7 @@ export const post: APIRoute = async function post({ request }) {
     ]);
     return new Response(null, { status: 200 });
   } catch (err) {
-    console.log("verif error", err);
+    console.error("verif error", err);
     return new Response(null, { status: 500 });
   }
 };

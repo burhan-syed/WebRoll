@@ -55,7 +55,7 @@ export const get: APIRoute = async function get({ request }) {
       }
     );
   } catch (err) {
-    console.log("query err", err);
+    console.error("sites query err", err);
     return new Response(JSON.stringify({ ERROR: "" }), { status: 500 });
   }
 

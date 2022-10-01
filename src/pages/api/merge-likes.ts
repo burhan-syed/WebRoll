@@ -22,7 +22,6 @@ export const post: APIRoute = async function post({ request }) {
     ) {
       return new Response(null, { status: 401 });
     }
-    console.log("prev likes?", oldSessData?.likes);
     const update = await (oldSessData && oldSessData?.likes?.length > 0
       ? prisma.$transaction([
           ...oldSessData?.likes.map((like) =>
@@ -48,7 +47,6 @@ export const post: APIRoute = async function post({ request }) {
           }),
         ])
       : "");
-    console.log("update likes:", update);
     const headers = new Headers();
     headers.append(
       "Set-Cookie",
@@ -56,7 +54,7 @@ export const post: APIRoute = async function post({ request }) {
     );
     return new Response(JSON.stringify(update), { status: 200, headers });
   } catch (err) {
-    console.log("update likes error", err);
+    console.error("update likes error", err);
     return new Response(null, { status: 500 });
   }
   return new Response(null, { status: 500 });

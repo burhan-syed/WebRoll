@@ -8,15 +8,15 @@ export default function CategoriesSelectForm({
   userCategories,
   onCategorySelectUpdate,
   label = "Select Categories:",
-  styles="",
+  styles = "",
   reload = false,
 }: {
   categories: Categories[];
   userCategories: string[];
   label?: string;
   onCategorySelectUpdate?: Function;
-  reload?:boolean;
-  styles?:string;
+  reload?: boolean;
+  styles?: string;
 }) {
   const defaultCatgs = useMemo(() => {
     return categories.map((c) =>
@@ -33,8 +33,6 @@ export default function CategoriesSelectForm({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const onFormSubmit = async (data: { categories: (string | null)[] }) => {
-    console.log("submit..", data);
-
     setLoading(true);
     try {
       const res = await fetch("/api/update-user-categories", {
@@ -47,11 +45,10 @@ export default function CategoriesSelectForm({
         const updCategories = (await res.json())?.data as {
           category: string;
         }[];
-        console.log("updC?", updCategories);
         if (updCategories && onCategorySelectUpdate) {
           await onCategorySelectUpdate(updCategories.map((c) => c.category));
         }
-        if(reload){
+        if (reload) {
           location.reload();
         }
         setSubmitted(true);
@@ -77,7 +74,11 @@ export default function CategoriesSelectForm({
             </label>
           )}
 
-          <CategorySelect categories={categories} showDescriptions={false} styles={styles} />
+          <CategorySelect
+            categories={categories}
+            showDescriptions={false}
+            styles={styles}
+          />
           <button
             disabled={submitted}
             type="submit"
@@ -87,7 +88,23 @@ export default function CategoriesSelectForm({
           </button>
           {submitted && (
             <label className="flex flex-col w-full justify-center items-center">
-              <span className="label-text">categories updated {reload ? <><button onClick={() => {location.reload()}} className="btn btn-sm btn-ghost lowercase font-light text-sm">{"(click here if page is not reloading)"}</button></> : ""}</span>
+              <span className="label-text">
+                categories updated{" "}
+                {reload ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        location.reload();
+                      }}
+                      className="btn btn-sm btn-ghost lowercase font-light text-sm"
+                    >
+                      {"(click here if page is not reloading)"}
+                    </button>
+                  </>
+                ) : (
+                  ""
+                )}
+              </span>
             </label>
           )}
         </form>

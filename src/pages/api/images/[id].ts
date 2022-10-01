@@ -23,7 +23,7 @@ export const get: APIRoute = async function get({ params }) {
 
     return new Response(JSON.stringify({ url: signedURL }), { status: 200 });
   } catch (err) {
-    console.log("SIGN ERR", err);
+    console.error("SIGN ERR", err);
     return new Response(JSON.stringify({ ERROR: err }), { status: 400 });
   }
 };

@@ -41,7 +41,7 @@ export default function QueryList({
     const data = (await res.json()) as
       | SitesQueryResponseData
       | SiteReportsQueryResponseData;
-    console.log("data?", data);
+    //console.log("data?", data);
     return {
       sites: data?.data,
       nextCursor: data?.nextCursor,

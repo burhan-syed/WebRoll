@@ -64,7 +64,6 @@ export default function ReportForm({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const onFormSubmit = async (data: ReportFormData) => {
-    console.log("submit..", data);
     if (
       reportType === "CATEGORY" &&
       siteCategories
@@ -95,18 +94,6 @@ export default function ReportForm({
           .sort()
           .join(",")
     ) {
-      console.log(
-        siteTags
-          ?.map((t) => t.tag.tag?.toUpperCase())
-          .filter((t) => t)
-          .sort()
-          .join(","),
-        data.tags
-          .map((t) => t.name.toUpperCase())
-          .filter((t) => t)
-          .sort()
-          .join(",")
-      );
       setError("tags", {
         type: "required",
         message: "change the tags or add more!",
@@ -120,7 +107,7 @@ export default function ReportForm({
         body: JSON.stringify({
           ...data,
           categories: reportType === "CATEGORY" ? data.categories : undefined,
-          tags: reportType === "TAGS" ? data.tags.slice(0,-1) : undefined,
+          tags: reportType === "TAGS" ? data.tags.slice(0, -1) : undefined,
           siteID,
         }),
         method: "post",

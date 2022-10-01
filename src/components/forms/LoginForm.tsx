@@ -30,7 +30,6 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
           body: JSON.stringify(data),
           method: "post",
         });
-        console.log("response?", res);
         const resData = await res.json();
         if (res.ok) {
           setAccountCreated(true);
@@ -132,7 +131,9 @@ export default function LoginForm({ signUp = false }: { signUp?: boolean }) {
       {accountCreated && (
         <div className="flex flex-col gap-4">
           <h2>Account Created</h2>
-          <span>Check your email to verify your account prior to logging in.</span>
+          <span>
+            Check your email to verify your account prior to logging in.
+          </span>
         </div>
       )}
     </>
