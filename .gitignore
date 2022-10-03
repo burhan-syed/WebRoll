@@ -22,6 +22,7 @@ pnpm-debug.log*
 #misc
 scripts/scrapers/*
 images/*
+scripts/utils/screens/*
 *.pem
 .vercel
 *.csv

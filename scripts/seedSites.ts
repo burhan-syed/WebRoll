@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import csv from "csvtojson";
+
+const ADMIN_ID = "";
+
 const getRandomValues = require("get-random-values");
 
 let nanoid = (size = 21) => {
@@ -24,7 +27,7 @@ let nanoid = (size = 21) => {
 
 (async () => {
   let prisma = new PrismaClient();
-  const FILE_PATH = "./scripts/parsedRows1.csv";
+  const FILE_PATH = "./scripts/parsedRows.csv";
   const jsonArray = await csv().fromFile(FILE_PATH);
 
   const formatted = jsonArray.map(
@@ -32,6 +35,7 @@ let nanoid = (size = 21) => {
       name: string;
       url: string;
       categories: string;
+      imgKey: string;
       tags: string;
       description: string;
       allowEmbed: boolean;
@@ -50,6 +54,7 @@ let nanoid = (size = 21) => {
         }
         return `https://${rURL}`;
       })();
+
       // if(tags.length > 19){
       //   console.log("tags?", tags);
       // }
@@ -59,9 +64,10 @@ let nanoid = (size = 21) => {
         url: url,
         sourceLink: row?.sourceLink,
         description: row?.description,
+        imgKey: row?.imgKey,
         allowEmbed: row?.allowEmbed ? true : false,
-        submitterIP: "127.0.0.1",
-        submitterID: "admin",
+        submitterIP: "0.0.0.0",
+        submitterID: ADMIN_ID,
         categories: {
           connect: [...categories.map((c: string) => ({ category: c }))],
         },
@@ -75,7 +81,7 @@ let nanoid = (size = 21) => {
                   create: { tag: tag },
                 },
               },
-              assigner: { connect: { id: "admin" } },
+              assigner: { connect: { id: ADMIN_ID } },
             },
           })),
         },
