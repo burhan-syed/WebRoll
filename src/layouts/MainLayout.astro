@@ -3,7 +3,10 @@ import { SEO } from "astro-seo";
 import NavBar from "../components/ui/NavBar.astro";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
 const {
-  SEOProps = {title: "WebRoll",  description:"Rediscover the web with WebRoll."},
+  SEOProps = {
+    title: "WebRoll",
+    description: "Rediscover the web with WebRoll.",
+  },
   noScrollBar = false,
   noFooter = true,
   noProse = false,
@@ -23,38 +26,37 @@ if (!skipCookies) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <SEO {...SEOProps}/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#36d399" />
+    <meta name="msapplication-TileColor" content="#36d399" />
+    <meta name="theme-color" content="#36d399" />
+
+    <SEO {...SEOProps} />
   </head>
   <div class="drawer">
     <input id="my-drawer" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content">
-      <body
-        class={`h-screen w-screen overflow-x-hidden  overflow-y-auto ${
-          noScrollBar ? " scrollbar-none " : " sm:scrollbar-thin sm:scrollbar-track-base-200 sm:scrollbar-thumb-primary "
-        }`}
+      <nav class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
+        <NavBar />
+      </nav>
+      <main
+        class={(noProse ? "" : " prose prose-headings:font-light ") +
+          " min-w-full bg-base-300 min-h-screen flex flex-col"}
       >
-        <nav class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
-          <NavBar />
-        </nav>
-        <main
-          class={(noProse ? "" : " prose prose-headings:font-light ") +
-            " min-w-full bg-base-300 min-h-screen flex flex-col"}
-        >
-          <div class="h-0 md:h-20"></div>
-          <div class="flex-grow flex flex-col">
-            <slot />
-          </div>
-          {
-            !noFooter && (
-              <footer class="footer bg-base-200 text-base-content ">
-                foot
-              </footer>
-            )
-          }
-          <div class="md:h-0 h-20"></div>
-        </main>
-      </body>
+        <div class="h-0 md:h-20"></div>
+        <div class="flex-grow flex flex-col">
+          <slot />
+        </div>
+        {
+          !noFooter && (
+            <footer class="footer bg-base-200 text-base-content ">foot</footer>
+          )
+        }
+        <div class="md:h-0 h-20"></div>
+      </main>
     </div>
     <nav class="drawer-side">
       <label for="my-drawer" class="drawer-overlay"></label>

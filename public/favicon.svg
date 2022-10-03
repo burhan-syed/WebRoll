@@ -5,9 +5,9 @@
         xmlnsXlink="http://www.w3.org/1999/xlink"
         x="0px"
         y="0px"
-        viewBox="0 -10 512 512"
+        viewBox="0 0 512 512"
         xmlSpace="preserve"
-        style="transform: scale(0.9)  translate(0px, -2px);"
+        style="transform: scale(0.9)  translate(0px, 0px);"
         fill="#36D399"
       >
         <g>
