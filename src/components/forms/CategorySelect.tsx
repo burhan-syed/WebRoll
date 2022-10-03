@@ -40,17 +40,17 @@ export default function CategorySelect({
     if (maxCount && count > maxCount) {
       setError("categories", {
         type: "maxLength",
-        message: "select no more than two",
+        message: "select no more than two categories",
       });
     } else if (minCount && (!count || count < minCount)) {
       setError("categories", {
         type: "minLength",
-        message: "select at least one",
+        message: "select at least one category",
       });
     } else if (minCount && maxCount && value.includes("Fun") && count < 2) {
       setError("categories", {
         type: "minLength",
-        message: `select two when "Fun" is selected`,
+        message: `select two categories when "Fun" is selected`,
       });
     } else if (maxCount && minCount && count > 0) {
       clearErrors("categories");

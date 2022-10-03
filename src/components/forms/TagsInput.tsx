@@ -65,6 +65,10 @@ export default function TagsInput({}) {
   };
 
   useEffect(() => {
+    console.log(cTags); 
+    if(cTags.length < 4 && !tagError){
+      setTagError("minAmount");
+    }
     if (cTags.length < 20 && tagError === "maximumNumber") {
       setTagError("");
     }
@@ -96,7 +100,7 @@ export default function TagsInput({}) {
                   <span className="label-text-alt text-error">
                     20 maximum tags
                   </span>
-                ) : errors.tags?.type === "minAmount" ? (
+                ) : errors.tags?.type === "minAmount" || tagError === "minAmount" ? (
                   <span className="label-text-alt text-error">
                     enter at least 3 tags
                   </span>

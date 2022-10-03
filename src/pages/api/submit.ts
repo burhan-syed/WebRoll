@@ -6,6 +6,8 @@ import { getWebRollSession } from "../../server/utils/parseCookieString";
 import postParseRequest from "../../server/metaparser/parseRequest";
 import type { APIRoute } from "astro";
 import type { Categories } from "@prisma/client";
+import type { SiteFormData } from "../../types";
+import { checkInBlacklist } from "../../server/utils/blacklist";
 
 const captchaSecret = import.meta.env.HCAPTCHA_SECRET;
 const isProd = import.meta.env.PROD;
@@ -16,14 +18,15 @@ export const post: APIRoute = async function post({ request }) {
   const userIP =
     request.headers.get("x-forwarded-for") ?? !isProd ? "127.0.0.1" : null;
 
-  const { tags, url, categories, privacy, sourceLink, captchaToken } = data;
-  //console.log(userIP, tags, url, categories, privacy, sourceLink, captchaToken);
+  const { tags, url, categories, privacy, sourceLink, captchaToken } =
+    data as SiteFormData;
+  console.log(userIP, tags, url, categories, privacy, sourceLink, captchaToken);
 
   if (
     !userIP ||
     !url ||
     !categories ||
-    !(tags.length > 3) ||
+    !(tags.length >= 3) ||
     !captchaToken ||
     !sessionID
   ) {
@@ -55,7 +58,6 @@ export const post: APIRoute = async function post({ request }) {
   }
 
   const baseUrl = extractUrl(url);
-
   const parsedCategories = categories.filter((c: string) => c);
   if (
     !parsedCategories ||
@@ -78,7 +80,7 @@ export const post: APIRoute = async function post({ request }) {
     );
   }
 
-  const { cleanedTags, invalidTags } = parseTags(tags);
+  const { cleanedTags, invalidTags } = parseTags(tags.map((t) => t.name));
 
   if (invalidTags.length > 0) {
     return new Response(
@@ -93,6 +95,13 @@ export const post: APIRoute = async function post({ request }) {
   try {
     const response = await fetch(baseUrl);
     const resURL = splitUrl(response.url)?.host ?? baseUrl;
+    const blacklisted = await checkInBlacklist(resURL);
+    if (blacklisted) {
+      return new Response(
+        JSON.stringify({ ERROR: "we can't index this url" }),
+        { status: 400 }
+      );
+    }
     const xFrameOptions = response.headers?.get("X-Frame-Options");
     const allowEmbed = !(
       xFrameOptions === "DENY" ||

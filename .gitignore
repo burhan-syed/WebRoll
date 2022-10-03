@@ -26,3 +26,4 @@ scripts/utils/screens/*
 *.pem
 .vercel
 *.csv
+blacklist.txt
