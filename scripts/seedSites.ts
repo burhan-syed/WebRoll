@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, SiteStatus } from "@prisma/client";
 import csv from "csvtojson";
 
 const ADMIN_ID = "";
@@ -68,6 +68,7 @@ let nanoid = (size = 21) => {
         allowEmbed: row?.allowEmbed ? true : false,
         submitterIP: "0.0.0.0",
         submitterID: ADMIN_ID,
+        status: "APPROVED" as SiteStatus,
         categories: {
           connect: [...categories.map((c: string) => ({ category: c }))],
         },
