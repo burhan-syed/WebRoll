@@ -82,14 +82,14 @@ let siteImgURL = site?.imgKey
         title: `View ${site?.name ?? site?.url}${
           site?.description ? `, ${site.description}.` : "."
         } Discovered on WebRoll.`,
-        type: 'website',
+        type: "website",
         image: siteImgURL,
       },
       image: {
-        type: 'image/jpeg',
+        type: "image/jpeg",
         height: 1080,
-        width: 1920
-      }
+        width: 1920,
+      },
     },
   }}
 >
@@ -203,17 +203,25 @@ let siteImgURL = site?.imgKey
                     <p class=" mb-0 flex flex-col gap-1 bg-base-100 p-4  font-light text-sm shadow w-full">
                       <span class="flex justify-between">
                         <span>views</span>
-                        {site.views}
+                        <span class="text-right">{new Intl.NumberFormat("en-US", {
+                          notation: "compact",
+                        }).format(site.views)}
+                          </span>
+                       
                       </span>
                       <span class="flex justify-between">
                         <span>likes</span>
-                        <span>{likesCount}</span>
+                        <span class="text-right">
+                          {new Intl.NumberFormat("en-US", {
+                            notation: "compact",
+                          }).format(likesCount)}
+                        </span>
                       </span>
                       {site.sourceLink && (
                         <span class="flex justify-between">
                           <span>source</span>
                           <a
-                            class="font-light"
+                            class="font-light text-right"
                             href={site.sourceLink}
                             target={"_blank"}
                             rel={"norefferer"}
@@ -226,7 +234,9 @@ let siteImgURL = site?.imgKey
                         <span>
                           categor{site.categories.length === 1 ? "y" : "ies"}
                         </span>
-                        {site.categories.map((c) => c.category).join(",")}
+                        <span class="text-right">
+                          {site.categories.map((c) => c.category).join(",")}
+                        </span>
                       </span>
                       <span class="flex justify-between">
                         <span>status</span>
