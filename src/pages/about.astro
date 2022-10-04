@@ -4,18 +4,18 @@ import MainLayout from "../layouts/MainLayout.astro";
 import { GitHub } from "react-feather";
 ---
 
-<MainLayout>
+<MainLayout footer={true}>
   <ColumnLayout grow={true}>
     <div
       class="bg-base-100/90 backdrop-blur-md border border-base-300 shadow-lg flex flex-col flex-grow rounded-lg p-4"
     >
       <h1>About</h1>
       <p class="text-sm md:text-base">
-        WebRoll was created to gather commendable websites for you to discover.
+        WebRoll was created to gather commendable websites for your chance to discover.
         Each time you click the dice you will be presented with a random website
-        in the category(s) of your choosing. We thoroughly review each website
+        in the category(s) of your choosing. We review each website
         to assure you don't find anything low quality or clickbaity. Instead,
-        you will find sites that may be a niche treasure trove of information, a
+        you will find sites that may be a treasure trove of information, a
         technical marvel streching the limits of the browser, a creation
         reminiscient of the old Web 2.0 days, or perhaps a useful web-tool
         worthy of your bookmark.
@@ -40,25 +40,16 @@ import { GitHub } from "react-feather";
 
       <div class="flex-grow border-b border-base-300"></div>
 
-      <p class="text-opacity-90 text-neutral text-sm md:text-base font-light">
+      <p class="text-opacity-90 text-neutral text-sm">
         WebRoll was heavily inspired by the likes of StumbleUpon and CloudHiker.
         It was created by <a
           class="text-neutral text-opacity-90"
           href="https://github.com/burhan-syed">Burhan Syed</a
-        > as an exercise of building with <a
+        > as an exercise in building with <a
           class="link text-neutral text-opacity-90"
           href="https://astro.build/">AstroJS</a
-        > and is open source for anyone interested.
+        >.
       </p>
-
-      <div
-        class="ml-auto tooltip hover:tooltip-open tooltip-left group"
-        data-tip="github"
-      >
-        <a class="" href="https://github.com/burhan-syed/WebRoll"
-          ><div class="group-hover:scale-110"><GitHub /></div>
-        </a>
-      </div>
     </div>
   </ColumnLayout>
 </MainLayout>

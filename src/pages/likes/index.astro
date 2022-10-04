@@ -1,11 +1,12 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import ColumnLayout from "../../layouts/ColumnLayout.astro";
 import SmallSiteCard from "../../components/ui/SmallSiteCard";
 import Refresh from "../../components/ui/buttons/Refresh";
 import Paginator from "../../components/ui/buttons/Paginator";
 import { checkAndReturnSessionID } from "../../server/utils/handleSession";
 import prisma from "../../server/utils/prisma";
-import "../../styles/globals.css"
+import "../../styles/globals.css";
 import type { minSiteResData } from "../../types";
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
 Astro.response.headers.set(
@@ -64,51 +65,53 @@ const pages = Array.from(Array(totalPages), (e, i) => {
 <MainLayout
   skipCookies={true}
   noProse={true}
-  noFooter={true}
-  SEOProps={{title: "Likes | Webroll"}} >
-  <div
+  SEOProps={{ title: "Likes | Webroll" }}
+>
+  <!-- <div
     class="flex flex-col flex-grow items-center bg-dotted"
   >
     <div
       class="flex flex-col flex-grow gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4"
+    > -->
+  <ColumnLayout grow={true}>
+    <div
+      class="flex flex-col p-4 flex-grow bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg"
     >
-      <div
-        class="flex flex-col p-4 flex-grow bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg"
-      >
-        <h1 class="text-3xl mb-6 flex items-center justify-between gap-2">
-          Likes<Refresh
-            styles={"btn btn-ghost rounded-full group"}
-            size={20}
-            client:load
-          />
-        </h1>
-        {
-          !(likes.length > 0) ? (
-            <span>no likes found</span>
-          ) : (
-            <>
-              <ul class="flex flex-col gap-2">
-                {likes.map(({ site }) => (
-                  <li>
-                    <a rel="preload" href={`/sites/${site.id}`}>
-                      <SmallSiteCard site={site as minSiteResData} />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )
-        }
-      </div>
+      <h1 class="text-3xl mb-6 flex items-center justify-between gap-2">
+        Likes<Refresh
+          styles={"btn btn-ghost rounded-full group"}
+          size={20}
+          client:load
+        />
+      </h1>
       {
-        pages.length > 1 && (
-          <div class="flex flex-col py-2 px-4 bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg">
-            <div class="btn-group mt-auto  mx-auto">
-              <Paginator currentPage={NPage} pages={pages} route={"/likes/"} />
-            </div>
-          </div>
+        !(likes.length > 0) ? (
+          <span>no likes found</span>
+        ) : (
+          <>
+            <ul class="flex flex-col gap-2">
+              {likes.map(({ site }) => (
+                <li>
+                  <a rel="preload" href={`/sites/${site.id}`}>
+                    <SmallSiteCard site={site as minSiteResData} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
         )
       }
     </div>
-  </div>
+    {
+      pages.length > 1 && (
+        <div class="flex flex-col py-2 px-4 bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg">
+          <div class="btn-group mt-auto  mx-auto">
+            <Paginator currentPage={NPage} pages={pages} route={"/likes/"} />
+          </div>
+        </div>
+      )
+    }
+  </ColumnLayout>
+  <!-- </div>
+  </div> -->
 </MainLayout>

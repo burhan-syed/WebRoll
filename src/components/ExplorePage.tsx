@@ -74,6 +74,7 @@ export default function ExplorePage({
 
   const advance = async () => {
     if (!disableAdvance) {
+      setIsAdvanced(false); 
       if (index >= 10 && sites.length > index) {
         setIndex(0);
         setSites((s) => s.splice(index));
@@ -89,9 +90,11 @@ export default function ExplorePage({
     }
   };
 
+  const [isAdvanced, setIsAdvanced] = useState(false); 
   const [advanced, setAdvanced] = useState(0);
   const [sitesAdvanced, setSitesAdvanced] = useState(new Set());
   const handleSiteLoad = (site: minSiteResDataWithLikes) => {
+    setIsAdvanced(true); 
     setAdvanced((p) => p + 1);
     setSitesAdvanced((pSites) => {
       if (!pSites.has(site.id)) {
@@ -167,7 +170,7 @@ export default function ExplorePage({
           {sites[index].allowEmbed === true ? (
             <iframe
               key={sites[index].url}
-              className="flex-1 h-full w-full bg-transparent"
+              className={"flex-1 h-full w-full transition-colors ease-out " + (isAdvanced ? "bg-base-100" : "")}
               src={sites[index].url}
               onLoad={() => {
                 handleSiteLoad(sites[index]);
@@ -192,7 +195,7 @@ export default function ExplorePage({
                       {sites[index].description}
                     </p>
                     <div className="card-actions justify-center md:justify-end mt-2">
-                      <a href={sites[index].url} className="btn btn-primary">
+                      <a href={sites[index].url} target="_blank" className="btn btn-primary">
                         Visit Site
                       </a>
                     </div>

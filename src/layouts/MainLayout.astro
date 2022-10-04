@@ -1,14 +1,16 @@
 ---
 import { SEO } from "astro-seo";
+import Footer from "../components/ui/Footer.astro";
 import NavBar from "../components/ui/NavBar.astro";
 import { checkAndReturnSessionID } from "../server/utils/handleSession";
+import "../styles/globals.css";
 const {
   SEOProps = {
     title: "WebRoll",
     description: "Rediscover the web with WebRoll.",
   },
   noScrollBar = false,
-  noFooter = true,
+  noFooter = false,
   noProse = false,
   skipCookies = false,
 } = Astro.props;
@@ -38,25 +40,21 @@ if (!skipCookies) {
   </head>
   <div class="drawer">
     <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
+    <div class={"drawer-content " + (noScrollBar ? "scrollbar-none" : "")}>
       <nav class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
         <NavBar />
       </nav>
       <main
         class={(noProse ? "" : " prose prose-headings:font-light ") +
-          " min-w-full bg-base-300 min-h-screen flex flex-col"}
+          " min-w-full bg-dotted min-h-screen flex flex-col"}
       >
         <div class="h-0 md:h-20"></div>
         <div class="flex-grow flex flex-col">
           <slot />
         </div>
-        {
-          !noFooter && (
-            <footer class="footer bg-base-200 text-base-content ">foot</footer>
-          )
-        }
-        <div class="md:h-0 h-20"></div>
       </main>
+      {!noFooter && <Footer />}
+      <div class="md:h-0 h-20"></div>
     </div>
     <nav class="drawer-side">
       <label for="my-drawer" class="drawer-overlay"></label>
