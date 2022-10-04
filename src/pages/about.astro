@@ -1,24 +1,28 @@
 ---
 import ColumnLayout from "../layouts/ColumnLayout.astro";
 import MainLayout from "../layouts/MainLayout.astro";
-import { GitHub } from "react-feather";
 ---
 
-<MainLayout footer={true}>
+<MainLayout
+  SEOProps={{
+    title: "About | WebRoll",
+  }}
+  footer={true}
+>
   <ColumnLayout grow={true}>
     <div
       class="bg-base-100/90 backdrop-blur-md border border-base-300 shadow-lg flex flex-col flex-grow rounded-lg p-4"
     >
       <h1>About</h1>
       <p class="text-sm md:text-base">
-        WebRoll was created to gather commendable websites for your chance to discover.
-        Each time you click the dice you will be presented with a random website
-        in the category(s) of your choosing. We review each website
-        to assure you don't find anything low quality or clickbaity. Instead,
-        you will find sites that may be a treasure trove of information, a
-        technical marvel streching the limits of the browser, a creation
-        reminiscient of the old Web 2.0 days, or perhaps a useful web-tool
-        worthy of your bookmark.
+        WebRoll was created to gather commendable websites for your chance to
+        discover. Each time you click the dice you will be presented with a
+        random website in the category(s) of your choosing. We review each
+        website to assure you don't find anything low quality or clickbaity.
+        Instead, you will find sites that may be a treasure trove of
+        information, a technical marvel streching the limits of the browser, a
+        creation reminiscient of the old Web 2.0 days, or perhaps a useful
+        web-tool worthy of your bookmark.
         <br />
         <br />
         If you happen to enjoy the enjoy the site you land on be sure to leave a

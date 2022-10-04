@@ -1,0 +1,21 @@
+---
+import ColumnLayout from "../layouts/ColumnLayout.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout
+  SEOProps={{
+    title: "Contact | WebRoll",
+  }}
+  footer={true}
+>
+  <ColumnLayout grow={true}>
+    <div
+      class="bg-base-100/90 backdrop-blur-md border border-base-300 shadow-lg flex flex-col flex-grow rounded-lg p-4"
+    >
+      <h1>Contact</h1>
+      <p>Have questions?<br/>Want to advertise with us?<br/><br/> You can contact us at:</p>
+      <pre class="select-none md:mt-0">contact [at] webroll.io</pre>
+    </div>
+  </ColumnLayout>
+</MainLayout>
