@@ -68,6 +68,11 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
         box.checked = false;
       };
     </script>
+    <script
+      src="/stats/js/script.js"
+      data-api="/stats/api/event"
+      data-domain="webroll.io"
+    ></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -133,14 +138,14 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
         <!-- Sidebar content here -->
         <li><a href="/dashboard">Account</a></li>
         <li>
-            <button id="category-select-button" class="p-0 w-full text-left relative">
-              <label
-                for="category-modal"
-                class="w-full cursor-pointer p-3 px-4"
-              >
-                Category Select
-              </label>
-            </button>
+          <button
+            id="category-select-button"
+            class="p-0 w-full text-left relative"
+          >
+            <label for="category-modal" class="w-full cursor-pointer p-3 px-4">
+              Category Select
+            </label>
+          </button>
         </li>
         <li><a href="/likes">Likes</a></li>
         <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
