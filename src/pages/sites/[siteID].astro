@@ -89,6 +89,7 @@ let siteImgURL = site?.imgKey
         type: "image/jpeg",
         height: 1080,
         width: 1920,
+        alt: `${site?.url}`
       },
     },
   }}
@@ -115,7 +116,7 @@ let siteImgURL = site?.imgKey
          
             <div class="aspect-video w-full md:invisible md:w-0" />
             <div class="rounded-t-2xl md:rounded-t-none bg-base-200/80 md:bg-base-200 border-t border-base-100 -mt-10 md:mt-0 z-10 relative flex-grow  flex flex-col overflow-auto backdrop-blur-md">
-              <div class="flex items-center justify-center  absolute h-4 top-0 z-20 w-full md:hidden">
+              <div class="flex items-center justify-center  absolute h-4 top-0  w-full md:hidden">
                 <div class="bg-black rounded opacity-40 w-10 h-1 z-20" />
               </div>
               <div
