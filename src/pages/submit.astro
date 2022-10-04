@@ -1,35 +1,44 @@
 ---
 // Component Imports
 import MainLayout from "../layouts/MainLayout.astro";
+import  ColumnLayout from "../layouts/ColumnLayout.astro";
 import SubmissionPage from "../components/SubmissionPage";
 import prisma from "../server/utils/prisma";
-import "../styles/globals.css"
+import "../styles/globals.css";
 
-const categories = await prisma.categories.findMany({orderBy: {category: 'asc'}}); 
+const categories = await prisma.categories.findMany({
+  orderBy: { category: "asc" },
+});
 
 // Full Astro Component Syntax:
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<MainLayout SEOProps={{title: "Rules | Webroll"}}>
-  <div
+<MainLayout SEOProps={{ title: "Rules | Webroll" }}>
+  <!-- <div
     class="bg-neutral flex-grow bg-dotted"
   >
-    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
-      <div
-        class="bg-base-100/90  backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
-      >
-        <h1 class="text-3xl">Site Submission</h1>
-        <p class="text-sm font-light ">
-          Do you know of a cool site we haven't added to our collection? Submit
-          it here for us to review.<br />Please read our <a rel="preload" href="/rules">submission rules</a>
-          prior to submitting.
-          <br />
-          Do note, we only index hostnames. That means any path submitted in the
-          url will be trimmed.
-        </p>
-      </div>
-      <SubmissionPage client:load categories={categories} />
+    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2"> -->
+  <ColumnLayout grow={true}>
+    <div
+      class="bg-base-100/90 backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
+    >
+      <h1 class="text-3xl">Site Submission</h1>
+      <p class="text-sm md:text-base font-light ">
+        Do you know of a cool site we haven't added to our collection? Submit it
+        here for us to review.<br />Please read our <a
+          rel="preload"
+          href="/rules">submission rules</a
+        >
+        prior to submitting.
+        <br />
+        Do note, we only index hostnames. That means any path submitted in the url
+        will be trimmed.
+      </p>
     </div>
-  </div>
+    <SubmissionPage client:load categories={categories} />
+  </ColumnLayout>
+
+  <!-- </div>
+  </div> -->
 </MainLayout>

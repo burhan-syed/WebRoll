@@ -83,7 +83,7 @@ export default function ExploreNavBar({
             }}
             target={"_blank"}
             href={site.url}
-            className="text-[10px] text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1"
+            className="text-[10px] max-w-[10rem] truncate text-info-content mx-auto order-1 md:order-2 pb-1 md:pb-0 md:pt-1"
           >
             {site.url}
           </a>

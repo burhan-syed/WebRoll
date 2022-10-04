@@ -95,7 +95,7 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
             />
           ) : (
             <>
-              <NavBar />
+              <NavBar noButtons={true} />
               <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4 ">
                 <div class="flex flex-col items-center justify-center flex-grow mx-2 max-w-xl">
                   <p class="text-center py-2">
@@ -127,18 +127,22 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
     <nav class="drawer-side">
       <label for="my-drawer-4" class="drawer-overlay"></label>
       <ul
-        class="menu flex-col-reverse md:flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
+        class="menu flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
       >
+        <div class="flex-grow sm:flex-grow-0"></div>
         <!-- Sidebar content here -->
+        <li><a href="/dashboard">Account</a></li>
         <li>
-          <button id="category-select-button" class="p-0 w-full text-left">
-            <label for="category-modal" class="w-full cursor-pointer p-3">
-              Category Select
-            </label>
-          </button>
+            <button id="category-select-button" class="p-0 w-full text-left relative">
+              <label
+                for="category-modal"
+                class="w-full cursor-pointer p-3 px-4"
+              >
+                Category Select
+              </label>
+            </button>
         </li>
         <li><a href="/likes">Likes</a></li>
-        <li><a href="/dashboard">Account</a></li>
         <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
       </ul>
     </nav>

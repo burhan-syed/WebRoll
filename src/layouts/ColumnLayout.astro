@@ -1,14 +1,13 @@
 ---
-import "../styles/globals.css"
-const {justification = "justify-start", grow=false} = Astro.props; 
+import "../styles/globals.css";
+const { justification = "justify-start", grow = false } = Astro.props;
 ---
 
-<div
-    class={"flex flex-col flex-grow items-center justify-center bg-dotted " }
+<div class={"flex flex-col flex-grow items-center justify-center bg-dotted "}>
+  <div
+    class={"flex flex-col gap-2 sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-2 py-4 md:p-4  " +
+      (grow ? " flex-grow " : "")}
   >
-    <div
-      class={"flex flex-col gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4  border-4 border-red-500" + (grow ? " flex-grow " : "")}
-    >
-     <slot/>
-    </div>
+    <slot />
   </div>
+</div>

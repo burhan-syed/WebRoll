@@ -1,4 +1,5 @@
 ---
+import ColumnLayout from "../layouts/ColumnLayout.astro";
 import MainLayout from "../layouts/MainLayout.astro";
 import "../styles/globals.css"
 const Rules = {
@@ -69,10 +70,11 @@ const Rules = {
 ---
 
 <MainLayout SEOProps={{title: "Rules | Webroll"}}>
-  <div
+  <!-- <div
     class="flex-grow bg-dotted"
   >
-    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2">
+    <div class="mx-auto max-w-4xl p-4 flex flex-col gap-2"> -->
+      <ColumnLayout>
       <div
         class="bg-base-100/90 backdrop-blur-md border border-base-300 rounded-lg w-full p-4 shadow-lg"
       >
@@ -133,6 +135,7 @@ const Rules = {
           }
         </ul>
       </div>
-    </div>
-  </div>
+    </ColumnLayout>
+    <!-- </div>
+  </div> -->
 </MainLayout>

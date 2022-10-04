@@ -45,11 +45,12 @@ export default function Button({
       case "report":
         break;
       case "share":
-        const domain = window.location.host;
+        const domain = window.location.hostname;
+
         const shareLink = `${domain}/sites/${site.id}`;
         const shareData = {
           title: site.name,
-          text: "Learn web development on MDN!",
+          text: `Visit ${site.name} on WebRoll`,
           url: shareLink,
         };
         try {

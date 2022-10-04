@@ -1,29 +1,45 @@
 ---
-import Dice from '../../components/ui/icons/Dice'
+import Dice from "../../components/ui/icons/Dice";
+const { noButtons } = Astro.props;
 ---
-<nav class="navbar bg-base-100 h-20 border-b border-b-base-300 bg-opacity-80 backdrop-blur shadow-sm">
+
+<nav
+  class="navbar bg-base-100 h-20 border-b border-b-base-300 bg-opacity-80 backdrop-blur shadow-sm"
+>
   <div class="navbar-start">
-      <label for="my-drawer" class="btn btn-ghost  drawer-button">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h7"></path>
-        </svg>
-      </label>
+    {
+      !noButtons && (
+        <label for="my-drawer" class="btn btn-ghost  drawer-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h7"
+            />
+          </svg>
+        </label>
+      )
+    }
   </div>
   <div class="navbar-center">
-    <a rel="preload" href="/" class="btn btn-ghost normal-case text-xl">WebRoll</a>
+    <a rel="preload" href="/" class="btn btn-ghost normal-case text-xl"
+      >WebRoll</a
+    >
   </div>
   <div class="navbar-end">
-    <a rel="prefetch" href="/explore" class="btn btn-ghost ">
-     <Dice strokeWidth={10} size={23} />
-    </a>
+    {
+      !noButtons && (
+        <a rel="prefetch" href="/explore" class="btn btn-ghost">
+          <Dice strokeWidth={10} size={23} />
+        </a>
+      )
+    }
   </div>
 </nav>

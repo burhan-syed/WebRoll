@@ -16,7 +16,7 @@ export default function CategorySelectModal({
       <input type="checkbox" id="category-modal" className="modal-toggle" />
       <label htmlFor="category-modal" className="modal cursor-pointer ">
         <label
-          className="modal-box relative bg-base-100/80 backdrop-blur-md "
+          className="modal-box  relative bg-base-100/80 backdrop-blur-md "
           htmlFor=""
         >
           <label
@@ -25,12 +25,14 @@ export default function CategorySelectModal({
           >
             <X />
           </label>
-          <div className="my-0.5">
+          <div className="py-1 md:py-8 flex flex-col gap-2 text-sm md:text-base">
+            <span className="md:text-lg">Select Categories:</span>
             <CategoriesSelectForm
               categories={categories}
               userCategories={userCategories}
               onCategorySelectUpdate={onCategorySelectUpdate}
               styles=""
+              label=""
             />
           </div>
         </label>
