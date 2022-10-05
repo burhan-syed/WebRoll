@@ -1,6 +1,20 @@
 ---
+import prisma from "../server/utils/prisma";
 import ColumnLayout from "../layouts/ColumnLayout.astro";
 import MainLayout from "../layouts/MainLayout.astro";
+
+const totalSiteCount = await prisma.sites.count();
+//const totalLikesCount = await prisma.likes.count();
+const categories = await prisma.categories.findMany({
+  select: { category: true },
+});
+const sitesPerCategory = await prisma.$transaction(
+  categories.map((c) =>
+    prisma.sites.count({
+      where: { categories: { some: { category: { in: c.category } } } },
+    })
+  )
+);
 ---
 
 <MainLayout
@@ -16,31 +30,82 @@ import MainLayout from "../layouts/MainLayout.astro";
       <h1>About</h1>
       <p class="">
         WebRoll was created as a place to gather commendable websites for you to
-        discover. Each time you click the dice you will be presented with a
+        discover. Each time you roll the dice you will be presented with a
         random website in the category(s) of your choosing. We review each
         website to assure you don't find anything low quality or clickbaity.
-        You will find sites that may be a treasure trove of
-        information, a technical marvel streching the limits of the browser, a
-        creation reminiscient of the old Web 2.0 days, or perhaps a useful
-        web-tool worthy of your bookmark.
-        <br />
-        <br />
-        If you happen to enjoy the enjoy the site you land on be sure to leave a
-        like to find it in your <a class="link" href="/likes">likes</a>
-        page later. No account is required but you are encouraged to <a
+        Instead you will find sites that are:
+      </p>
+      <ul>
+        <li>Treasure troves of niche information</li>
+        <li>Technical marvels streching the limits of the browser</li>
+        <li>Creative webpages reminiscient of the old Web 2.0 days</li>
+        <li>Beautifull designs in form and function</li>
+        <li>Uniquely weird and astonishing places and demos</li>
+        <li>Valuable web tools worthy of your bookmarks</li>
+        <li>Or just fun no nonsense webgames for your enjoyment</li>
+      </ul>
+      <br />
+      <br />
+
+      <p>
+        You can take a closer look at our <a href="/rules" class="link"
+          >submission rules here</a
+        > and if you know of a website meeting our standards feel free to <a
           class="link"
-          href="/signup">sign up</a
-        > so your likes are available anywhere you log in.
+          href="/submit">submit it here</a
+        >!
         <br />
         <br />
-        Do you know of a website that should be on WebRoll? After reading our <a
-          href="/rules"
-          class="link">submission rules</a
-        > feel free to <a class="link" href="/submit">submit it here</a>, no
-        account required!
-        <br />
+        If you happen to enjoy the enjoy a site you land on be sure to leave a like
+        to find it in your <a class="link" href="/likes">likes</a>
+        page later. <br />No account is required for any of WebRoll's
+        functionality but you are encouraged to <a class="link" href="/signup"
+          >sign up</a
+        > so your likes are available anywhere you log in.<br />
+
         <br />
       </p>
+      <h2>Some WebRoll Numbers</h2>
+      <p class="px-4 mx-auto text-center sm:text-left sm:px-0 sm:ml-0">
+        <span class="text-lg font-semibold text-primary">
+          {
+            new Intl.NumberFormat("en-US", {
+              notation: "standard",
+            }).format(totalSiteCount)
+          }
+        </span>
+        total sites catalogued across
+        <span class="text-lg font-semibold text-primary"
+          >{categories.length}
+        </span> categories:
+      </p>
+      <div class="bg-base-200 rounded-lg p-6 mb-4 prose-ul:pl-0">
+        <ul class="mx-auto prose-li:m-0">
+          {
+            categories.map((c, i) => (
+              <li
+                class={
+                  "flex min-w-full justify-between max-w-2xl px-4 py-2 rounded-md hover:bg-base-300 "
+                }
+              >
+                <span class="">
+                  <span class="font-semibold text-base">{c.category}</span>:
+                </span>
+                <span>
+                  {new Intl.NumberFormat("en-US", {
+                    notation: "standard",
+                  }).format(sitesPerCategory[i])}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <p
+          class="italic text-xs opacity-90 mx-auto px-4 text-center sm:text-left"
+        >
+          some sites may be assigned to numerous categories
+        </p>
+      </div>
 
       <div class="flex-grow border-b border-base-300"></div>
 
