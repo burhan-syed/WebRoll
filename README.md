@@ -1,8 +1,7 @@
-<h1 style="display: flex; 
-justify-content: space-between; 
-align-items: baseline;">WebRoll  
-    <img src="/public/android-chrome-512x512.png" alt="" width="128" height="128" style="margin-left: auto;"  />
-</h1>
+<div align="center">  
+    <a href="https://webroll.io" target="_blank" ><img src="/public/android-chrome-512x512.png" alt="" width="128" height="128"  /></a>
+    <h1>WebRoll</h1>
+</div>
 
 A place to gather and discover commendable creations on the internet.
 
