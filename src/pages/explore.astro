@@ -61,11 +61,17 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
   <head>
     <script>
       let box = document.getElementById("my-drawer-4") as HTMLInputElement;
+      let navSwap = document.getElementById("nav-swap-checkbox2") as HTMLInputElement;
       let button = document.getElementById(
         "category-select-button"
       ) as HTMLButtonElement;
       button.onclick = (e) => {
         box.checked = false;
+        navSwap.checked = false;
+      };
+      let element2 = document.getElementById("drawer-overlay") as HTMLLabelElement;
+      element2.onclick = (e) => {
+        navSwap.checked = false;
       };
     </script>
     <script
@@ -129,8 +135,8 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
         }
       </main>
     </div>
-    <nav class="drawer-side">
-      <label for="my-drawer-4" class="drawer-overlay"></label>
+    <nav class="drawer-side mb-20 md:mt-20 md:mb-0">
+      <label id="drawer-overlay" for="my-drawer-4" class="drawer-overlay"></label>
       <ul
         class="menu flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
       >

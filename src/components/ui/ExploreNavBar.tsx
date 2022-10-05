@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Info, ExternalLink, Search } from "react-feather";
 import type { minSiteResDataWithLikes } from "../../types";
 import Button from "./buttons/Button";
@@ -17,6 +17,7 @@ export default function ExploreNavBar({
   advanced,
 }: NavBarProps) {
   const [showInfo, setShowInfo] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   return (
     <>
       <div
@@ -69,24 +70,38 @@ export default function ExploreNavBar({
             {site.url}
           </a>
         </div>
-        {/* <div className="dropdown"> */}
         <label
+          onClick={(e) => {
+            if (inputRef.current) {
+              inputRef.current.checked = !inputRef.current.checked;
+            }
+          }}
           htmlFor="my-drawer-4"
-          className="btn btn-ghost drawer-button z-50"
+          className="btn btn-ghost drawer-button swap swap-rotate w-16"
         >
+          <input id={"nav-swap-checkbox2"} ref={inputRef} type="checkbox" />
           <svg
+            className="swap-off fill-current"
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M 4 6 h 16 M 4 12 h 16 M 13 18 h 7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h7"
             />
+          </svg>
+          <svg
+            className="swap-on fill-current"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 512 512"
+          >
+            <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
           </svg>
         </label>
       </div>

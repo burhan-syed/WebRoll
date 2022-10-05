@@ -40,14 +40,31 @@ if (!skipCookies) {
       data-api="/stats/api/event"
       data-domain="webroll.io"
     ></script>
+    <script>
+      let swap = document.getElementById("swap-checkbox") as HTMLInputElement;
+      let element = document.getElementById("drawer-content") as HTMLDivElement;
+      element.onclick = (e) => {
+        swap.checked = false;
+      };
+      let element2 = document.getElementById("drawer-overlay") as HTMLLabelElement;
+      element2.onclick = (e) => {
+        swap.checked = false;
+      };
+    </script>
     <SEO {...SEOProps} />
   </head>
+  <div class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-10">
+    <NavBar />
+  </div>
   <div class="drawer">
     <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-    <div class={"drawer-content " + (noScrollBar ? "scrollbar-none" : "")}>
-      <nav class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-50">
-        <NavBar />
-      </nav>
+    <div
+      id="drawer-content"
+      class={"drawer-content  " +
+        (noScrollBar
+          ? "scrollbar-none"
+          : " md:scrollbar-thin md:scrollbar-thumb-primary md:scrollbar-track-neutral ")}
+    >
       <main
         class={(noProse ? "" : " prose prose-headings:font-light ") +
           " min-w-full bg-dotted min-h-screen flex flex-col"}
@@ -60,8 +77,8 @@ if (!skipCookies) {
       {!noFooter && <Footer />}
       <div class="md:h-0 h-20"></div>
     </div>
-    <nav class="drawer-side">
-      <label for="my-drawer" class="drawer-overlay"></label>
+    <nav class="drawer-side mb-20 md:mt-20 md:mb-0">
+      <label id="drawer-overlay" for="my-drawer" class="drawer-overlay"></label>
       <ul
         class="menu flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
       >
