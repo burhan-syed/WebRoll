@@ -5,7 +5,7 @@ const { justification = "justify-start", grow = false } = Astro.props;
 
 <div class={"flex flex-col flex-grow items-center justify-center bg-dotted "}>
   <div
-    class={"flex flex-col gap-2 w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-6xl 2xl:max-w-7xl py-4 " +
+    class={"flex flex-col gap-2 w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-6xl 2xl:max-w-7xl py-4 text-sm md:text-base " +
       (grow ? " flex-grow " : "")}
   >
     <slot />
