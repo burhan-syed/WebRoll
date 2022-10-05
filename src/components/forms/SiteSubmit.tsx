@@ -62,11 +62,11 @@ export default function SiteSubmit({
     ) {
       const errMessage =
         catgCount < 1 || !catgCount
-          ? "select at least one"
+          ? "select at least one category"
           : catgCount > 2
-          ? "no more than two"
+          ? "no more than two categories"
           : data?.categories?.includes("Fun") && catgCount < 2
-          ? "select two"
+          ? "select two categories"
           : "invalid";
       setError("categories", { message: errMessage });
       setFormError(errMessage);
