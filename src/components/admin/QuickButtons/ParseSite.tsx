@@ -11,7 +11,7 @@ export default function ParseSite({ siteID }: { siteID: string }) {
         body: JSON.stringify({ siteID: siteID }),
       });
     } catch (err) {
-      //console.error("parse request error", err);
+      console.error("parse request error", err);
     }
     setParseLoading(false);
   };

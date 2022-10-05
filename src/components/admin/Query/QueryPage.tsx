@@ -55,7 +55,7 @@ const StatusSelector = ({
     </>
   );
 };
-const defaults = ["REVIEW", "PARSING", "DISPLAY", "TOS"];
+const defaults = ["REVIEW", "PARSING",...reportTypes];
 const checkInDefault = (i: number, mode: "SITES" | "REPORTS") => {
   let isIndex = false;
   let arrToCheck = mode === "SITES" ? statuses : reportTypes;

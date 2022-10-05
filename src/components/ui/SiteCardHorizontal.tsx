@@ -2,8 +2,8 @@ import type { SiteStatus } from "@prisma/client";
 import { useState } from "react";
 import { ExternalLink } from "react-feather";
 import type { minSiteResData } from "../../types";
-import ParseSite from "../admin/ParseSite";
-import UpdateStatuses from "../admin/UpdateStatuses";
+import ParseSite from "../admin/QuickButtons/ParseSite";
+import UpdateStatuses from "../admin/QuickButtons/UpdateStatuses";
 import SecureImg from "./SecureImg";
 
 export default function SiteCardHorizontal({

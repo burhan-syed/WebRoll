@@ -2,9 +2,9 @@ import type { SiteStatus } from "@prisma/client";
 import { useState } from "react";
 import type { SiteResData } from "../../types";
 import SecureImg from "../ui/SecureImg";
-import ParseSite from "./ParseSite";
-import UpdateStatuses from "./UpdateStatuses";
-import UpdateUseEmbed from "./UpdateUseEmbed";
+import ParseSite from "./QuickButtons/ParseSite";
+import UpdateStatuses from "./QuickButtons/UpdateStatuses";
+import UpdateUseEmbed from "./QuickButtons/UpdateUseEmbed";
 
 export default function UpdateSite({ site }: { site: SiteResData }) {
   const [status, setStatus] = useState(() => site.status);

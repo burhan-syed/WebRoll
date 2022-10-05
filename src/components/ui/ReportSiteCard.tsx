@@ -2,8 +2,8 @@ import type { Reports, SiteStatus } from "@prisma/client";
 import { useMemo, useState } from "react";
 import { ExternalLink } from "react-feather";
 import type { SiteResWithReportsData } from "../../types";
-import ParseSite from "../admin/ParseSite";
-import UpdateStatuses from "../admin/UpdateStatuses";
+import ParseSite from "../admin/QuickButtons/ParseSite";
+import UpdateStatuses from "../admin/QuickButtons/UpdateStatuses";
 import SecureImg from "./SecureImg";
 
 export default function ReportSiteCard({
@@ -45,6 +45,22 @@ export default function ReportSiteCard({
             <h2 className={"font-semibold line-clamp-1 "}>
               {site.name.replace(/\/+$/, "")}
             </h2>
+            <span
+              className={
+                "badge badge-outline p-0.5 flex-none text-xs" +
+                (status === "REVIEW"
+                  ? " badge-primary "
+                  : status === "APPROVED"
+                  ? " badge-success "
+                  : status === "REPORTED" || status === "PARSING"
+                  ? " badge-warning "
+                  : status === "BANNED"
+                  ? " badge-error "
+                  : " badge-error-content ")
+              }
+            >
+              {status}
+            </span>
           </div>
 
           <span className={"flex"}>
