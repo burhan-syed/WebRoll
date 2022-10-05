@@ -45,21 +45,21 @@ export default function Button({
       case "report":
         break;
       case "share":
-        const domain = window.location.hostname;
-
-        const shareLink = `${domain}/sites/${site.id}`;
+        const protocol = window.location.protocol;
+        const domain = window.location.host;
+        const shareLink = `${protocol}//${domain}/sites/${site.id}`;
         const shareData = {
           title: site.name,
           text: `Visit ${site.name} on WebRoll`,
-          url: shareLink,
+          url: `/sites/${site.id}`,
         };
         try {
           await navigator.share(shareData);
         } catch (err) {
           navigator.clipboard.writeText(shareLink);
+          setAlertMessage("link copied!");
+          setAlertTriggered((t) => !t);
         }
-        setAlertMessage("link copied!");
-        setAlertTriggered((t) => !t);
 
         break;
       default:
