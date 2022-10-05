@@ -17,25 +17,6 @@ export default function ExploreNavBar({
   advanced,
 }: NavBarProps) {
   const [showInfo, setShowInfo] = useState(false);
-  const [liked, setLiked] = useState<boolean>(() =>
-    site.likes?.length > 0 ? site.likes[0]?.direction : false
-  );
-  useEffect(() => {
-    setLiked(site.likes?.length > 0 ? site.likes[0]?.direction : false);
-  }, [site]);
-
-  const handleLike = async () => {
-    setLiked((l) => {
-      fetch("/api/update-likes", {
-        body: JSON.stringify({
-          siteID: site.id,
-          direction: !l,
-        }),
-        method: "post",
-      });
-      return !l;
-    });
-  };
   return (
     <>
       <div

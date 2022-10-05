@@ -106,5 +106,4 @@ export default async function grabScreenAndData ({ params, url }: {params:{color
 //     siteURL: resURL,
 //   });
 //   console.log("uploaded", uploadKey); 
-//   //http://500.chromeexperiments.com
 // })()

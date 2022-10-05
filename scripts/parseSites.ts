@@ -10,9 +10,6 @@ import {
   splitUrl,
 } from "../src/server/metaparser/utils";
 
-//import fetch from 'node-fetch-commonjs'
-// import axios from "axios";
-// import url from "url";
 (async () => {
   const mapCategories = (category: string, my_category: string) => {
     let categories = [];
@@ -114,19 +111,12 @@ import {
       });
   
     const { description, title, keywords } = metadata;
-    // const response = await axios.get(baseUrl);
-    // const resURL = `https://${url.parse(response.config.url ?? "")?.host}`;
-    // const xFrameOptions = response.headers?.["x-frame-options"];
 
     const allowEmbed = !(
       xFrameOptions === "DENY" ||
       xFrameOptions === "SAMEORIGIN" ||
       xFrameOptions === "ALLOW-FROM"
     );
-    // const { description, title, keywords } = await parseMetadata(response.data);
-    // if (keywords) {
-    //   console.log("KEYWORDS>>", keywords);
-    // }
 
     const tags = [
       ...(row.tags?.split(";") ?? [""]),
