@@ -72,3 +72,4 @@ Libraries:
 - [Prisma](https://github.com/prisma/prisma)
 - [Upstash/Ratelimit](https://github.com/upstash/ratelimit)
 - [Nodemailer](https://github.com/upstash/ratelimit)
+- [Astro-Auth](https://github.com/astro-community/astro-auth)
