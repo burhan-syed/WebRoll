@@ -43,13 +43,14 @@ npm run dev
 ```
 
 ## Version History
-
+- 0.2
+  - History Page
 - 0.1
   - Initial Release
 
 ## Roadmap
 
-- [ ] History page to easily find previous rolls.
+- [x] History page to easily find previous rolls.
 - [ ] Search by tags
 - [ ] General search
 - [ ] Aggregate sites performance page (likes, views)

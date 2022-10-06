@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import ColumnLayout from "../../layouts/ColumnLayout.astro";
 import SmallSiteCard from "../../components/ui/SmallSiteCard";
 import Paginator from "../../components/ui/buttons/Paginator";
 import Refresh from "../../components/ui/buttons/Refresh";
@@ -66,12 +67,7 @@ const pages = Array.from(Array(totalPages), (e, i) => {
   noProse={true}
   SEOProps={{title: "Likes | Webroll"}} 
 >
-  <div
-    class="flex flex-col flex-grow items-center bg-dotted"
-  >
-    <div
-      class="flex flex-col flex-grow gap-2 min-w-full sm:min-w-fit sm:w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-2 p-4"
-    >
+<ColumnLayout grow={true}>
       <div
         class="flex flex-col p-4 flex-grow bg-base-100/90 backdrop-blur-md border-base-300 rounded-lg"
       >
@@ -109,6 +105,5 @@ const pages = Array.from(Array(totalPages), (e, i) => {
           </div>
         )
       }
-    </div>
-  </div>
+    </ColumnLayout>
 </MainLayout>

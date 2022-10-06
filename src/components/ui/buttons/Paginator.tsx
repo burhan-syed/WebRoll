@@ -13,12 +13,13 @@ export default function Paginator({
 }) {
   return (
     <div className="btn-group mt-auto  mx-auto">
-      {pages.map((pNum) => (
+      {pages.map((pNum,i) => (
         <>
           {pNum > 0 ? (
             <>
               {buttons ? (
                 <button
+                  key={pNum}
                   onClick={() => buttonAction(pNum)}
                   className={
                     "btn btn-md w-10 sm:w-12" +
@@ -29,6 +30,7 @@ export default function Paginator({
                 </button>
               ) : (
                 <a
+                  key={pNum}
                   href={`${route}${pNum}`}
                   className={
                     "btn btn-md w-10 sm:w-12" +
@@ -40,7 +42,7 @@ export default function Paginator({
               )}
             </>
           ) : (
-            <div className="btn btn-disabled rounded-none">...</div>
+            <div key={pNum+"_"+i} className="btn btn-disabled rounded-none">...</div>
           )}
         </>
       ))}

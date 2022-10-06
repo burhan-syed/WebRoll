@@ -1,0 +1,11 @@
+---
+import ColumnLayout from "../layouts/ColumnLayout.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import HistoryPageWrapper from "../components/history/HistoryPageWrapper"
+---
+
+<MainLayout>
+  <ColumnLayout grow={true}>
+    <HistoryPageWrapper client:only="react"/>
+  </ColumnLayout>
+</MainLayout>

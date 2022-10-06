@@ -32,7 +32,7 @@ export default function QueryList({
     }).toString();
     const res = await fetch(
       `${
-        mode === "SITES" ? "/api/query/get-sites" : "/api/query/get-reports"
+        mode === "SITES" ? "/api/query/query-sites" : "/api/query/query-reports"
       }?${params}`,
       {
         method: "get",

@@ -72,7 +72,7 @@ export interface SitesQueryResponseData {
 }
 
 export interface SiteResWithReportsData extends SiteResData {
-  Reports: {type: ReportType}[];
+  Reports: { type: ReportType }[];
 }
 export interface SiteReportsQueryResponseData {
   data?: SiteResWithReportsData[];
@@ -88,4 +88,9 @@ export interface SiteFormData {
   tags: { name: string }[];
   privacy: boolean;
   captchaToken: string;
+}
+
+export interface HistoryPage {
+  site: string;
+  time: Date;
 }
