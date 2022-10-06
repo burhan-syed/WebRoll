@@ -20,6 +20,7 @@ pnpm-debug.log*
 .DS_Store
 
 #misc
+parsings/
 scripts/scrapers/*
 images/*
 scripts/utils/screens/*

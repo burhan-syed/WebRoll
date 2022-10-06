@@ -27,7 +27,7 @@ let nanoid = (size = 21) => {
 
 (async () => {
   let prisma = new PrismaClient();
-  const FILE_PATH = "./scripts/parsedRows.csv";
+  const FILE_PATH = "";
   const jsonArray = await csv().fromFile(FILE_PATH);
 
   const formatted = jsonArray.map(

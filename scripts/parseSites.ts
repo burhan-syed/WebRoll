@@ -133,6 +133,7 @@ import {
       image: compressed,
       siteURL: resURL,
     });
+    console.log("image put;",uploadKey,";",resURL); 
     return {
       name: title,
       url: resURL,
@@ -145,13 +146,12 @@ import {
     };
   };
 
-  const FILE_PATH = "./scripts/site_mapping.csv";
+  const FILE_PATH = "";
   const jsonArray = await csv().fromFile(FILE_PATH);
   console.log("final json array", jsonArray.length);
 
   (async () => {
-    const parsedRows = [] as any;
-    const failedRows = [] as any;
+   
     //test
     // const row = {
     //   url: "troddit.com",
@@ -182,6 +182,8 @@ import {
     const groups = groupElements(jsonArray);
 
     for (let i = 0; i < groups.length; i++) {
+      const parsedRows = [] as any;
+      const failedRows = [] as any;
       await Promise.all(
         groups[i].map(async (row: any) => {
           try {
@@ -192,16 +194,18 @@ import {
             failedRows.push(row);
             console.log("parse error", row?.url);
           }
+
         })
       );
+      const csv = new ObjectsToCsv(parsedRows);
+      const failCSV = new ObjectsToCsv(failedRows);
+      console.log("WRITING", i)
+      await csv.toDisk(`./scripts/parsings/parsedRows_${i}.csv`);
+      await failCSV.toDisk(`./scripts/parsings/failedParseRows_${i}.csv`);
     }
 
-    const csv = new ObjectsToCsv(parsedRows);
-    const failCSV = new ObjectsToCsv(failedRows);
-    // Save to file:
-    await csv.toDisk("./parsedRows.csv");
-    await failCSV.toDisk("./failedParseRows.csv");
+  
     // Return the CSV file as string:
-    console.log(await failedRows.toString());
+    //console.log(await failedRows.toString());
   })();
 })();
