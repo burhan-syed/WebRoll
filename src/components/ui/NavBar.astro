@@ -3,14 +3,6 @@ import Dice from "../../components/ui/icons/Dice";
 const { noButtons } = Astro.props;
 ---
 
-<script>
-  let swap = document.getElementById("swap-checkbox") as HTMLInputElement;
-  let element = document.getElementById("swap-element") as HTMLLabelElement;
-  element.onclick = (e) => {
-    swap.checked = !swap.checked;
-  };
-</script>
-
 <nav
   class="navbar bg-base-100 h-20 border-b border-b-base-300 bg-opacity-80 backdrop-blur shadow-sm"
 >

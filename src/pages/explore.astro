@@ -57,104 +57,105 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
 // https://docs.astro.build/core-concepts/astro-components/
 ---
 
-<html>
-  <head>
-    <script>
-      let box = document.getElementById("my-drawer-4") as HTMLInputElement;
-      let navSwap = document.getElementById("nav-swap-checkbox2") as HTMLInputElement;
-      let button = document.getElementById(
-        "category-select-button"
-      ) as HTMLButtonElement;
-      button.onclick = (e) => {
-        box.checked = false;
-        navSwap.checked = false;
-      };
-      let element2 = document.getElementById("drawer-overlay") as HTMLLabelElement;
-      element2.onclick = (e) => {
-        navSwap.checked = false;
-      };
-    </script>
-    <script
-      src="/stats/js/script.js"
-      data-api="/stats/api/event"
-      data-domain="webroll.io"
-    ></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#36d399" />
-    <meta name="msapplication-TileColor" content="#36d399" />
-    <meta name="theme-color" content="#36d399" />
-    <title>Explore | WebRoll</title>
-  </head>
+<script>
+  let checkbox = document.getElementById("my-drawer-explore") as any;
+  let swap = document.getElementById("nav-swap-checkbox2") as any;
+  let categoryCheckbox = document.getElementById("category-modal") as any;
+  checkbox.addEventListener("change", (e: any) => {
+    if (e.target.checked) {
+      swap.checked = true;
+    } else {
+      swap.checked = false;
+    }
+  });
+  categoryCheckbox.addEventListener("change", (e:any) => {
+    if (e.target.checked) {
+      checkbox.checked = false;
+      swap.checked = false; 
+    } 
+  })
+</script>
+<script
+  src="/stats/js/script.js"
+  data-api="/stats/api/event"
+  data-domain="webroll.io"
+></script>
 
-  <div class="drawer  drawer-end ">
-    <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content !overflow-y-hidden">
-      <div class="min-h-screen min-w-full flex flex-col">
-        {
-          sites.length > 0 ? (
-            <ExplorePage
-              initialSiteImgURL={siteImgURL}
-              initialSites={sites}
-              categories={categories}
-              userCategories={selected_categories}
-              client:load
-            />
-          ) : (
-            <>
-              <NavBar noButtons={true} />
-              <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4 ">
-                <div class="flex flex-col items-center justify-center flex-grow mx-2 max-w-xl">
-                  <p class="text-center py-2">
-                    {`No sites found for` +
-                      (selected_categories.length === 1
-                        ? " this category"
-                        : " these categories")}{" "}
-                    <br />
-                    {`Select some other categories or submit a site`}
-                  </p>
-                  <CategoriesSelectForm
-                    label={""}
-                    styles={"justify-between"}
-                    reload={true}
-                    categories={categories}
-                    userCategories={selected_categories}
-                    client:load
-                  />
-                  <a href="/submit" class="btn btn-primary w-full my-4">
-                    Submit a Site
-                  </a>
-                </div>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#36d399" />
+<meta name="msapplication-TileColor" content="#36d399" />
+<meta name="theme-color" content="#36d399" />
+<title>Explore | WebRoll</title>
+
+<div class="drawer drawer-end">
+  <input id="my-drawer-explore" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content !overflow-y-hidden">
+    <div class="min-h-screen min-w-full flex flex-col">
+      {
+        sites.length > 0 ? (
+          <ExplorePage
+            initialSiteImgURL={siteImgURL}
+            initialSites={sites}
+            categories={categories}
+            userCategories={selected_categories}
+            client:load
+          />
+        ) : (
+          <>
+            <NavBar noButtons={true} />
+            <div class="bg-base-200 flex-grow flex flex-col items-center justify-center gap-4 ">
+              <div class="flex flex-col items-center justify-center flex-grow mx-2 max-w-xl">
+                <p class="text-center py-2">
+                  {`No sites found for` +
+                    (selected_categories.length === 1
+                      ? " this category"
+                      : " these categories")}{" "}
+                  <br />
+                  {`Select some other categories or submit a site`}
+                </p>
+                <CategoriesSelectForm
+                  label={""}
+                  styles={"justify-between"}
+                  reload={true}
+                  categories={categories}
+                  userCategories={selected_categories}
+                  client:load
+                />
+                <a href="/submit" class="btn btn-primary w-full my-4">
+                  Submit a Site
+                </a>
               </div>
-            </>
-          )
-        }
-      </div>
+            </div>
+          </>
+        )
+      }
     </div>
-    <nav class="drawer-side mb-20 md:mb-0 md:mt-20">
-      <label id="drawer-overlay" for="my-drawer-4" class="drawer-overlay"></label>
-      <ul
-        class="menu flex-col justify-end md:justify-start p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
-      >
-        <!-- Sidebar content here -->
-        <li><a href="/dashboard">Account</a></li>
-        <li>
-          <button
-            id="category-select-button"
-            class="p-0 w-full text-left relative"
-          >
-            <label for="category-modal" class="w-full cursor-pointer p-3 px-4">
-              Category Select
-            </label>
-          </button>
-        </li>
-        <li><a href="/likes">Likes</a></li>
-        <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
-      </ul>
-    </nav>
   </div>
-</html>
+  <nav class="drawer-side mb-20 md:mb-0 md:mt-20">
+    <label id="drawer-overlay" for="my-drawer-explore" class="drawer-overlay"
+    ></label>
+    <ul
+      class="menu flex-col justify-end md:justify-start p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
+    >
+      <!-- Sidebar content here -->
+      <li><a href="/dashboard">Account</a></li>
+      <li>
+        <button
+          id="category-select-button"
+          class="p-0 w-full text-left relative"
+        >
+          <label for="category-modal" class="w-full cursor-pointer p-3 px-4">
+            Category Select
+          </label>
+        </button>
+      </li>
+      <li><a href="/likes">Likes</a></li>
+      <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
+    </ul>
+  </nav>
+</div>

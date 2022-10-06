@@ -23,6 +23,23 @@ if (!skipCookies) {
   );
 }
 ---
+<script
+src="/stats/js/script.js"
+data-api="/stats/api/event"
+data-domain="webroll.io"
+></script>
+<script>
+let checkbox = document.getElementById("my-drawer") as any;
+let swap = document.getElementById("swap-checkbox") as any; 
+
+checkbox.addEventListener("change", (e:any) => {
+  if (e.target.checked) {
+    swap.checked = true
+  }else{
+    swap.checked = false;
+  }
+});
+</script>
 
 <html lang="en" class="">
   <head>
@@ -35,22 +52,7 @@ if (!skipCookies) {
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#36d399" />
     <meta name="msapplication-TileColor" content="#36d399" />
     <meta name="theme-color" content="#36d399" />
-    <script
-      src="/stats/js/script.js"
-      data-api="/stats/api/event"
-      data-domain="webroll.io"
-    ></script>
-    <script>
-      let swap = document.getElementById("swap-checkbox") as HTMLInputElement;
-      let element = document.getElementById("drawer-content") as HTMLDivElement;
-      element.onclick = (e) => {
-        swap.checked = false;
-      };
-      let element2 = document.getElementById("drawer-overlay") as HTMLLabelElement;
-      element2.onclick = (e) => {
-        swap.checked = false;
-      };
-    </script>
+  
     <SEO {...SEOProps} />
   </head>
   <div class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-10">

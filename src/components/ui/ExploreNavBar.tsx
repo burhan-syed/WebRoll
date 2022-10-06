@@ -76,7 +76,7 @@ export default function ExploreNavBar({
               inputRef.current.checked = !inputRef.current.checked;
             }
           }}
-          htmlFor="my-drawer-4"
+          htmlFor="my-drawer-explore"
           className="btn btn-ghost drawer-button swap swap-rotate w-16"
           aria-label="side navigation"
         >
