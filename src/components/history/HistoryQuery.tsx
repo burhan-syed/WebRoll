@@ -30,7 +30,7 @@ export default function HistoryQuery({ items }: { items: HistoryPage[] }) {
           <>
             {query.data?.sites?.map((site) => (
               <li>
-                <a rel="preload" href={`/sites/${site.id}`}>
+                <a target={"_blank"} href={`/sites/${site.id}`}>
                   <SmallSiteCard site={site as minSiteResData} />
                 </a>
               </li>

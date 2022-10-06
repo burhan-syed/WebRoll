@@ -27,7 +27,7 @@ export default function HistoryPageWrapper() {
         pages = pages.map((g, i) => [
           ...historyParsed.slice(i * sitesPerPage, (i + 1) * sitesPerPage),
         ]);
-        console.log("pages:", pages, pages[0]);
+        //console.log("pages:", pages, pages[0]);
         return pages;
       });
     }
