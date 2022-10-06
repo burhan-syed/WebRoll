@@ -23,26 +23,10 @@ if (!skipCookies) {
   );
 }
 ---
-<script
-src="/stats/js/script.js"
-data-api="/stats/api/event"
-data-domain="webroll.io"
-></script>
-<script>
-let checkbox = document.getElementById("my-drawer") as any;
-let swap = document.getElementById("swap-checkbox") as any; 
 
-checkbox.addEventListener("change", (e:any) => {
-  if (e.target.checked) {
-    swap.checked = true
-  }else{
-    swap.checked = false;
-  }
-});
-</script>
-
-<html lang="en" class="">
+<html lang="en">
   <head>
+    <SEO {...SEOProps} />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -52,45 +36,64 @@ checkbox.addEventListener("change", (e:any) => {
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#36d399" />
     <meta name="msapplication-TileColor" content="#36d399" />
     <meta name="theme-color" content="#36d399" />
-  
-    <SEO {...SEOProps} />
-  </head>
-  <div class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-10">
-    <NavBar />
-  </div>
-  <div class="drawer">
-    <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-    <div
-      id="drawer-content"
-      class={"drawer-content  " +
-        (noScrollBar
-          ? "scrollbar-none"
-          : " md:scrollbar-thin md:scrollbar-thumb-primary md:scrollbar-track-neutral ")}
-    >
-      <main
-        class={(noProse ? "" : " prose prose-headings:font-light ") +
-          " min-w-full bg-dotted min-h-screen flex flex-col"}
-      >
-        <div class="h-0 md:h-20"></div>
-        <div class="flex-grow flex flex-col">
-          <slot />
-        </div>
-      </main>
-      {!noFooter && <Footer />}
-      <div class="md:h-0 h-20"></div>
-    </div>
-    <nav class="drawer-side mb-20 md:mt-20 md:mb-0">
-      <label id="drawer-overlay" for="my-drawer" class="drawer-overlay"></label>
-      <ul
-        class="menu flex-col justify-end md:justify-start p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
-      >
-        <li><a rel="prefetch" href="/explore">Explore Sites</a></li>
-        <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
-        <li><a href="/likes">Likes</a></li>
-        <li><a href="/dashboard">Account</a></li>
 
-        <li><a href="/about">About</a></li>
-      </ul>
-    </nav>
-  </div>
+    <script
+      src="/stats/js/script.js"
+      data-api="/stats/api/event"
+      data-domain="webroll.io"
+    ></script>
+    <script>
+      let checkbox = document.getElementById("my-drawer") as any;
+      let swap = document.getElementById("swap-checkbox") as any;
+
+      checkbox.addEventListener("change", (e: any) => {
+        if (e.target.checked) {
+          swap.checked = true;
+        } else {
+          swap.checked = false;
+        }
+      });
+    </script>
+  </head>
+  <body class="overflow-hidden max-h-screen">
+    <div class="min-w-full fixed bottom-0 md:bottom-auto md:top-0 z-10">
+      <NavBar />
+    </div>
+    <div class="drawer">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div
+        id="drawer-content"
+        class={"drawer-content  " +
+          (noScrollBar
+            ? "scrollbar-none"
+            : " md:scrollbar-thin md:scrollbar-thumb-primary md:scrollbar-track-neutral ")}
+      >
+        <main
+          class={(noProse ? "" : " prose prose-headings:font-light ") +
+            " min-w-full bg-dotted min-h-screen flex flex-col"}
+        >
+          <div class="h-0 md:h-20"></div>
+          <div class="flex-grow flex flex-col">
+            <slot />
+          </div>
+        </main>
+        {!noFooter && <Footer />}
+        <div class="md:h-0 h-20"></div>
+      </div>
+      <nav class="drawer-side mb-20 md:mt-20 md:mb-0">
+        <label id="drawer-overlay" for="my-drawer" class="drawer-overlay"
+        ></label>
+        <ul
+          class="menu flex-col justify-end md:justify-start p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
+        >
+          <li><a rel="prefetch" href="/explore">Explore Sites</a></li>
+          <li><a rel="prefetch" href="/submit">Submit a Site</a></li>
+          <li><a href="/likes">Likes</a></li>
+          <li><a href="/dashboard">Account</a></li>
+
+          <li><a href="/about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </body>
 </html>
