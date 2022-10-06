@@ -156,7 +156,7 @@ let siteImgURL = site?.imgKey
                     ) : (
                       <div class="flex items-center justify-center h-[50vh] lg:h-full overflow-hidden">
                         {siteImgURL ? (
-                          <BgImage src={siteImgURL} client:load />
+                          <BgImage src={siteImgURL} client:only="react" />
                         ) : (
                           <span
                             class="absolute bottom-2 text-xs text-white text-opacity-50 "
