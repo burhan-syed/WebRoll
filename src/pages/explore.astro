@@ -91,10 +91,10 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
     <title>Explore | WebRoll</title>
   </head>
 
-  <div class="drawer drawer-end">
+  <div class="drawer  drawer-end ">
     <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
-      <main class="min-h-screen min-w-full flex flex-col">
+    <div class="drawer-content !overflow-y-hidden">
+      <div class="min-h-screen min-w-full flex flex-col">
         {
           sites.length > 0 ? (
             <ExplorePage
@@ -133,9 +133,9 @@ if (sites?.[0]?.allowEmbed !== true && sites?.[0]?.imgKey) {
             </>
           )
         }
-      </main>
+      </div>
     </div>
-    <nav class="drawer-side mb-20 md:mt-20 md:mb-0">
+    <nav class="drawer-side mb-20 md:mb-0 md:mt-20">
       <label id="drawer-overlay" for="my-drawer-4" class="drawer-overlay"></label>
       <ul
         class="menu flex-col p-4 overflow-y-auto w-80 bg-base-100 text-base-content"
