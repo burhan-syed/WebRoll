@@ -2,14 +2,13 @@
 import Dice from "../../components/ui/icons/Dice";
 const { noButtons } = Astro.props;
 ---
+
 <script>
-   let swap = document.getElementById("swap-checkbox") as HTMLInputElement;
-      let element = document.getElementById(
-        "swap-element"
-      ) as HTMLLabelElement;
-      element.onclick = (e) => {
-        swap.checked = !swap.checked;
-      };
+  let swap = document.getElementById("swap-checkbox") as HTMLInputElement;
+  let element = document.getElementById("swap-element") as HTMLLabelElement;
+  element.onclick = (e) => {
+    swap.checked = !swap.checked;
+  };
 </script>
 
 <nav
@@ -18,8 +17,15 @@ const { noButtons } = Astro.props;
   <div class="navbar-start">
     {
       !noButtons && (
-        <label id="swap-element" for="my-drawer" class="btn btn-ghost drawer-button swap swap-rotate w-16">
-          <input id="swap-checkbox" type="checkbox" />
+        <label
+          id="swap-element"
+          for="my-drawer"
+          class="btn btn-ghost drawer-button swap swap-rotate w-16"
+        >
+          <label for="swap-checkbox" aria-label="swap">
+            <input id="swap-checkbox" type="checkbox" />
+          </label>
+
           <svg
             class="swap-off fill-current"
             xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +61,12 @@ const { noButtons } = Astro.props;
   <div class="navbar-end">
     {
       !noButtons && (
-        <a rel="prefetch" href="/explore" class="btn btn-ghost w-16">
+        <a
+          rel="prefetch"
+          href="/explore"
+          class="btn btn-ghost w-16"
+          aria-label="explore page"
+        >
           <Dice strokeWidth={13} size={24} />
         </a>
       )
