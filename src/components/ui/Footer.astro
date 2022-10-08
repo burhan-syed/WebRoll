@@ -1,5 +1,5 @@
 ---
-import { GitHub } from "react-feather";
+import { GitHub, Twitter } from "react-feather";
 ---
 
 <div class="bg-base-100 text-base-content z-10 relative">
@@ -34,12 +34,23 @@ import { GitHub } from "react-feather";
   <div class="py-4 border-t text-base-content border-base-200">
     <footer class="footer px-10 max-w-6xl mx-auto">
       <div class="items-center grid-flow-col">
-        <p class="opacity-50">Created by Burhan Syed</p>
+        <p  class="opacity-50">Created by <a href="https://twitter.com/syedBrhn" class="link">Burhan Syed</a></p>
       </div>
       <div class="md:place-self-center md:justify-self-end">
         <div class="grid grid-flow-col gap-4">
           <div
-            class="ml-auto tooltip hover:tooltip-open tooltip-right md:tooltip-left group"
+          class="ml-auto tooltip hover:tooltip-open tooltip-top md:tooltip-left group"
+          data-tip="twitter"
+        >
+          <a
+            aria-label="github repo"
+            class=""
+            href="https://twitter.com/WebRoll_io"
+            ><div class="group-hover:scale-110"><Twitter /></div>
+          </a>
+        </div>
+          <div
+            class="ml-auto tooltip hover:tooltip-open tooltip-top md:tooltip-left group"
             data-tip="open source on github"
           >
             <a
