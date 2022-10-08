@@ -50,7 +50,7 @@ export const post: APIRoute = async function post({ request }) {
     const headers = new Headers();
     headers.append(
       "Set-Cookie",
-      `webroll_session=${wrSessions[0]}.; Secure; HttpOnly;`
+      `webroll_session=${wrSessions[0]}.; Secure; HttpOnly; Expires=${new Date(2147483647 * 1000).toUTCString()}; SameSite=Lax`
     );
     return new Response(JSON.stringify(update), { status: 200, headers });
   } catch (err) {

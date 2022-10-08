@@ -18,7 +18,7 @@ const { siteID } = Astro.params;
 const { session, prev_session } = await checkAndReturnSessionID(Astro);
 Astro.response.headers.set(
   "Set-Cookie",
-  `webroll_session=${session}.${prev_session}; Secure; HttpOnly;`
+  `webroll_session=${session}.${prev_session}; Secure; HttpOnly; Expires=${new Date(2147483647 * 1000).toUTCString()}; SameSite=Lax`
 );
 const user = getUser({ client: Astro }) as User;
 const isAdmin = user?.role === "ADMIN";
