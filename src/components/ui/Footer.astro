@@ -1,5 +1,6 @@
 ---
 import { GitHub, Twitter } from "react-feather";
+import bmcLogo from "../../components/ui/icons/bmc-logo.svg"
 ---
 
 <div class="bg-base-100 text-base-content z-10 relative">
@@ -37,13 +38,24 @@ import { GitHub, Twitter } from "react-feather";
         <p  class="opacity-50">Created by <a href="https://twitter.com/syedBrhn" class="link">Burhan Syed</a></p>
       </div>
       <div class="md:place-self-center md:justify-self-end">
-        <div class="grid grid-flow-col gap-4">
+        <div class="grid grid-flow-col gap-6 sm:gap-4">
+          <div
+          class="ml-auto tooltip hover:tooltip-open tooltip-top md:tooltip-left group"
+          data-tip="buy me a coffee"
+        >
+          <a
+            aria-label="buymeacoffe"
+            class=""
+            href="https://www.buymeacoffee.com/bsyed"
+            ><div class="group-hover:scale-110"><img class="w-6 h-6" src={bmcLogo} alt="buymeacoffe" /></div>
+          </a>
+        </div>
           <div
           class="ml-auto tooltip hover:tooltip-open tooltip-top md:tooltip-left group"
           data-tip="twitter"
         >
           <a
-            aria-label="github repo"
+            aria-label="twitter"
             class=""
             href="https://twitter.com/WebRoll_io"
             ><div class="group-hover:scale-110"><Twitter /></div>
