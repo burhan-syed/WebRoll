@@ -12,7 +12,7 @@ const redis = new Redis({
 
 const ratelimit = new Ratelimit({
   redis: redis,
-  limiter: Ratelimit.fixedWindow(5,"10 s")
+  limiter: Ratelimit.fixedWindow(10,"10 s")
 })
 
 export const get: APIRoute = async function get({ request }) {
