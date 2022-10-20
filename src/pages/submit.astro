@@ -32,7 +32,7 @@ const categories = await prisma.categories.findMany({
         >
         prior to submitting.
         <br />
-        Do note, we only index hostnames. That means any path submitted in the url
+         <strong>We only index top level domains</strong>. That means any path submitted in the url
         will be trimmed.
       </p>
     </div>
