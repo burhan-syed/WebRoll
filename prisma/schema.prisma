@@ -2,14 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider             = "mysql"
+  provider             = "postgres"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  // referentialIntegrity = "prisma"
 }
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity", "filteredRelationCount"]
+  previewFeatures = ["filteredRelationCount"]
 }
 
 enum SiteStatus {
